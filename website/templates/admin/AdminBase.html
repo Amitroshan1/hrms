@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+    <header id="header">
+        <div class="logo"><img src="../static/photo/saffo logo.png" alt=""></div>
+        <nav class="nav-bar" id="navbar">
+            <ul>
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                <li>
+                  <a href="#about">About Us</a>
+              </li>
+              <li>
+                  <a href="#contact">Contact</a>
+              </li>
+                
+                <li>
+                <a class="nav-item nav-link" id="login" href="/Adminlogin">Login</a></li>
+                <li>
+                <a class="nav-item nav-link" id="signUp" href="/Adminsign-up">Sign Up</a></li>
+          
+                
+               
+            </ul>
+        </nav>
+    </header>
+    
+    <div class="container" id="home">
+        <div class="login-left">
+          {% block content %}{% endblock %}
+        </div>
+          
+        <div class="login-right">
+            <img src="../static/photo/Data Arranging_Two Color.svg" alt="">
+        </div>
+    </div>
+
+    <script>
+		let eyeicon = document.getElementById("eyeicon");
+		let password = document.getElementById("password");
+
+		eyeicon.onclick = function() {
+			if (password.type == "password"){
+				password.type = "text"; 
+				eyeicon.src = "../static/photo/eye-open.png";
+			}else{
+				password.type = "password";
+				eyeicon.src = "../static/photo/eye-close.png";
+			}
+		} 
+	</script>
+    
+
+    <script src="../static/css/javascript.js"></script>
+</body>
+
+</html>

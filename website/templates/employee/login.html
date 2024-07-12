@@ -1,0 +1,46 @@
+{% extends "employee/base.html" %} 
+{% block title %}Login{% endblock %} 
+{% block content %}
+    <div class="login-header">
+        <h1>Welcome Employee...</h1>
+        <p>Please login to continue......</p>
+    </div>
+
+    {% with errors = get_flashed_messages(category_filter=["error","success"]) %}
+            {% if errors %}
+                <div class="alert-danger">
+                    
+                        <ul>
+                            {%- for msg in errors %}
+                            <a class="close" href="/login">{{ msg }}...X</a>
+                            {% endfor -%}
+                        </ul>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+    <form class="login-form" method="POST" action="{{ url_for('auth.login') }}">
+        <div class="login-content">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email }}
+            </div>
+            <div class="form-group">
+                {{ form.password.label }}
+                {{ form.password }}
+                <img src="../static/photo/eye-close.png" id="eyeicon" class="password-toggle">
+            </div>
+            
+            <div class="form-item">
+                <div class="checkbox">
+                    <input type="checkbox" name="remember" id="rememberMeCheckbox">
+                    <label for="rememberMeCheckbox" class="checkboxlabel">Remember Me</label>
+                </div>
+            </div>
+            
+            
+            <button type="submit">LogIn</button>
+        </div>
+    </form>
+{% endblock %}
