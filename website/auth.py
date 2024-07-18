@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models.Admin_models import Admin
+from.models.emp_detail_models import Employee
 from werkzeug.security import check_password_hash
 from urllib.parse import urlparse, urljoin
-
 from flask_login import login_user, login_required, logout_user,current_user
 from .forms.signup_form import AdminLoginForm
 
@@ -27,12 +27,13 @@ def login():
         if user and check_password_hash(user.password, password):
             if user.Emp_type != 'admin':
                 login_user(user)
-                flash('Logged in successfully!', category='success')
+                
                 next_page = request.args.get('next')
                 # Redirect to the next page if it's safe
                 if next_page and is_safe_url(next_page):
                     return redirect(next_page)
                 else:
+                    
                     return redirect(url_for('auth.E_homepage'))
             else:
                 flash('Not an Employee. Please contact HR or Admin.', category='error')
@@ -45,7 +46,8 @@ def login():
 @auth.route('/E_homepage')
 @login_required
 def E_homepage():
-    return render_template("employee/E_homepage.html")
+    employee = Employee.query.filter_by(admin_id=current_user.id).first()
+    return render_template("employee/E_homepage.html",employee=employee)
 
 
 

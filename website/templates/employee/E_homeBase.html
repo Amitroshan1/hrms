@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- ===== CSS ===== -->
+        <link rel="stylesheet" href="../static/css/E_homepage.css">
+        
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body id="body-pd">
+        <div class="l-navbar" id="navbar">
+            <nav class="nav">
+                <div>
+                    <div class="nav__brand">
+                        <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle"></ion-icon>
+                        <a href="#" class="nav__logo">Saffo Solution Technology</a>
+                    </div>
+                    <div class="nav__list">
+                        <a href="/E_homepage" class="nav__link active">
+                            <ion-icon name="home-outline" class="nav__icon"></ion-icon>
+                            <span class="nav__name">Dashboard__E</span>
+                        </a>
+
+                        <a href="#" class="nav__link">
+                            <ion-icon name="hourglass-outline" class="nav__icon"></ion-icon>
+                            <span class="nav__name">Attandance</span>
+                        </a>
+                        
+
+                        <div  class="nav__link collapse">
+                            <ion-icon name="person-outline" class="nav__icon"></ion-icon>
+                            <span class="nav__name">Profile</span>
+
+                            <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+
+                            <ul class="collapse__menu">
+                                <a href="/emp_det2" class="collapse__sublink">Employee Details</a>
+                                <a href="#" class="collapse__sublink">Upload Documents</a>
+                                <a href="#" class="collapse__sublink">Family Details</a>
+                                <a href="#" class="collapse__sublink">Change Password</a>
+                            </ul>
+                        </div>
+
+                        <div  class="nav__link collapse">
+                          <ion-icon name="briefcase-outline" class="nav__icon"></ion-icon>
+                          <span class="nav__name">General</span>
+
+                          <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+
+                          <ul class="collapse__menu">
+                              <a href="#" class="collapse__sublink">Leave</a>
+                              <a href="#" class="collapse__sublink">claim</a>
+                              <a href="#" class="collapse__sublink">Assets</a>
+                              <a href="#" class="collapse__sublink">Query</a>
+                          </ul>
+                      </div>
+
+                      <div  class="nav__link collapse">
+                          <ion-icon name="wallet-outline" class="nav__icon"></ion-icon>
+                          <span class="nav__name">Tax Projection</span>
+
+                          <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+
+                          <ul class="collapse__menu">
+                              <a href="#" class="collapse__sublink">Pay-Slip</a>
+                              <a href="#" class="collapse__sublink">Form-16</a>
+                              <a href="#" class="collapse__sublink">Projection</a>
+                              <a href="#" class="collapse__sublink">Tax Declartion</a>
+                          </ul>
+                      </div>
+
+                      <div  class="nav__link collapse">
+                          <ion-icon name="rocket-outline" class="nav__icon"></ion-icon>
+                          <span class="nav__name">Off Board</span>
+
+                          <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
+
+                          <ul class="collapse__menu">
+                              <a href="#" class="collapse__sublink">Resignation</a>
+                              <a href="#" class="collapse__sublink">NOC</a>
+                          </ul>
+                      </div>
+
+
+                  </div>
+              </div>
+
+
+
+                <a href="/logout" class="nav__link">
+                    <ion-icon name="log-out-outline" class="nav__icon"></ion-icon>
+                    <span class="nav__name">Log Out</span>
+                </a>
+            </nav>
+        </div>
+
+        {% block content %}
+
+        
+
+        {% endblock %}
+
+        
+
+        
+        <!-- ===== IONICONS ===== -->
+        <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
+        
+        <!-- ===== MAIN JS ===== -->
+        <script src="../static/css/E_hompepage.js"></script>
+    </body>
+</html>

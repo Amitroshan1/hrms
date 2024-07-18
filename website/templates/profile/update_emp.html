@@ -1,0 +1,182 @@
+{% extends "admin/A_Homebase.html" %} 
+{% block title %}Update_Employee_details{% endblock %} 
+{% block content %}
+
+<h1>This is Employee Details Form for Updation</h1>
+
+
+
+    <div class="container">
+        <h2 class="mt-5">Employee Details Form</h2>
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('views.employee_update', employee_id=employee.id) }}">
+            {{ form.hidden_tag() }}
+            <!-- other form fields here -->
+
+            <div class="form-group">
+                {{ form.Photo.label(class="form-label") }}
+                {{ form.Photo(class="form-control-file") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.FatherName.label(class="form-label") }}
+                {{ form.FatherName(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.MotherName.label(class="form-label") }}
+                {{ form.MotherName(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.Marital_status.label(class="form-label") }}
+                {{ form.Marital_status(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.Spousename.label(class="form-label") }}
+                {{ form.Spousename(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.DOB.label(class="form-label") }}
+                {{ form.DOB(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.emp_id.label(class="form-label") }}
+                {{ form.emp_id(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.mobile.label(class="form-label") }}
+                {{ form.mobile(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.Gender.label(class="form-label") }}
+                {{ form.Gender(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.Emergency_mobile.label(class="form-label") }}
+                {{ form.Emergency_mobile(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.Caste.label(class="form-label") }}
+                {{ form.Caste(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.Nationality.label(class="form-label") }}
+                {{ form.Nationality(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.Language.label(class="form-label") }}
+                {{ form.Language(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.Religion.label(class="form-label") }}
+                {{ form.Religion(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.Blood_Group.label(class="form-label") }}
+                {{ form.Blood_Group(class="form-control") }}
+            </div>
+
+            <h5>Permanent Address</h5>
+            <div class="form-group">
+                {{ form.permanent_address_line1.label(class="form-label") }}
+                {{ form.permanent_address_line1(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.permanent_address_line2.label(class="form-label") }}
+                {{ form.permanent_address_line2(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.permanent_address_line3.label(class="form-label") }}
+                {{ form.permanent_address_line3(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.permanent_pincode.label(class="form-label") }}
+                {{ form.permanent_pincode(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.permanent_district.label(class="form-label") }}
+                {{ form.permanent_district(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.permanent_state.label(class="form-label") }}
+                {{ form.permanent_state(class="form-control") }}
+            </div>
+
+            <h5>Present Address</h5>
+            <div class="form-group">
+                {{ form.present_address_line1.label(class="form-label") }}
+                {{ form.present_address_line1(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.present_address_line2.label(class="form-label") }}
+                {{ form.present_address_line2(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.present_address_line3.label(class="form-label") }}
+                {{ form.present_address_line3(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.present_pincode.label(class="form-label") }}
+                {{ form.present_pincode(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.present_district.label(class="form-label") }}
+                {{ form.present_district(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.present_state.label(class="form-label") }}
+                {{ form.present_state(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+
+
+        <form method="POST" action="{{ url_for('views.employee_delete', employee_id=employee.id) }}" onsubmit="return confirm('Are you sure you want to delete this employee?');">
+            {{ form.csrf_token }}
+            <button type="submit" class="btn btn-danger">Delete Employee</button>
+        </form>
+    </div>
+    
+    {% endblock %}

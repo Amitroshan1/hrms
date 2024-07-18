@@ -1,7 +1,42 @@
-{% extends "admin/A_Homebase.html" %} 
-{% block title %}Employee_Homepage{% endblock %} 
+{% extends "admin/A_Homebase.html" %}
+{% block title %}Admin Homepage{% endblock %}
 {% block content %}
 
-<h1>This is Admin Dashboard</h1>
+<h1>Admine Employee Details</h1>
+
+<div class="container">
+    {% if employee %}
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Personal Information</h3>
+                <div class="container">
+                {% if employee.photo_filename %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ employee.photo_filename) }}" alt="Employee Image" class="img-thumbnail">
+                {% else %}
+                    <p>No photo available</p>
+                {% endif %}
+            </div>
+                <p><strong>Name:</strong> {{ employee.name }}</p>
+                <p><strong>Email:</strong> {{ employee.email }}</p>
+                <p><strong>Date of Birth:</strong> {{ employee.dob.strftime('%Y-%m-%d') }}</p>
+                <!-- Add other fields as needed -->
+            </div>
+            <div class="col-md-6">
+                <h3>Contact Information</h3>
+                <p><strong>Mobile:</strong> {{ employee.mobile }}</p>
+                <p><strong>Emergency Contact:</strong> {{ employee.emergency_mobile }}</p>
+                <!-- Add other fields as needed -->
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <!-- Add more sections or details here -->
+            </div>
+        </div>
+    {% else %}
+        <p>No employee data found.</p>
+    {% endif %}
+</div>
 
 {% endblock %}

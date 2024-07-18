@@ -7,22 +7,19 @@ from .forms.Emp_details import Employee_Details
 from .models.emp_detail_models import Employee
 from . import db
 
-views=Blueprint('views',__name__)
+profile=Blueprint('profile',__name__)
 
 
-@views.route('/')
-def home():
-    return render_template('home.html')
 
-@views.route('/employee_det',methods=['GET','POST'])
+
+@profile.route('/emp_details',methods=['GET','POST'])
 @login_required
-def emp_prof():
+def emp_profile():
     form=Employee_Details()
     return render_template("profile/emp_det.html",form=form)
 
 
-@views.route('/emp_det', methods=['GET', 'POST'])
-
+@profile.route('/emp_det2', methods=['GET', 'POST'])
 @login_required
 def empl_det():
     employee = Employee.query.filter_by(admin_id=current_user.id).first()
@@ -77,16 +74,14 @@ def empl_det():
             )
             db.session.add(new_employee)
             db.session.commit()
-            
-    
+            flash('Employee details saved successfully!', 'success')
         
-        flash('Employee details saved successfully!', 'success')
-        return redirect(url_for('Admin_auth.A_homepage'))
+        return redirect(url_for('auth.E_homepage'))
+    
     else:
         for field, errors in form.errors.items():
             for error in errors:
                 flash(f"Error in {getattr(form, field).label.text}: {error}", category='error')
     
-    return render_template('profile/admin_det.html', form=form)
-
+    return render_template('profile/emp_det.html', form=form)
 

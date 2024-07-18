@@ -5,6 +5,7 @@ from website import db, mail
 from .models.Admin_models import Admin
 from .forms.signup_form import AdminSignUpForm, AdminLoginForm, AdminVerifyForm
 from urllib.parse import urlparse, urljoin
+from .models.emp_detail_models import Employee
 
 Admin_auth = Blueprint('Admin_auth', __name__)
 
@@ -46,7 +47,8 @@ def logout():
 @Admin_auth.route('/Admin_dashboard')
 @login_required
 def A_homepage():
-    return render_template("admin/A_Homepage.html")
+    employee = Employee.query.filter_by(admin_id=current_user.id).first()
+    return render_template("admin/A_Homepage.html",employee=employee)
 
 
 
