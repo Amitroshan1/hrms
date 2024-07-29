@@ -1,0 +1,87 @@
+{% extends "employee/E_homeBase.html" %}
+{% block title %}Education Details{% endblock %}
+{% block content %}
+
+<div class="container">
+    
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <h2 class="centered-heading">Education Details</h2>
+    <form method="POST" action="{{ url_for('profile.education') }}" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.qualification.label }} {{ form.qualification(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.institution.label }} {{ form.institution(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.board.label }} {{ form.board(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.start.label }} {{ form.start(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.end.label }} {{ form.end(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.marks.label }} {{ form.marks(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.doc_file.label }} {{ form.doc_file(class_='form-control-file') }}
+        </div>
+        <div class="form-group">
+            {{ form.submit(class_='btn btn-primary') }}
+        </div>
+    </form>
+</div>
+
+<div class="container-details">
+    <h3 class="centered-heading">Existing Education Details</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Qualification</th>
+                <th>Institution</th>
+                <th>Board</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Marks</th>
+                <th>Document</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for edu in education %}
+            <tr>
+                <td>{{ edu.qualification }}</td>
+                <td>{{ edu.institution }}</td>
+                <td>{{ edu.board }}</td>
+                <td>{{ edu.start }}</td>
+                <td>{{ edu.end }}</td>
+                <td>{{ edu.marks }}</td>
+                <td>
+                    {% if edu.doc_file %}
+                    <a href="{{ url_for('static', filename='uploads/' ~ edu.doc_file) }}" target="_blank">View Document</a>
+                    {% else %}
+                    No Document
+                    {% endif %}
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('profile.delete_education', education_id=edu.id) }}" style="display:inline;">
+                        {{ form.hidden_tag() }}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

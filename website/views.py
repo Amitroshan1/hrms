@@ -2,6 +2,8 @@ from flask import render_template, request, flash, redirect,Blueprint, url_for, 
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 import os
+from  .models.family_models import FamilyDetails
+from .forms.family_details import Family_details
 from . import views
 from .forms.Emp_details import Employee_Details
 from .models.emp_detail_models import Employee
@@ -36,13 +38,13 @@ def empl_det():
             filename = employee.photo_filename if employee else None
         
         if employee:
-            # Update existing employee details
+            
             form.populate_obj(employee)
             employee.photo_filename = filename
             db.session.commit()
             flash('Employee details updated successfully!', 'success')
         else:
-            # Create new employee details
+           
             new_employee = Employee(
                 admin_id=current_user.id, 
                 photo_filename=filename,
@@ -88,5 +90,49 @@ def empl_det():
                 flash(f"Error in {getattr(form, field).label.text}: {error}", category='error')
     
     return render_template('profile/admin_det.html', form=form)
+
+
+
+@views.route('/family_det')
+@login_required
+def fam_det():
+    family_members = FamilyDetails.query.filter_by(admin_id=current_user.id).all()
+    return render_template('profile/E_Family_details.html',family_members = family_members)
+
+
+@views.route('/family_details', methods=['GET', 'POST'])
+@login_required
+def family_details():
+    form = Family_details()
+    
+    if form.validate_on_submit():
+        photo_filename = None
+        if form.Photo.data:
+            photo_filename = secure_filename(form.Photo.data.filename)
+            form.Photo.data.save(os.path.join(app.config['UPLOAD_FOLDER'], photo_filename))
+
+        new_family_member = FamilyDetails(
+            admin_id=current_user.id,
+            photo_filename=photo_filename,
+            name=form.name.data,
+            email=form.email.data,
+            dob=form.dob.data,
+            age=int(form.age.data),
+            relation=form.relation.data,
+            occupation=form.occupation.data,
+            income=form.Income.data,
+            address=form.Address.data,
+            remarks=form.Remarks.data,
+            nominee=form.nominee.data 
+        )
+        
+        db.session.add(new_family_member)
+        db.session.commit()
+        
+        flash('Family member details saved successfully!', 'success')
+        return redirect(url_for('profile.fam_det'))  
+   
+    return render_template('profile/form_E_FAM.html', form=form)
+
 
 

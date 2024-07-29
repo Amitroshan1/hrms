@@ -1,7 +1,7 @@
 from .. import db
 from flask_login import UserMixin
 
-from website.models.Admin_models import Admin
+
 
 
 
@@ -9,9 +9,10 @@ class Employee(db.Model,UserMixin):
 
     __tablename__ = 'employees'
 
+    
     id = db.Column(db.Integer, primary_key=True)
     admin_id = db.Column(db.Integer, db.ForeignKey('admins.id'), unique=True, nullable=False)
-    
+     
     photo_filename = db.Column(db.String(100), nullable=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
@@ -29,6 +30,7 @@ class Employee(db.Model,UserMixin):
     language = db.Column(db.String(150), nullable=False)
     religion = db.Column(db.String(150), nullable=False)
     blood_group = db.Column(db.String(150), nullable=False)
+    designation=db.Column(db.String(150), nullable=False)
     
     permanent_address_line1 = db.Column(db.String(200), nullable=False)
     permanent_address_line2 = db.Column(db.String(200), nullable=True)
@@ -46,6 +48,7 @@ class Employee(db.Model,UserMixin):
 
 
     
+    # One-to-One relationship with Admin
     admin = db.relationship('Admin', back_populates='employee_details')
     
     def __repr__(self):

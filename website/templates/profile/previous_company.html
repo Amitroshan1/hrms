@@ -1,0 +1,100 @@
+{% extends "employee/E_homeBase.html" %}
+{% block title %}previous_companies{% endblock %}
+{% block content %}
+
+<div class="container">
+    
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h2 class="centered-heading">Previous Company Details</h2>
+    <form method="POST" action="{{ url_for('profile.previous_company') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.com_name.label }} {{ form.com_name(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.designation.label }} {{ form.designation(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.doj.label }} {{ form.doj(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.dol.label }} {{ form.dol(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.reason.label }} {{ form.reason(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.salary.label }} {{ form.salary(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.uan.label }} {{ form.uan(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.pan.label }} {{ form.pan(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.contact.label }} {{ form.contact(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.name_contact.label }} {{ form.name_contact(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.pf_num.label }} {{ form.pf_num(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.address.label }} {{ form.address(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.submit(class_='btn btn-primary') }}
+        </div>
+    </form>
+    </div>
+    <div class="container-details">
+
+    <h3 class="centered-heading">Existing Previous Companies</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Company Name</th>
+                <th>Designation</th>
+                <th>Date of Joining</th>
+                <th>Last Date</th>
+                <th>Reason</th>
+                <th>Salary</th>
+                <th>UAN</th>
+                <th>PAN</th>
+                <th>Contact</th>
+                <th>Contact Name</th>
+                <th>PF Number</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for company in previous_companies %}
+            <tr>
+                <td>{{ company.com_name }}</td>
+                <td>{{ company.designation }}</td>
+                <td>{{ company.doj }}</td>
+                <td>{{ company.dol }}</td>
+                <td>{{ company.reason }}</td>
+                <td>{{ company.salary }}</td>
+                <td>{{ company.uan }}</td>
+                <td>{{ company.pan }}</td>
+                <td>{{ company.contact }}</td>
+                <td>{{ company.name_contact }}</td>
+                <td>{{ company.pf_num }}</td>
+                <td>{{ company.address }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

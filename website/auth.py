@@ -29,7 +29,7 @@ def login():
                 login_user(user)
                 
                 next_page = request.args.get('next')
-                # Redirect to the next page if it's safe
+                
                 if next_page and is_safe_url(next_page):
                     return redirect(next_page)
                 else:
@@ -40,7 +40,6 @@ def login():
         else:
             flash('Invalid email or password. Please try again.', category='error')
 
-    # Pass the next parameter to the login form template
     return render_template('employee/login.html', form=form, next=request.args.get('next'))
 
 @auth.route('/E_homepage')

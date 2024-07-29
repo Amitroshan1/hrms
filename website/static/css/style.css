@@ -176,7 +176,8 @@ input[type='password'],
 input[type='text'],
 input[type='number'],
 input[type='tel'],
-select[id='user_type']{
+select[id='user_type'],
+select[id='circle']{
   border: 1px solid black;
   height: 55px;
   padding: 0 2rem;

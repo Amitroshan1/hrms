@@ -14,10 +14,12 @@ def is_safe_url(target):
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
+
+
 @Admin_auth.route('/Adminlogin', methods=["GET", "POST"])
 def admin_login():
     if current_user.is_authenticated:
-        return redirect(url_for('Admin_auth.A_homepage'))  # Redirect if already logged in
+        return redirect(url_for('Admin_auth.A_homepage'))  
 
     form = AdminLoginForm()
     if form.validate_on_submit():
@@ -47,8 +49,7 @@ def logout():
 @Admin_auth.route('/Admin_dashboard')
 @login_required
 def A_homepage():
-    employee = Employee.query.filter_by(admin_id=current_user.id).first()
-    return render_template("admin/A_Homepage.html",employee=employee)
+    return render_template("admin/A_Homepage.html")
 
 
 
@@ -88,8 +89,9 @@ def admin_sign_up():
         mobile = form.mobile.data
         emp_id = form.emp_id.data
         user_type = form.user_type.data
+        circle= form.circle.data
 
-        new_user = Admin(email=email, first_name=first_name, Emp_type=user_type,mobile=mobile, emp_id=emp_id, password=generate_password_hash(password, method='pbkdf2:sha256'))
+        new_user = Admin(email=email,circle=circle, first_name=first_name, Emp_type=user_type,mobile=mobile, emp_id=emp_id, password=generate_password_hash(password, method='pbkdf2:sha256'))
         db.session.add(new_user)
         db.session.commit()
         flash('Account created', category='success')

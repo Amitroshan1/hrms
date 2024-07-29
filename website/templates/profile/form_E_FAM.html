@@ -1,0 +1,78 @@
+{% extends "employee/E_homeBase.html" %}
+{% block title %}Update_Family_details{% endblock %}
+{% block content %}
+
+<h1>This is Family Details Form for Updation</h1>
+
+<div class="container">
+    <h2 class="mt-5">Family Details Form</h2>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('profile.family_details') }}">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ form.Photo.label(class="form-label") }}
+            {{ form.Photo(class="form-control-file") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.dob.label(class="form-label") }}
+            {{ form.dob(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.age.label(class="form-label") }}
+            {{ form.age(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.relation.label(class="form-label") }}
+            {{ form.relation(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.occupation.label(class="form-label") }}
+            {{ form.occupation(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.Income.label(class="form-label") }}
+            {{ form.Income(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.Address.label(class="form-label") }}
+            {{ form.Address(class="form-control") }}
+        </div>
+
+        <div class="form-group">
+            {{ form.Remarks.label(class="form-label") }}
+            {{ form.Remarks(class="form-control") }}
+        </div>
+
+       
+
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
+
+{% endblock %}

@@ -28,8 +28,14 @@ class AdminSignUpForm(FlaskForm):
                          validators=[DataRequired(), Length(min=10, max=10)], 
                          render_kw={"placeholder": "Enter your Mobile number"})
     
+
+    circle = SelectField('Circle', 
+                            choices=[('nhq', 'NHQ'), ('noida', 'Noida'),('gurugram','Gurugram'),('pune','Pune'),('banglore','Banglore'),('hydrabad','Hydrabad'),
+                                     ('chennai','Chennai'),('kolkata','Kolkata')],
+                              validators=[DataRequired()])
+    
     user_type = SelectField('Employee Type', 
-                            choices=[('admin', 'Admin'), ('employee', 'Employee')],
+                            choices=[('admin', 'Admin'),('hr','Human Resource'),('finance','Finance'), ('employee', 'Employee')],
                               validators=[DataRequired()])
     
 

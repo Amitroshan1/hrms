@@ -1,0 +1,71 @@
+{% extends "employee/E_homeBase.html" %}
+{% block title %}Upload Document Details{% endblock %}
+{% block content %}
+
+<div class="container">
+    <h2 class="mt-5 centered-heading">Upload Document</h2>
+    {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form method="POST" action="{{ url_for('profile.upload_docs') }}" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.doc_name.label }} {{ form.doc_name(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.doc_number.label }} {{ form.doc_number(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.issue_date.label }} {{ form.issue_date(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.doc_file.label }} {{ form.doc_file(class_='form-control-file') }}
+        </div>
+        <div class="form-group">
+            {{ form.submit(class_='btn btn-primary') }}
+        </div>
+    </form>
+</div>
+
+<div class="container-details">
+    <h3 class = 'centered-heading'>Existing Uploaded Documents</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Document Name</th>
+                <th>Document Number</th>
+                <th>Issue Date</th>
+                <th>Document</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in upload_doc %}
+            <tr>
+                <td>{{ doc.doc_name }}</td>
+                <td>{{ doc.doc_number }}</td>
+                <td>{{ doc.issue_date }}</td>
+                <td>
+                    {% if doc.doc_file %}
+                    <a href="{{ url_for('static', filename='uploads/' ~ doc.doc_file) }}" target="_blank">View Document</a>
+                    {% else %}
+                    No Document
+                    {% endif %}
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('profile.delete_document', doc_id=doc.id) }}" style="display:inline;">
+                        {{ form.hidden_tag() }}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -2,12 +2,12 @@
 {% block title %}Employee_details{% endblock %} 
 {% block content %}
 
-<h1>This is Employee Details Form</h1>
+
 
 
 
     <div class="container">
-        <h2 class="mt-5">Employee Details Form</h2>
+        <h2 class="mt-5 centered-heading">Employee Details Form</h2>
         {% with messages = get_flashed_messages(with_categories=True) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -64,6 +64,10 @@
             <div class="form-group">
                 {{ form.emp_id.label(class="form-label") }}
                 {{ form.emp_id(class="form-control", placeholder=form.emp_id.render_kw.placeholder) }}
+            </div>
+            <div class="form-group">
+                {{ form.designation.label(class="form-label") }}
+                {{ form.designation(class="form-control", placeholder=form.designation.render_kw.placeholder) }}
             </div>
     
             <div class="form-group">

@@ -24,7 +24,11 @@ def create_app():
     app.config['SECRET_KEY'] = '192b9bdd22ab9ed4d12e236c78afcb9abf5dc987d54727823bcbf_secret_key'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Mysql_1234@localhost/saffo_db'
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+   
+    
+
     app.config['UPLOAD_FOLDER'] = 'website\\static\\uploads'
+    app.config['ALLOWED_EXTENSIONS'] = {'jpg', 'png', 'jpeg', 'pdf', 'txt', 'doc', 'docx', 'xls', 'xlsx'}
     app.config['SESSION_PERMANENT'] = True
     app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
@@ -46,6 +50,8 @@ def create_app():
     from .auth import auth
     from .Amdin_auth import Admin_auth
     from .profile import profile
+    from .finance import finance
+    from .hr import hr
 
 
 
@@ -53,9 +59,14 @@ def create_app():
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(Admin_auth, url_prefix='/')
+    app.register_blueprint(finance,url_path='/')
+    app.register_blueprint(hr,url_path='/')
 
     from .models.Admin_models import Admin
     from .models.emp_detail_models import Employee
+    from .models.family_models import FamilyDetails
+    from .models.prev_com import PreviousCompany
+    from .models.education import UploadDoc,Education 
 
     with app.app_context():
         db.create_all()
