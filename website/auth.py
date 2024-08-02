@@ -5,6 +5,9 @@ from werkzeug.security import check_password_hash
 from urllib.parse import urlparse, urljoin
 from flask_login import login_user, login_required, logout_user,current_user
 from .forms.signup_form import AdminLoginForm
+from datetime import datetime, date
+from .models.attendance import Punch
+
 
 auth = Blueprint('auth', __name__)
 
@@ -13,10 +16,12 @@ def is_safe_url(target):
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
+
+
 @auth.route('/login', methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return render_template("employee/E_homepage.html")
+        return redirect(url_for('auth.E_homepage'))
 
     form = AdminLoginForm()
     if form.validate_on_submit():
@@ -33,7 +38,6 @@ def login():
                 if next_page and is_safe_url(next_page):
                     return redirect(next_page)
                 else:
-                    
                     return redirect(url_for('auth.E_homepage'))
             else:
                 flash('Not an Employee. Please contact HR or Admin.', category='error')
@@ -46,7 +50,18 @@ def login():
 @login_required
 def E_homepage():
     employee = Employee.query.filter_by(admin_id=current_user.id).first()
-    return render_template("employee/E_homepage.html",employee=employee)
+    
+    today = date.today()
+    punch = Punch.query.filter_by(admin_id=current_user.id, punch_date=today).first()
+    
+    punch_in_time = punch.punch_in if punch else None
+    punch_out_time = punch.punch_out if punch else None
+    
+    return render_template("employee/E_homepage.html", 
+                           employee=employee, 
+                           punch_in_time=punch_in_time, 
+                           punch_out_time=punch_out_time)
+
 
 
 

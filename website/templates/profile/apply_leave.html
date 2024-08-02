@@ -1,0 +1,48 @@
+{% extends "employee/E_homeBase.html" %}
+{% block title %}Apply for Leave{% endblock %}
+{% block content %}
+
+<div class="container">
+    <h2 class="centered-heading">Leave Application</h2>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}  
+    {% endwith %}
+
+    <div class="leave-balance">
+        <p><strong>Personal Leave Balance:</strong> {{ leave_balance.personal_leave_balance }}</p>
+        <p><strong>Casual Leave Balance:</strong> {{ leave_balance.casual_leave_balance }}</p>
+        <p><strong>Comp Off Balance:</strong> {{ leave_balance.comp_off_balance }}</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('profile.apply_leave') }}" class="leave-form">
+        {{ form.hidden_tag() }}
+        <div class="form-group-leave">
+            {{ form.personal_leave_days.label }} {{ form.personal_leave_days(class_='form-control') }}
+        </div>
+        <div class="form-group-leave">
+            {{ form.casual_leave_days.label }}
+            <input type="number" name="{{ form.casual_leave_days.name }}" step="0.5" min="0.5" max="8.0" value="{{ form.casual_leave_days.data }}" class="form-control">
+        </div>
+        <div class="form-group-leave">
+            {{ form.comp_off_leave.label }} {{ form.comp_off_leave(class_='form-control') }}
+        </div>
+        <div class="form-row">
+            <div class="form-group-leave col-md-6">
+                {{ form.start_date.label }} {{ form.start_date(class_='form-control') }}
+            </div>
+            <div class="form-group-leave col-md-6">
+                {{ form.end_date.label }} {{ form.end_date(class_='form-control') }}
+            </div>
+        </div>
+        <div class="form-group-leave text-center">
+            {{ form.submit(class_='btn btn-primary') }}
+        </div>
+    </form>
+</div>
+
+{% endblock %}

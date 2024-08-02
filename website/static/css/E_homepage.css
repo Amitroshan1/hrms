@@ -465,3 +465,141 @@ h3 {
     text-align: center;
     margin-bottom: 20px;
 }
+
+/* Container Styles */
+.container {
+    margin: 20px auto;
+}
+
+/* Heading Styles */
+.centered-heading {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Alert Styles */
+.alert {
+    margin-bottom: 20px;
+}
+
+/* Button Styles */
+.btn {
+    margin: 5px;
+}
+
+/* Calendar Styles */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table th, .table td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+}
+
+/* Color Styles for Calendar Cells */
+.bg-success {
+    background-color: #28a745 !important; /* Green for punched in and out */
+    color: white;
+}
+
+.bg-warning {
+    background-color: #ffc107 !important; /* Yellow for missed punch out */
+}
+
+.bg-light {
+    background-color: #f8f9fa !important; /* Light background for days not in current month */
+}
+
+.bg-white {
+    background-color: white !important; /* No punch data */
+}
+
+.text-white {
+    color: white !important; /* Ensure text is white on success */
+}
+
+/* Styles for Form Elements */
+.form-group-cal {
+    margin-bottom: 15px;
+}
+
+/* Dropdown Styles */
+.form-control-cal {
+    width: auto; /* Adjust width for dropdowns */
+    display: inline-block; /* Keep them inline */
+}
+
+.leave-balance {
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.leave-form .form-group {
+    margin-bottom: 15px;
+}
+
+.leave-form .btn {
+    width: 100%;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.form-group-leave {
+    flex: 1;
+    margin-right: 15px;
+}
+
+.form-group-leave:last-child {
+    margin-right: 0;
+}
+
+.apply-leave-container {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    text-align: center; /* Center align text */
+}
+
+
+
+.apply-leave-button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none; 
+    transition: background-color 0.3s ease; 
+}
+
+.apply-leave-button:hover {
+    background-color: #0056b3;
+}
+
+
+.punch-container {
+    position: relative;
+}
+.punch-times {
+    position: absolute;
+
+    top: 50px; 
+    right: 10px; 
+    text-align: right;
+    background-color: #f8f9fa;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    margin: 5px;
+}

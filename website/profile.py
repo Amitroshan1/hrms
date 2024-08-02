@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect,Blueprint, send_from_directory, url_for, current_app as app
+from flask import render_template, flash, redirect,Blueprint, request, url_for, current_app as app
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 import os
@@ -6,11 +6,19 @@ from .models.family_models import FamilyDetails
 from .forms.Emp_details import Employee_Details
 from .models.emp_detail_models import Employee
 from . import db
+from datetime import datetime,date
+import calendar
 from .forms.education import EducationForm,UploadDocForm
 from .models.education import Education,UploadDoc
 from .forms.family_details import Family_details
 from .forms.previous_company import Previous_company
 from .models.prev_com import PreviousCompany
+from .models.attendance import Punch,LeaveApplication,LeaveBalance
+from .forms.attendance import PunchForm,LeaveForm
+import datetime 
+
+
+
 
 profile=Blueprint('profile',__name__)
 
@@ -263,5 +271,115 @@ def delete_document(doc_id):
     db.session.commit()
     flash('Document deleted successfully!', 'success')
     return redirect(url_for('profile.upload_docs'))
+
+
+
+
+@profile.route('/punch', methods=['GET', 'POST'])
+@login_required
+def punch():
+    form = PunchForm()
+
+    today = date.today()
+
+    # Retrieve the punch record for today
+    punch = Punch.query.filter_by(admin_id=current_user.id, punch_date=today).first()
+
+    # Check if there are any parameters for selected month and year
+    selected_month = request.args.get('month', today.month, type=int)
+    selected_year = request.args.get('year', today.year, type=int)
+
+    # Set Monday as the first day of the week
+    calendar.setfirstweekday(calendar.MONDAY)
+
+    first_day = date(selected_year, selected_month, 1)
+    last_day = first_day.replace(day=calendar.monthrange(selected_year, selected_month)[1])
+
+    # Retrieve all punch records for the selected month and year
+    punches = Punch.query.filter(
+        Punch.admin_id == current_user.id,
+        Punch.punch_date.between(first_day, last_day)
+    ).all()
+
+    punch_data = {p.punch_date: p for p in punches}
+
+    if form.validate_on_submit():
+        if form.punch_in.data:
+            if punch and punch.punch_in:
+                flash('Already punched in today!', 'danger')
+            else:
+                if not punch:
+                    punch = Punch(admin_id=current_user.id, punch_date=today)
+                punch.punch_in = datetime.datetime.now().time()
+                db.session.add(punch)
+                db.session.commit()
+                flash('Punched in successfully!', 'success')
+
+        elif form.punch_out.data:
+            if not punch or not punch.punch_in:
+                flash('You need to punch in first!', 'danger')
+            else:
+                punch.punch_out = datetime.datetime.now().time()
+                db.session.commit()
+                flash('Punch out time updated successfully!', 'success')
+
+    return render_template('profile/punch.html', form=form, punch=punch, punch_data=punch_data, today=today, selected_month=selected_month, selected_year=selected_year, calendar=calendar)
+
+
+
+
+
+@profile.route('/apply-leave', methods=['GET', 'POST'])
+@login_required
+def apply_leave():
+    form = LeaveForm()
+    leave_balance = LeaveBalance.query.filter_by(admin_id=current_user.id).first()
+
+    if form.validate_on_submit():
+        personal_leave_days = form.personal_leave_days.data
+        casual_leave_days = form.casual_leave_days.data
+        comp_off_leave = form.comp_off_leave.data
+        
+        start_date = form.start_date.data
+        end_date = form.end_date.data
+
+        
+        if personal_leave_days > 0 and leave_balance.personal_leave_balance >= personal_leave_days:
+            leave_balance.personal_leave_balance -= personal_leave_days
+        elif personal_leave_days > 0:
+            flash('Insufficient personal leave balance', 'danger')
+            return redirect(url_for('profile.apply_leave'))
+
+        # Check and update casual leave balance
+        if casual_leave_days > 0 and leave_balance.casual_leave_balance >= casual_leave_days:
+            leave_balance.casual_leave_balance -= casual_leave_days
+        elif casual_leave_days > 0:
+            flash('Insufficient casual leave balance', 'danger')
+            return redirect(url_for('profile.apply_leave'))
+
+        # Check and update comp off leave balance
+        if comp_off_leave > 0 and leave_balance.comp_off_balance >= comp_off_leave:
+            leave_balance.comp_off_balance -= comp_off_leave
+        elif comp_off_leave > 0:
+            flash('Insufficient comp off balance', 'danger')
+            return redirect(url_for('profile.apply_leave'))
+
+        leave_application = LeaveApplication(
+            admin_id=current_user.id,
+            leave_type="Other",
+            leave_days= personal_leave_days + casual_leave_days + comp_off_leave,
+            start_date=start_date,
+            end_date=end_date,
+            status='Approved'
+        )
+
+        db.session.add(leave_application)
+        db.session.commit()
+        flash('Leave applied successfully!', 'success')
+        return redirect(url_for('profile.apply_leave'))
+
+    return render_template('profile/apply_leave.html', form=form, leave_balance=leave_balance)
+
+
 
 
