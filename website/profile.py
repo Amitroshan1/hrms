@@ -281,21 +281,16 @@ def punch():
     form = PunchForm()
 
     today = date.today()
-
-    # Retrieve the punch record for today
     punch = Punch.query.filter_by(admin_id=current_user.id, punch_date=today).first()
-
-    # Check if there are any parameters for selected month and year
     selected_month = request.args.get('month', today.month, type=int)
     selected_year = request.args.get('year', today.year, type=int)
 
-    # Set Monday as the first day of the week
+   
     calendar.setfirstweekday(calendar.MONDAY)
 
     first_day = date(selected_year, selected_month, 1)
     last_day = first_day.replace(day=calendar.monthrange(selected_year, selected_month)[1])
 
-    # Retrieve all punch records for the selected month and year
     punches = Punch.query.filter(
         Punch.admin_id == current_user.id,
         Punch.punch_date.between(first_day, last_day)

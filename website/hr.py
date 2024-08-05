@@ -9,6 +9,6 @@ hr=Blueprint('hr',__name__)
 @hr.route('/hr_dashbord',methods=['GET','POST'])
 @login_required
 def hr_dashbord():
-    return render_template('HR/hr_dashboard.html')
+    return render_template('HumanResource/hr_dashboard.html')
 
 

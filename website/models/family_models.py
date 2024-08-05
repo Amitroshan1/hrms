@@ -1,7 +1,6 @@
 from .. import db
 from flask_login import UserMixin
-from sqlalchemy.ext.mutable import MutableList
-from sqlalchemy import JSON
+
 
 class FamilyDetails(db.Model, UserMixin):
     __tablename__ = 'family_details'

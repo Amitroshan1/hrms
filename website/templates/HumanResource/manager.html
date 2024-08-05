@@ -1,0 +1,71 @@
+{% extends "HumanResource/hr_personalBase.html" %}
+{% block title %}HR Homepage{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Add Manager Contact</h1>
+    {% with errors = get_flashed_messages(category_filter=["error","success"]) %}
+    {% if errors %}
+        <div class="alert-danger">
+            <ul>
+                {%- for msg in errors %}
+                    <h3>{{ msg }}</h3>
+                {% endfor -%}
+            </ul>
+        </div>
+    {% endif %}
+    {% endwith %}
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="form-group">
+            {{ form.circle_name.label }} {{ form.circle_name(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.user_type.label }} {{ form.user_type(class="form-control") }}
+        </div>
+
+        <div class="manager-section mt-4 p-3 border rounded">
+            <h3>L1 Contact Information</h3>
+            <div class="form-group">
+                {{ form.l1_name.label }} {{ form.l1_name(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.l1_mobile.label }} {{ form.l1_mobile(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.l1_email.label }} {{ form.l1_email(class="form-control") }}
+            </div>
+        </div>
+
+        <div class="manager-section mt-4 p-3 border rounded">
+            <h3>L2 Contact Information *</h3>
+            <div class="form-group">
+                {{ form.l2_name.label }} {{ form.l2_name(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.l2_mobile.label }} {{ form.l2_mobile(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.l2_email.label }} {{ form.l2_email(class="form-control") }}
+            </div>
+        </div>
+
+        <div class="manager-section mt-4 p-3 border rounded">
+            <h3>L3 Contact Information *</h3>
+            <div class="form-group">
+                {{ form.l3_name.label }} {{ form.l3_name(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.l3_mobile.label }} {{ form.l3_mobile(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.l3_email.label }} {{ form.l3_email(class="form-control") }}
+            </div>
+        </div>
+
+        <div class="form-group mt-4">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
+{% endblock %}
