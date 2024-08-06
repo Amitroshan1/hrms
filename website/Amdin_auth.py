@@ -88,7 +88,7 @@ def admin_sign_up():
         db.session.add(new_user)
         db.session.commit()
         flash('Account created', category='success')
-        return redirect(url_for('Admin_auth.admin_login'))
+        return redirect(url_for('Admin_auth.admin_sign_up'))
     else:
         for field, errors in form.errors.items():
             for error in errors:

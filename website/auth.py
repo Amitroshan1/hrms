@@ -6,9 +6,15 @@ from flask_login import login_user, login_required, logout_user, current_user
 from .forms.signup_form import AdminLoginForm
 from datetime import date
 from .models.attendance import Punch
-from . import is_safe_url
+from .models.manager_model import ManagerContact
 
 auth = Blueprint('auth', __name__)
+
+@auth.app_errorhandler(401)
+def unauthorized_error(error):
+    flash('You need to be logged in to access this page.', 'error')
+    return redirect(url_for('auth.login'))
+
 @auth.route('/login', methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
@@ -57,14 +63,23 @@ def E_homepage():
     
     today = date.today()
     punch = Punch.query.filter_by(admin_id=current_user.id, punch_date=today).first()
+
+    emp = Admin.query.filter_by(id=employee.admin_id).first()
     
     punch_in_time = punch.punch_in if punch else None
     punch_out_time = punch.punch_out if punch else None
+
+    emp_type = emp.Emp_type
+    circle = emp.circle
     
+
+    manager_contact = ManagerContact.query.filter_by(circle_name=circle, user_type=emp_type).first()
+
     return render_template("employee/E_homepage.html", 
                            employee=employee, 
                            punch_in_time=punch_in_time, 
-                           punch_out_time=punch_out_time)
+                           punch_out_time=punch_out_time,
+                           manager_contact=manager_contact)
 
 @auth.route('/hr_homepage')
 @login_required
@@ -73,19 +88,33 @@ def HR_homepage():
     
     today = date.today()
     punch = Punch.query.filter_by(admin_id=current_user.id, punch_date=today).first()
+
+    emp = current_user
+    print(emp)
     
     punch_in_time = punch.punch_in if punch else None
     punch_out_time = punch.punch_out if punch else None
 
+    emp_type = emp.Emp_type
+    circle = emp.circle
+    print(emp_type,circle)
+
+    manager_contact = ManagerContact.query.filter_by(circle_name=circle, user_type=emp_type).first()
+    print(manager_contact)
+
+
     return render_template("HumanResource/hr_homepage.html", 
                            employee=employee, 
                            punch_in_time=punch_in_time, 
-                           punch_out_time=punch_out_time)
+                           punch_out_time=punch_out_time,
+                           manager_contact=manager_contact)
 
 @auth.route('/account_homepage')
 @login_required
 def fin_homepage():
     employee = Employee.query.filter_by(admin_id=current_user.id).first()
+
+    emp = current_user
     
     today = date.today()
     punch = Punch.query.filter_by(admin_id=current_user.id, punch_date=today).first()
@@ -93,10 +122,17 @@ def fin_homepage():
     punch_in_time = punch.punch_in if punch else None
     punch_out_time = punch.punch_out if punch else None
 
+    emp_type = emp.Emp_type
+    circle = emp.circle
+
+    manager_contact = ManagerContact.query.filter_by(circle_name=circle, user_type=emp_type).first()
+
+
     return render_template("Finance/acc_homepage.html", 
                            employee=employee, 
                            punch_in_time=punch_in_time, 
-                           punch_out_time=punch_out_time)
+                           punch_out_time=punch_out_time,
+                           manager_contact=manager_contact)
 
 
 

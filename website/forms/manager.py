@@ -23,3 +23,8 @@ class ManagerContactForm(FlaskForm):
     l3_mobile = StringField('L3 Mobile', validators=[DataRequired(), Length(min=10, max=10)])
     l3_email = StringField('L3 Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Submit')
+
+
+
+
+    

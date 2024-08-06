@@ -1,0 +1,62 @@
+<!-- templates/search_results.html -->
+{% extends "HumanResource/hr_personalBase.html" %}
+{% block title %}Search Results{% endblock %}
+{% block content %}
+
+<div class="container">
+    {% with errors = get_flashed_messages(category_filter=["error","success"]) %}
+    {% if errors %}
+        <div class="alert-danger">
+            <ul>
+                {%- for msg in errors %}
+                <a class="close" href="/search">{{ msg }}...X</a>
+                {% endfor -%}
+            </ul>
+        </div>
+    {% endif %}
+    {% endwith %}
+
+    <h2>Search Results for Circle: {{ circle }} and Employee Type: {{ emp_type }}</h2>
+    {% if admins %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th>Employee Id</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for admin in admins %}
+                    <tr>
+                        <td>{{ admin.first_name }}</td>
+                        <td>{{ admin.email }}</td>
+                        <td>{{ admin.mobile }}</td>
+                        <td>{{ admin.emp_id }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No matching entries found.</p>
+    {% endif %}
+    <a href="{{ url_for('hr.search') }}" class="btn btn-primary">Back to Search</a>
+</div>
+
+<div class="container">
+    <form method="POST" action="{{ url_for('hr.view_details') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label for="user">Select User</label>
+            {{ form.user(class="form-control") }}
+        </div>
+        <div class="form-group">
+            <label for="detail_type">Select Detail Type</label>
+            {{ form.detail_type(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+    </form>
+</div>
+
+{% endblock %}

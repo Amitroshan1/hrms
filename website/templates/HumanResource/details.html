@@ -1,0 +1,22 @@
+<!-- templates/view_details.html -->
+{% extends "HumanResource/hr_personalBase.html" %}
+{% block title %}View Details{% endblock %}
+{% block content %}
+
+
+<div class="container">
+    <h2>Details for {{ admin.first_name }}</h2>
+
+    {% if details %}
+        <ul>
+            {% for detail in details %}
+                <li>{{ detail }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No details found for the selected type.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
+

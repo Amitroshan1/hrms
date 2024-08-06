@@ -91,7 +91,7 @@ def empl_det():
             db.session.commit()
             flash('Employee details saved successfully!', 'success')
         
-        return redirect(url_for('auth.E_homepage'))
+        return redirect(url_for('profile.empl_det'))
     
     else:
         for field, errors in form.errors.items():

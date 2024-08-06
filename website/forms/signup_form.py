@@ -37,7 +37,7 @@ class AdminSignUpForm(FlaskForm):
                               validators=[DataRequired()])
     
     user_type = SelectField('Employee Type', 
-                            choices=[('admin', 'Admin'),('hr','Human Resource'),('finance','Account'), ('employee', 'Employee')],
+                            choices=[('admin', 'Admin'),('hr','Human Resource'),('finance','Account'), ('employee', 'Employee'),('it_department', 'IT Department')],
                               validators=[DataRequired()])
     
 

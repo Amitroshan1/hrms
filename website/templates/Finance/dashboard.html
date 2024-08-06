@@ -3,4 +3,63 @@
 {% block content %}
 
 <h2>this is finance dashboard</h2>
+<div class="container">
+
+    <div class="punch-container">
+        <h2>Welcome {{ employee.name }}</h2>
+        
+        <div class="punch-times">
+            <p><strong>Punch In:</strong> {{ punch_in_time if punch_in_time else 'Not yet punched in' }}</p>
+            <p><strong>Punch Out:</strong> {{ punch_out_time if punch_out_time else 'Not yet punched out' }}</p>
+        </div>
+    </div>
+
+    <div class="position-relative"> <!-- Add this div to ensure proper positioning -->
+        <div class="manager-left">
+            
+        </div>
+    </div>
+
+    {% if employee %}
+        <div class="container-image text-center">
+            {% if employee.photo_filename %}
+                <img src="{{ url_for('static', filename='uploads/' ~ employee.photo_filename) }}" alt="Employee Image" class="img-thumbnail">
+            {% else %}
+                <p>No photo available</p>
+            {% endif %}
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <p><strong>Name:</strong> {{ employee.name }}</p>
+                <p><strong>Email:</strong> {{ employee.email }}</p>
+                <p><strong>Date of Birth:</strong> {{ employee.dob.strftime('%Y-%m-%d') }}</p>
+                {% if manager_contact %}
+                {% if manager_contact.l1_name %}
+                    <p><strong>Head Manager (L1):</strong> {{ manager_contact.l1_name }}</p>
+                {% else %}
+                    
+                    <p><strong>Reporting Manager(L2):</strong> {{ manager_contact.l2_name }}</p>
+                    
+                    
+                {% endif %}
+            {% else %}
+                <p>No manager contact information available.</p>
+            {% endif %}
+                
+                <!-- Add other fields as needed -->
+            </div>
+            <div class="col-md-6">
+                <p><strong>Mobile:</strong> {{ employee.mobile }}</p>
+                <p><strong>Emergency Contact:</strong> {{ employee.emergency_mobile }}</p>
+                <p><strong>Blood Group:</strong> {{ employee.blood_group }}</p>
+                <p><strong>Reporting Lead (L3):</strong> {{ manager_contact.l3_name }}</p>
+                
+                <!-- Add other fields as needed -->
+            </div>
+        </div>
+    {% else %}
+        <p>No employee data found.</p>
+    {% endif %}
+</div>
+
 {% endblock %}

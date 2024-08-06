@@ -1,0 +1,34 @@
+<!-- templates/search.html -->
+{% extends "HumanResource/hr_personalBase.html" %}
+{% block title %}Search_Form{% endblock %}
+{% block content %}
+
+<div class="container">
+    {% with errors = get_flashed_messages(category_filter=["error","success"]) %}
+    {% if errors %}
+        <div class="alert-danger">
+            <ul>
+                {%- for msg in errors %}
+                <a class="close" href="/search">{{ msg }}...X</a>
+                {% endfor -%}
+            </ul>
+        </div>
+    {% endif %}
+    {% endwith %}
+    
+    <h2>Search Employees</h2>
+    <form method="POST" action="{{ url_for('hr.search') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label for="circle">Circle</label>
+            {{ form.circle(class="form-control") }}
+        </div>
+        <div class="form-group">
+            <label for="emp_type">Employee Type</label>
+            {{ form.emp_type(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+    </form>
+</div>
+
+{% endblock %}
