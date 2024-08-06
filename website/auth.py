@@ -15,19 +15,20 @@ def unauthorized_error(error):
     flash('You need to be logged in to access this page.', 'error')
     return redirect(url_for('auth.login'))
 
+
+
 @auth.route('/login', methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        
         if current_user.Emp_type == 'employee':
-            return redirect(url_for('auth.E_homepage'))  
+            return redirect(url_for('auth.E_homepage'))
         elif current_user.Emp_type == 'hr':
-            return redirect(url_for('auth.HR_homepage')) 
+            return redirect(url_for('auth.HR_homepage'))
         elif current_user.Emp_type == 'finance':
-            return redirect(url_for('auth.fin_homepage')) 
+            return redirect(url_for('auth.fin_homepage'))
         else:
             flash('Invalid user type. Please contact support.', category='error')
-            return redirect(url_for('auth.login'))  
+            return redirect(url_for('auth.login'))
 
     form = AdminLoginForm()
     if form.validate_on_submit():
@@ -36,21 +37,20 @@ def login():
 
         user = Admin.query.filter_by(email=email).first()
         if user and check_password_hash(user.password, password):
-            login_user(user)  
-            
+            login_user(user)
+
             if user.Emp_type == 'employee':
                 return redirect(url_for('auth.E_homepage'))
             elif user.Emp_type == 'admin':
                 flash('Admin users cannot log in here.', category='error')
-                return redirect(url_for('auth.login'))  
+                return redirect(url_for('auth.login'))
             elif user.Emp_type == 'hr':
-                return redirect(url_for('auth.HR_homepage'))  
+                return redirect(url_for('auth.HR_homepage'))
             elif user.Emp_type == 'finance':
-                return redirect(url_for('auth.fin_homepage')) 
+                return redirect(url_for('auth.fin_homepage'))
             else:
                 flash('Unknown user type. Please contact support.', category='error')
                 return redirect(url_for('auth.login'))
-
         else:
             flash('Invalid email or password. Please try again.', category='error')
 
