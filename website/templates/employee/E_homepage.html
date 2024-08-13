@@ -6,12 +6,20 @@
 <div class="container">
 
     <div class="punch-container">
+        {% if employee %}
         <h2>Welcome   {{ employee.name }}</h2>
+        {% else %}
+                <p>Please Update Employee Details</p>
+        {% endif %}
         
+        {% if employee %}
         <div class="punch-times">
-            <p><strong>Punch In:</strong> {{ punch_in_time if punch_in_time else 'Not yet punched in' }}</p>
-            <p><strong>Punch Out:</strong> {{ punch_out_time if punch_out_time else 'Not yet punched out' }}</p>
+            <p><strong>Punch Inn:</strong> {{ punch_in_time if punch_in_time else 'None' }}</p>
+            <p><strong>Punch Out:</strong> {{ punch_out_time if punch_out_time else 'None' }}</p>
         </div>
+        {% else %}
+        <p>Update Employee Details for punch time</p>
+        {% endif %}
         
         
         

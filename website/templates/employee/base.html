@@ -19,13 +19,11 @@
         <nav class="nav-bar" id="navbar">
             <ul>
                 <li><a href="/">Home</a></li>
-                <li><a href="#about">About Us</a></li>
-                <li><a href="#contact">Contact</a></li>
-                {% if current_user.is_authenticated %}
-                <li><a class="nav-item nav-link" id="logout" href="{{ url_for('auth.logout') }}">Logout</a></li>
-                {% else %}
-                <li><a class="nav-item nav-link" id="login" href="{{ url_for('auth.login') }}">Login</a></li>
-                {% endif %}
+                <li><a href="https://www.saffotech.com/about">About Us</a></li>
+                
+               
+                <li>
+                    <a class="nav-item nav-link" id="signUp" href="/Adminsign-up">Sign Up</a></li>
             </ul>
         </nav>
     </header>

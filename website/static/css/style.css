@@ -81,10 +81,7 @@ header .logo a{
   display: flex;
   justify-content: center;
 }
-.form-group {
-  position: relative;
-  margin-bottom: 20px; /* Adjust as needed */
-}
+
 
 .pass-key {
   padding-right: 30px; /* Adjust according to the width of the image */
@@ -367,6 +364,9 @@ button:hover{
   font-weight: bold;
   cursor: pointer;
 }
+
+
+
 
 
 

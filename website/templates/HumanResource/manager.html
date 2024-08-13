@@ -1,8 +1,8 @@
-{% extends "HumanResource/hr_personalBase.html" %}
+{% extends "HumanResource/hr_base.html" %}
 {% block title %}HR Homepage{% endblock %}
 {% block content %}
 <div class="container mt-5">
-    <h1>Add Manager Contact</h1>
+    <h1 class="centered-heading">Add Manager</h1>
     {% with errors = get_flashed_messages(category_filter=["error","success"]) %}
     {% if errors %}
         <div class="alert-danger">

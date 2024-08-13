@@ -32,12 +32,12 @@ class AdminSignUpForm(FlaskForm):
     
 
     circle = SelectField('Circle', 
-                            choices=[('nhq', 'NHQ'), ('noida', 'Noida'),('gurugram','Gurugram'),('pune','Pune'),('banglore','Banglore'),('hydrabad','Hydrabad'),
+                            choices=[('','Select Circle'),('nhq', 'NHQ'), ('noida', 'Noida'),('punjab', 'Punjab'),('haryana', 'Haryana'),('gurugram','Gurugram'),('pune','Pune'),('banglore','Banglore'),('hydrabad','Hydrabad'),
                                      ('chennai','Chennai'),('kolkata','Kolkata')],
                               validators=[DataRequired()])
     
     user_type = SelectField('Employee Type', 
-                            choices=[('admin', 'Admin'),('hr','Human Resource'),('finance','Account'), ('employee', 'Employee'),('it_department', 'IT Department')],
+                            choices=[('','Select Employee Type'),('hr','Human Resource'),('finance','Account & Finance'), ('employee', 'Software'),('it_department', 'IT Department')],
                               validators=[DataRequired()])
     
 

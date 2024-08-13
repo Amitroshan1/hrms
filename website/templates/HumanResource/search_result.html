@@ -1,5 +1,5 @@
 <!-- templates/search_results.html -->
-{% extends "HumanResource/hr_personalBase.html" %}
+{% extends "HumanResource/hr_base.html" %}
 {% block title %}Search Results{% endblock %}
 {% block content %}
 
@@ -16,7 +16,7 @@
     {% endif %}
     {% endwith %}
 
-    <h2>Search Results for Circle: {{ circle }} and Employee Type: {{ emp_type }}</h2>
+    <h2 class="centered-heading">Search Results for Circle: {{ circle }} and Employee Type: {{ emp_type }}</h2>
     {% if admins %}
         <table class="table table-striped">
             <thead>
@@ -41,7 +41,7 @@
     {% else %}
         <p>No matching entries found.</p>
     {% endif %}
-    <a href="{{ url_for('hr.search') }}" class="btn btn-primary">Back to Search</a>
+    <a href="{{ url_for('hr.search') }}" class="btn btn-primary search">Back to Search</a>
 </div>
 
 <div class="container">

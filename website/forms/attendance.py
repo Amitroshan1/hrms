@@ -1,14 +1,22 @@
 
 from wtforms import SubmitField
 from flask_wtf import FlaskForm
-from wtforms import  DateField,  DecimalField, SubmitField
+from wtforms import  DateField,  DecimalField, SelectField
 from wtforms.validators import DataRequired, NumberRange
+from datetime import datetime
 
 
 
 class PunchForm(FlaskForm):
     punch_in = SubmitField('Punch In')
     punch_out = SubmitField('Punch Out')
+
+
+
+
+class MonthYearForm(FlaskForm):
+    month = SelectField('Month', choices=[(str(i), i) for i in range(1, 13)], validators=[DataRequired()])
+    year = SelectField('Year', choices=[(str(i), i) for i in range(2000, datetime.now().year + 1)], validators=[DataRequired()])
 
 
 

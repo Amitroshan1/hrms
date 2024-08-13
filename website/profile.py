@@ -16,11 +16,14 @@ from .models.prev_com import PreviousCompany
 from .models.attendance import Punch,LeaveApplication,LeaveBalance
 from .forms.attendance import PunchForm,LeaveForm
 import datetime 
+from flask_wtf.csrf import CSRFError
 
 
 
 
 profile=Blueprint('profile',__name__)
+
+
 
 
 
@@ -308,7 +311,7 @@ def punch():
                 punch.punch_in = datetime.datetime.now().time()
                 db.session.add(punch)
                 db.session.commit()
-                flash('Punched in successfully!', 'success')
+                flash('Punched in successfully!', 'warning')
 
         elif form.punch_out.data:
             if not punch or not punch.punch_in:
@@ -352,12 +355,7 @@ def apply_leave():
             flash('Insufficient casual leave balance', 'danger')
             return redirect(url_for('profile.apply_leave'))
 
-        # Check and update comp off leave balance
-        if comp_off_leave > 0 and leave_balance.comp_off_balance >= comp_off_leave:
-            leave_balance.comp_off_balance -= comp_off_leave
-        elif comp_off_leave > 0:
-            flash('Insufficient comp off balance', 'danger')
-            return redirect(url_for('profile.apply_leave'))
+      
 
         leave_application = LeaveApplication(
             admin_id=current_user.id,

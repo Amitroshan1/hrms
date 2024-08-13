@@ -15,7 +15,9 @@
                     <ion-icon name="menu-outline" class="nav__toggle" id="nav-toggle"></ion-icon>
                     <a href="#" class="nav__logo">Saffo Solution Technology</a>
                 </div>
+                
                 <div class="nav__list">
+                    
                     <a href="/E_homepage" class="nav__link active">
                         <ion-icon name="home-outline" class="nav__icon"></ion-icon>
                         <span class="nav__name">Dashboard</span>
@@ -33,7 +35,7 @@
                     {% endif %}
 
                     {% if current_user.Emp_type == 'finance' %}
-                    <a href="/fin_dashboard" class="nav__link">
+                    <a href="#" class="nav__link">
                         <ion-icon name="wallet-outline" class="nav__icon"></ion-icon>
                         <span class="nav__name">Accounts</span>
                     </a>
@@ -57,10 +59,10 @@
                         <span class="nav__name">General</span>
                         <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
                         <ul class="collapse__menu">
-                            <a href="#" class="collapse__sublink">Leave</a>
+                            <a href="#" class="collapse__sublink">Query</a>
                             <a href="#" class="collapse__sublink">Claim</a>
                             <a href="#" class="collapse__sublink">Assets</a>
-                            <a href="#" class="collapse__sublink">Query</a>
+                           
                         </ul>
                     </div>
 

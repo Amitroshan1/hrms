@@ -1,4 +1,4 @@
-{% extends "admin/AdminBase.html" %}
+{% extends "employee/base.html" %}
 
 {% block title %}
 Sign Up
@@ -6,7 +6,7 @@ Sign Up
 
 {% block content %}
 <div class="login-header">
-    <h1>Welcome Admin...</h1>
+    <h1>Welcome...</h1>
     <h4><p>Please SignUp to continue......</p></h4>
 </div>
     {% with messages = get_flashed_messages(with_categories=True) %}
@@ -128,7 +128,7 @@ Sign Up
         <div id="btm">
             <button type="submit" class="submit-btn">Create Account</button>
             <p class="btm-text">
-                Already have an account..? <a href="/Adminlogin">Login</a>
+                Already have an account..? <a href="/login">Login</a>
             </p>
         </div>
 

@@ -40,7 +40,7 @@ def create_app():
     app.config['ALLOWED_EXTENSIONS'] = {'jpg', 'png', 'jpeg', 'pdf', 'txt', 'doc', 'docx', 'xls', 'xlsx'}
     app.config['SESSION_PERMANENT'] = True
     app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
-    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=1)
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=5)
     app.config['WTF_CSRF_ENABLED'] = True
 
     mail.init_app(app)
@@ -68,7 +68,6 @@ def create_app():
     app.register_blueprint(hr, url_prefix='/')
     app.register_blueprint(manager_bp, url_prefix='/')
 
-    
     from .models.Admin_models import Admin
     from .models.emp_detail_models import Employee
     from .models.family_models import FamilyDetails
@@ -76,11 +75,12 @@ def create_app():
     from .models.education import UploadDoc, Education
     from .models.attendance import Punch, LeaveBalance, LeaveApplication
     from .models.manager_model import ManagerContact
+
     with app.app_context():
         db.create_all()
 
         # Configure the scheduled job here
-    scheduler.add_job(id='update_leave_balances', func=update_leave_balances, trigger='cron', day=3, hour=0, minute=0)
+        scheduler.add_job(id='update_leave_balances', func=update_leave_balances, trigger='cron', hour=0, minute=0)
 
     @app.after_request
     def add_header(response):
@@ -99,4 +99,3 @@ def update_leave_balances():
         balance.casual_leave_balance += 0.75
     db.session.commit()
     print(f"Leave balances updated at {datetime.datetime.now()}")
-

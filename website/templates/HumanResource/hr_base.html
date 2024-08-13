@@ -6,11 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
    
-    <link rel="stylesheet" href="../static/css/home.css">
+    <link rel="stylesheet" href="../static/css/hr_dash.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    <title>Home</title>
+    <title>{% block title %}{% endblock %}</title>
 </head>
 
 <body>
@@ -19,33 +19,27 @@
         <nav class="nav-bar" id="navbar">
             <ul>
                 <li>
-                    <a href="/" class="active">Home</a>
+                    <a href="/E_homepage" class="active">Dashboard</a>
                 </li>
+
                 <li>
-                    <a href="https://www.saffotech.com/">Services</a>
+                    <a href="/manager_contact">Update Manager</a>
+                </li>
+               
+                <li>
+                    <a href="/hr_dashbord">Search</a>
                 </li>
                 
-                <li>
-                    <a href="https://www.saffotech.com/about">About Us</a>
-                </li>
+             
+               
+                
                 
             </ul>
         </nav>
       
     </header>
 
-    <div class="container" id="home">
-      <div class="login-left">
-        <img src="../static/photo/HR.webp" alt="">
-        <a href="#" target="_blank">Admin</a>
-      </div>
-
-      <div class="login-right">
-        <img src="../static/photo/employee.jpg" alt="">
-        <a href="/login" target="_blank">Employee</a>
-      </div>
-
-    </div>
+    {% block content %}{% endblock %}
     
     <script src="../static/css/javascript.js"></script>
 </body>
