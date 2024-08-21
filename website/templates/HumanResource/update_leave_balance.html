@@ -1,0 +1,39 @@
+{% extends 'HumanResource/hr_base.html' %}
+{% block title %}Update Leave Balance{% endblock %}
+
+{% block content %}
+    <div class="container_list">
+        {% with errors = get_flashed_messages(category_filter=["error", "success"]) %}
+            {% if errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {%- for msg in errors %}
+                            <h3>{{ msg }}</h3>
+                        {% endfor -%}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <h2>Update Leave Balance</h2>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                {{ form.personal_leave_balance.label }} 
+                {{ form.personal_leave_balance(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.casual_leave_balance.label }} 
+                {{ form.casual_leave_balance(class="form-control") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary") }}
+                <a href="{{ url_for('hr.employee_list') }}" class="btn btn-secondary">Back to Employee List</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+

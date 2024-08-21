@@ -9,7 +9,7 @@ class SearchForm(FlaskForm):
                                      ('chennai','Chennai'),('kolkata','Kolkata')],
                               validators=[DataRequired()])
     emp_type = SelectField('Employee Type', 
-                            choices=[("",'Select Employee Type'),('hr','Human Resource'),('finance','Account & Finanace'), ('employee', 'Software'),('it_department', 'IT Department')],
+                            choices=[("",'Select Employee Type'),('hr','Human Resource'),('finance','Accounts & Finanace'), ('employee', 'Software'),('it_department', 'IT Department')],
                               validators=[DataRequired()])
     submit = SubmitField('Search')
 

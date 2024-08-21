@@ -12,7 +12,7 @@ from .models.prev_com import PreviousCompany
 from .models.education import UploadDoc, Education
 from .models.attendance import Punch, LeaveBalance
 from .models.manager_model import ManagerContact
-from .forms.attendance import MonthYearForm
+from .forms.attendance import MonthYearForm,BalanceUpdateForm
 from datetime import datetime
 import calendar
 
@@ -34,7 +34,7 @@ def hr_dashbord():
             flash('No matching entries found', category='error')
             return redirect(url_for('hr.search'))
 
-        # Store the search results in the session
+        
         session['admins'] = [admin.id for admin in admins]
         session['circle'] = circle
         session['emp_type'] = emp_type
@@ -43,12 +43,6 @@ def hr_dashbord():
 
     return render_template('HumanResource/hr_dashboard.html', form=form)
     
-
-
-
-
-
-
 
 
 @hr.route('/search', methods=['GET', 'POST'])
@@ -65,7 +59,7 @@ def search():
             flash('No matching entries found', category='error')
             return redirect(url_for('hr.search'))
 
-        # Store the search results in the session
+        
         session['admins'] = [admin.id for admin in admins]
         session['circle'] = circle
         session['emp_type'] = emp_type
@@ -97,17 +91,17 @@ def search_results():
 @login_required
 def view_details():
     form = DetailForm()
-    form.user.choices = [(admin.id, admin.first_name) for admin in Admin.query.all()]  # Populate user choices
+    form.user.choices = [(admin.id, admin.first_name) for admin in Admin.query.all()] 
 
     if form.validate_on_submit():
         user_id = form.user.data
         detail_type = form.detail_type.data
 
-        # Store selected user_id and detail_type in session
+        
         session['viewing_user_id'] = user_id
         session['viewing_detail_type'] = detail_type
 
-        # Redirect to display_details route to fetch and display the details
+        
         return redirect(url_for('hr.display_details'))
 
     return render_template('HumanResource/details.html', form=form)
@@ -165,3 +159,63 @@ def display_details():
         return redirect(url_for('hr.view_details'))
 
     return render_template('HumanResource/details.html', admin=admin, details=details, detail_type=detail_type, selected_month=month, selected_year=year, form=form, datetime=datetime)
+
+
+
+
+from flask import session
+
+@hr.route('/employee_list', methods=['GET', 'POST'])
+@login_required
+def employee_list():
+    form = SearchForm()
+    employees = []
+
+    if form.validate_on_submit():
+        emp_type = form.emp_type.data
+        circle = form.circle.data
+
+        # Store search criteria in session
+        session['emp_type'] = emp_type
+        session['circle'] = circle
+
+        # Fetch employees based on selected emp_type and circle
+        employees = Admin.query.filter_by(Emp_type=emp_type, circle=circle).all()
+
+    else:
+        # Use the search criteria from the session if available
+        emp_type = session.get('emp_type')
+        circle = session.get('circle')
+
+        if emp_type and circle:
+            employees = Admin.query.filter_by(Emp_type=emp_type, circle=circle).all()
+
+    return render_template('HumanResource/emp_list.html', form=form, employees=employees)
+
+
+
+
+@hr.route('/leave_balance/<int:admin_id>', methods=['GET', 'POST'])
+@login_required
+def leave_balance(admin_id):
+    leave_balance = LeaveBalance.query.filter_by(admin_id=admin_id).first()
+
+    if leave_balance is None:
+        flash('Leave balance record not found.', 'error')
+        return redirect(url_for('hr.employee_list'))
+
+    form = BalanceUpdateForm(obj=leave_balance)
+
+    if form.validate_on_submit():
+        leave_balance.personal_leave_balance = form.personal_leave_balance.data
+        leave_balance.casual_leave_balance = form.casual_leave_balance.data
+        db.session.commit()
+        flash('Leave balances updated successfully.', category='success')
+        return redirect(url_for('hr.leave_balance', admin_id=admin_id)) 
+
+    return render_template('HumanResource/update_leave_balance.html', leave_balance=leave_balance, form=form)
+
+
+
+
+

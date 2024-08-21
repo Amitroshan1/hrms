@@ -84,13 +84,13 @@ header .logo a{
 
 
 .pass-key {
-  padding-right: 30px; /* Adjust according to the width of the image */
+  padding-right: 30px;
 }
 
 .password-toggle {
   position: absolute;
-  top: 70%;
-  right: 10px; /* Adjust as needed */
+  top: 59%;
+  right: 830px; /* Adjust as needed */
   transform: translateY(-50%);
   cursor: pointer;
   width: 30px;

@@ -26,6 +26,8 @@ def is_safe_url(target):
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
+# Initialization code remains the same
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -79,8 +81,8 @@ def create_app():
     with app.app_context():
         db.create_all()
 
-        # Configure the scheduled job here
-        scheduler.add_job(id='update_leave_balances', func=update_leave_balances, trigger='cron', hour=0, minute=0)
+        # Schedule the job to run daily at 14:31
+        scheduler.add_job(id='update_leave_balances', func=update_leave_balances, trigger='cron', hour=15, minute=4)
 
     @app.after_request
     def add_header(response):
@@ -93,9 +95,34 @@ def create_app():
 
 def update_leave_balances():
     from .models.attendance import LeaveBalance
-    leave_balances = LeaveBalance.query.all()
-    for balance in leave_balances:
-        balance.personal_leave_balance += 1
-        balance.casual_leave_balance += 0.75
-    db.session.commit()
-    print(f"Leave balances updated at {datetime.datetime.now()}")
+
+    # Use the current app context for DB operations
+    with scheduler.app.app_context():
+        leave_balances = LeaveBalance.query.all()
+        
+        if not leave_balances:
+            print("No leave balances found in the database.")
+        
+        for balance in leave_balances:
+            # Debug output before updating
+            print(f"Before Update: Admin ID: {balance.admin_id}, "
+                  f"Personal Leave: {balance.personal_leave_balance}, "
+                  f"Casual Leave: {balance.casual_leave_balance}")
+            
+            # Increment leave balances
+            balance.personal_leave_balance += 1
+            balance.casual_leave_balance += 0.75
+            
+            # Debug output after updating
+            print(f"After Update: Admin ID: {balance.admin_id}, "
+                  f"Personal Leave: {balance.personal_leave_balance}, "
+                  f"Casual Leave: {balance.casual_leave_balance}")
+        
+        # Commit changes to the database
+        try:
+            db.session.commit()
+            print("Database commit successful.")
+        except Exception as e:
+            print(f"Database commit failed: {str(e)}")
+
+

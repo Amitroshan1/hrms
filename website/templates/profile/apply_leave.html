@@ -28,9 +28,7 @@
             {{ form.casual_leave_days.label }}
             <input type="number" name="{{ form.casual_leave_days.name }}" step="0.5" min="0.5" max="8.0" value="{{ form.casual_leave_days.data }}" class="form-control">
         </div>
-        <div class="form-group-leave">
-            {{ form.comp_off_leave.label }} {{ form.comp_off_leave(class_='form-control') }}
-        </div>
+        
         <div class="form-row">
             <div class="form-group-leave col-md-6">
                 {{ form.start_date.label }} {{ form.start_date(class_='form-control') }}

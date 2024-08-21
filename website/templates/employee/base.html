@@ -35,21 +35,9 @@
             <img src="{{ url_for('static', filename='photo/Data Arranging_Two Color.svg') }}" alt="">
         </div>
     </div>
-    {% with errors = get_flashed_messages(category_filter=["error",'success']) %}
-    {% if errors %}
-    <div class="alert-message block-message error">
-      <a class="close" href="#">×</a>
-      <ul>
-        {%- for msg in errors %}
-        <li>{{ msg }}</li>
-        {% endfor -%}
-      </ul>
-    </div>
-    {% endif %}
-    {% endwith %}
-    
+   
     <script>
-        let eyeicon = document.getElementById("eyeicon");
+        let eyeicon = document.getElementById("eyeicon");  
         let password = document.getElementById("password");
         
         eyeicon.onclick = function() {

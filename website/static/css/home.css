@@ -58,9 +58,7 @@ header .logo a {
     background: #eee;
 }
 
-.nav-bar ul li a.active {
-    background-color: #eee;
-}
+
 
 /* Hamburger Menu */
 .hamburger {

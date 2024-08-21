@@ -5,6 +5,7 @@ from website import db
 from .models.Admin_models import Admin
 from .forms.signup_form import AdminSignUpForm, AdminLoginForm, AdminVerifyForm
 from . import is_safe_url
+from .models.attendance import LeaveBalance
 
 
 
@@ -84,9 +85,15 @@ def admin_sign_up():
         user_type = form.user_type.data
         circle= form.circle.data
 
-        new_user = Admin(email=email,circle=circle, first_name=first_name, Emp_type=user_type,mobile=mobile, emp_id=emp_id, password=generate_password_hash(password, method='pbkdf2:sha256'))
+        new_user = Admin(email=email, circle=circle, first_name=first_name, Emp_type=user_type, mobile=mobile, emp_id=emp_id, password=generate_password_hash(password, method='pbkdf2:sha256'))
         db.session.add(new_user)
         db.session.commit()
+
+       
+        new_leave_balance = LeaveBalance(admin_id=new_user.id)
+        db.session.add(new_leave_balance)
+        db.session.commit()
+
         flash('Account created', category='success')
         return redirect(url_for('Admin_auth.admin_sign_up'))
     else:
@@ -95,6 +102,7 @@ def admin_sign_up():
                 flash(f"Error in {getattr(form, field).label.text}: {error}", category='error')
 
     return render_template("admin/AdminSign_up.html", form=form)
+
 
 
 

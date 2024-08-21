@@ -22,9 +22,12 @@ class LeaveBalance(db.Model):
     admin_id = db.Column(db.Integer, db.ForeignKey('admins.id'), nullable=False)
     personal_leave_balance = db.Column(db.Float, default=0.0)
     casual_leave_balance = db.Column(db.Float, default=0.0)
-    
 
     admin = db.relationship('Admin', back_populates='leave_balance')
+
+    def __init__(self, admin_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.admin_id = admin_id  # Set the admin_id when initializing
 
     
 
