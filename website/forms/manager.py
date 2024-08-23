@@ -4,15 +4,16 @@ from wtforms.validators import DataRequired, Email, Length, Optional
 
 class ManagerContactForm(FlaskForm):
     circle_name = SelectField('Circle', 
-                              choices=[('', 'Choose Your Circle'), ('nhq', 'NHQ'), ('noida', 'Noida'), 
-                                       ('gurugram', 'Gurugram'), ('pune', 'Pune'), ('bangalore', 'Bangalore'), 
+                              choices=[('', 'Choose Your Circle'), ('nhq', 'NHQ'), ('noida', 'Noida'), ('haryana', 'Haryana'),
+                                       ('gurugram', 'Gurugram'), ('pune', 'Pune'), ('bangalore', 'Bangalore'), ('punjab', 'Punjab'),
                                        ('hyderabad', 'Hyderabad'), ('chennai', 'Chennai'), ('kolkata', 'Kolkata')],
                               validators=[DataRequired()])
     
     user_type = SelectField('Department', 
-                            choices=[('', 'Select Department'), ('hr', 'Human Resource'), ('finance', 'Account'), 
-                                     ('employee', 'Employee')],
+                            choices=[('', 'Select Department'), ('hr', 'Human Resource'), ('finance', 'Accounts & Finance'), 
+                                     ('employee', 'Software'),('it department','IT Department')],
                             validators=[DataRequired()])
+    
     l1_name = StringField('L1 Name', validators=[Optional()])
     l1_mobile = StringField('L1 Mobile', validators=[Optional(), Length(min=10, max=10)])
     l1_email = StringField('L1 Email', validators=[Optional(), Email()])

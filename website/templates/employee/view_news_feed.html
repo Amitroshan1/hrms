@@ -1,0 +1,20 @@
+{% extends "employee/E_homeBase.html" %}
+{% block title %}News{% endblock %}
+{% block content %}
+{% with errors = get_flashed_messages(category_filter=["error","success"]) %}
+{% if errors %}
+    <div class="alert-danger">
+        <ul>
+            {%- for msg in errors %}
+                <h3>{{ msg }}</h3>
+            {% endfor -%}
+        </ul>
+    </div>
+{% endif %}
+{% endwith %}
+<h2 class="centered-heading">{{ news_feed.title }}</h2>
+<p>{{ news_feed.content }}</p>
+{% if news_feed.file_url() %}
+<p>Download file: <a href="{{ news_feed.file_url() }}" download>{{ news_feed.file_path }}</a></p>
+{% endif %}
+{% endblock %}

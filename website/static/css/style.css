@@ -89,7 +89,7 @@ header .logo a{
 
 .password-toggle {
   position: absolute;
-  top: 59%;
+  top: 58%;
   right: 830px; /* Adjust as needed */
   transform: translateY(-50%);
   cursor: pointer;

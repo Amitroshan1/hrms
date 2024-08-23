@@ -1,6 +1,6 @@
 # forms.py
 from flask_wtf import FlaskForm
-from wtforms import SelectField, SubmitField
+from wtforms import *
 from wtforms.validators import DataRequired
 
 class SearchForm(FlaskForm):
@@ -29,3 +29,13 @@ class DetailForm(FlaskForm):
         
     ])
     submit = SubmitField('View Details')
+
+
+
+
+
+class NewsFeedForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    content = TextAreaField('Content', validators=[DataRequired()])
+    file = FileField('File')
+    submit = SubmitField('Post')

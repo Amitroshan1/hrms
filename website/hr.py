@@ -1,8 +1,6 @@
-from flask import render_template, request, flash, redirect,Blueprint, session,url_for, current_app as app
-from flask_login import current_user, login_required
-from werkzeug.security import generate_password_hash, check_password_hash
-from .forms.signup_form import AdminSignUpForm
-from .forms.search_from import SearchForm,DetailForm
+from flask import render_template, flash, redirect,Blueprint, session,url_for, current_app,send_from_directory
+from flask_login import login_required
+from .forms.search_from import SearchForm,DetailForm,NewsFeedForm
 from .models.Admin_models import Admin
 from . import db
 from .models.Admin_models import Admin
@@ -12,9 +10,12 @@ from .models.prev_com import PreviousCompany
 from .models.education import UploadDoc, Education
 from .models.attendance import Punch, LeaveBalance
 from .models.manager_model import ManagerContact
+from .models.news_feed import NewsFeed
 from .forms.attendance import MonthYearForm,BalanceUpdateForm
 from datetime import datetime
 import calendar
+from werkzeug.utils import secure_filename
+import os
 
 
 hr=Blueprint('hr',__name__)
@@ -163,7 +164,7 @@ def display_details():
 
 
 
-from flask import session
+
 
 @hr.route('/employee_list', methods=['GET', 'POST'])
 @login_required
@@ -216,6 +217,43 @@ def leave_balance(admin_id):
     return render_template('HumanResource/update_leave_balance.html', leave_balance=leave_balance, form=form)
 
 
+
+@hr.route('/news_feed/add', methods=['GET', 'POST'])
+@login_required
+def add_news_feed():
+    form = NewsFeedForm()
+    if form.validate_on_submit():
+        file = form.file.data
+        file_path = None
+        if file:
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+
+        news_feed = NewsFeed(
+            title=form.title.data,
+            content=form.content.data,
+            file_path=filename if file else None
+        )
+        db.session.add(news_feed)
+        db.session.commit()
+        flash('News feed added successfully!', 'success')
+        return redirect(url_for('hr.add_news_feed'))
+
+    return render_template('HumanResource/add_news_feed.html', form=form)
+
+
+
+@hr.route('/news_feed/<int:news_feed_id>')
+@login_required
+def view_news_feed(news_feed_id):
+    news_feed = NewsFeed.query.get_or_404(news_feed_id)
+    return render_template('employee/view_news_feed.html', news_feed=news_feed)
+
+@hr.route('/uploads/<filename>')
+@login_required
+def download_file(filename):
+    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
 
 
 

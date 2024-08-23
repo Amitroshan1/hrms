@@ -7,6 +7,7 @@ from .forms.signup_form import AdminLoginForm
 from datetime import date
 from .models.attendance import Punch
 from .models.manager_model import ManagerContact
+from .models.news_feed import NewsFeed
 
 auth = Blueprint('auth', __name__)
 
@@ -62,11 +63,14 @@ def E_homepage():
 
     manager_contact = ManagerContact.query.filter_by(circle_name=circle, user_type=emp_type).first()
 
+    news_feeds = NewsFeed.query.order_by(NewsFeed.created_at.desc()).all()
+
     return render_template("employee/E_homepage.html", 
                            employee=employee, 
                            punch_in_time=punch_in_time, 
                            punch_out_time=punch_out_time,
-                           manager_contact=manager_contact)
+                           manager_contact=manager_contact,
+                           news_feeds=news_feeds)
 
 
 

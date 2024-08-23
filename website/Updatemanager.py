@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models.manager_model import ManagerContact
-from .forms.manager import ManagerContactForm  # Import your form
+from .forms.manager import ManagerContactForm  
 from website import db
 
 manager_bp = Blueprint('manager_bp', __name__)

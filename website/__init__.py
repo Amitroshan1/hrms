@@ -82,7 +82,7 @@ def create_app():
         db.create_all()
 
         # Schedule the job to run daily at 14:31
-        scheduler.add_job(id='update_leave_balances', func=update_leave_balances, trigger='cron', hour=15, minute=4)
+        scheduler.add_job(id='update_leave_balances', func=update_leave_balances, trigger='cron', hour=15, minute=57)
 
     @app.after_request
     def add_header(response):
@@ -96,7 +96,7 @@ def create_app():
 def update_leave_balances():
     from .models.attendance import LeaveBalance
 
-    # Use the current app context for DB operations
+     
     with scheduler.app.app_context():
         leave_balances = LeaveBalance.query.all()
         
@@ -104,21 +104,11 @@ def update_leave_balances():
             print("No leave balances found in the database.")
         
         for balance in leave_balances:
-            # Debug output before updating
-            print(f"Before Update: Admin ID: {balance.admin_id}, "
-                  f"Personal Leave: {balance.personal_leave_balance}, "
-                  f"Casual Leave: {balance.casual_leave_balance}")
             
-            # Increment leave balances
-            balance.personal_leave_balance += 1
-            balance.casual_leave_balance += 0.75
             
-            # Debug output after updating
-            print(f"After Update: Admin ID: {balance.admin_id}, "
-                  f"Personal Leave: {balance.personal_leave_balance}, "
-                  f"Casual Leave: {balance.casual_leave_balance}")
-        
-        # Commit changes to the database
+            balance.personal_leave_balance += 1.08
+            balance.casual_leave_balance += 0.67
+            
         try:
             db.session.commit()
             print("Database commit successful.")

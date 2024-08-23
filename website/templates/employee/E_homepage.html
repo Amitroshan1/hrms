@@ -73,4 +73,22 @@
     {% endif %}
 </div>
 
+<div class="news-feed-container">
+    <h2>News Feed</h2>
+    <marquee behavior="scroll" direction="up" scrollamount="3" onmouseover="this.stop();" onmouseout="this.start();">
+        {% for news_feed in news_feeds %}
+        <div class="news-feed-item">
+            <a href="{{ url_for('hr.view_news_feed', news_feed_id=news_feed.id) }}">
+                {{ news_feed.title }}
+            </a>
+            {% if news_feed.is_new() %}
+            <span class="new-label">New</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </marquee>
+</div>
+
+
+
 {% endblock %}
