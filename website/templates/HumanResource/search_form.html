@@ -16,7 +16,7 @@
     {% endif %}
     {% endwith %}
     
-    <h2>Search Employees</h2>
+    <h2 class="centered-heading">Search Employees</h2>
     <form method="POST" action="{{ url_for('hr.search') }}">
         {{ form.hidden_tag() }}
         <div class="form-group">

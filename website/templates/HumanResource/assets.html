@@ -1,0 +1,86 @@
+{% extends "HumanResource/hr_base.html" %} 
+{% block title %}Assets{% endblock %} 
+{% block content %}
+<div class="container mt-5">
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+
+    <h3 class="centered-heading">Add Asset</h3>
+    <form method="POST" enctype="multipart/form-data" class="asset">
+        {{ asset_form.hidden_tag() }}
+        <div class="form-group">
+            {{ asset_form.name.label }} 
+            {{ asset_form.name(class="form-control", size=20) }}
+        </div>
+        <div class="form-group">
+            {{ asset_form.description.label }} 
+            {{ asset_form.description(class="form-control", rows=3, cols=20) }}
+        </div>
+        <div class="form-group">
+            {{ asset_form.image_file.label }} 
+            {{ asset_form.image_file(class="form-control-file") }}
+        </div>
+        <div class="form-group">
+            {{ asset_form.issue_date.label }}
+            {{ asset_form.issue_date(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ asset_form.return_date.label }}
+            {{ asset_form.return_date(class="form-control") }}
+        </div>
+        {{ asset_form.submit(class="btn btn-success", value='Add Asset') }}
+        <a href="{{ url_for('hr.search_employee') }}" class="btn btn-primary">Back to Search</a>
+    </form>
+    
+</div>
+
+{% if assets %}
+    <h3 class="centered-heading">Assets for {{ employee.first_name | capitalize }}</h3>
+    <table class="asset-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>Issue Date</th>
+                <th>Return Date</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for asset in assets %}
+            <tr>
+                <td>{{ asset.name | capitalize }}</td>
+                <td>{{ asset.description | capitalize }}</td>
+                <td>
+                    {% if asset.image_file %}
+                        <img src="{{ url_for('static', filename='uploads/' + asset.image_file) }}" alt="{{ asset.name }}" class="img-thumbnail" width="100">
+                    {% else %}
+                        No Image
+                    {% endif %}
+                </td>
+                <td>{{ asset.issue_date.strftime('%Y-%m-%d') if asset.issue_date else 'N/A' }}</td>
+                
+                <td>
+                  {% if asset.return_date %}
+                      {{ asset.return_date.strftime('%Y-%m-%d') }}
+                  {% else %}
+                      <a href="{{ url_for('hr.update_asset', asset_id=asset.id) }}">Update</a>
+                  {% endif %}
+              </td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% endblock %}

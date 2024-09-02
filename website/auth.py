@@ -8,6 +8,10 @@ from datetime import date
 from .models.attendance import Punch
 from .models.manager_model import ManagerContact
 from .models.news_feed import NewsFeed
+from .models.emp_detail_models import Asset
+
+
+
 
 auth = Blueprint('auth', __name__)
 
@@ -21,7 +25,7 @@ def unauthorized_error(error):
 @auth.route('/login', methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        # Redirect based on Emp_type if the user is already logged in
+        
         return redirect(url_for('auth.E_homepage'))
 
     form = AdminLoginForm()
@@ -32,7 +36,7 @@ def login():
         user = Admin.query.filter_by(email=email).first()
         if user and check_password_hash(user.password, password):
             login_user(user)
-            return redirect(url_for('auth.E_homepage'))  # Redirect based on Emp_type after successful login
+            return redirect(url_for('auth.E_homepage'))  
         else:
             flash('Invalid email or password. Please try again.', category='error')
 
@@ -42,35 +46,47 @@ def login():
 @auth.route('/E_homepage')
 @login_required
 def E_homepage():
+    
     employee = Employee.query.filter_by(admin_id=current_user.id).first()
+
     if not employee:
         flash("No employee record found for the current user.")
         return render_template("employee/E_homepage.html")
-    else:
-        emp = Admin.query.filter_by(id=employee.admin_id).first()
+    
+   
+    emp = Admin.query.filter_by(id=employee.admin_id).first()
+    
+    
+    DOJ = emp.Doj if emp else None
+
     
     today = date.today()
     punch = Punch.query.filter_by(admin_id=current_user.id, punch_date=today).first()
-
-    
     
     punch_in_time = punch.punch_in if punch else None
     punch_out_time = punch.punch_out if punch else None
-
-    emp_type = emp.Emp_type
-    circle = emp.circle
     
+    emp_type = emp.Emp_type if emp else None
+    circle = emp.circle if emp else None
 
+    
     manager_contact = ManagerContact.query.filter_by(circle_name=circle, user_type=emp_type).first()
 
-    news_feeds = NewsFeed.query.order_by(NewsFeed.created_at.desc()).all()
+    
+    news_feeds = NewsFeed.query.filter(
+        (NewsFeed.circle == circle) & (NewsFeed.emp_type == emp_type) |
+        (NewsFeed.circle == 'all') & (NewsFeed.emp_type == 'all')
+    ).order_by(NewsFeed.created_at.desc()).all()
 
+   
     return render_template("employee/E_homepage.html", 
                            employee=employee, 
                            punch_in_time=punch_in_time, 
                            punch_out_time=punch_out_time,
                            manager_contact=manager_contact,
-                           news_feeds=news_feeds)
+                           news_feeds=news_feeds,
+                           DOJ=DOJ)
+
 
 
 
@@ -85,6 +101,21 @@ def logout():
 
 
 
+
+
+@auth.route('/my_assets', methods=['GET'])
+@login_required  
+def my_assets():
+    
+    emp_id = current_user.id
+    
+   
+    assets = Asset.query.filter_by(admin_id=emp_id).all()
+    
+    if not assets:
+        flash('No assets found for your account.', 'info')
+    
+    return render_template('employee/my_assets.html', assets=assets)
 
 
 

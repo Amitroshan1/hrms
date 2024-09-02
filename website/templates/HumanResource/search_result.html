@@ -16,7 +16,7 @@
     {% endif %}
     {% endwith %}
 
-    <h2 class="centered-heading">Search Results for Circle: {{ circle }} and Employee Type: {{ emp_type }}</h2>
+    <h2 class="centered-heading">Search Results for Circle: {{ circle | capitalize }} and Employee Type: {{ emp_type | capitalize }}</h2>
     {% if admins %}
         <table class="table table-striped">
             <thead>

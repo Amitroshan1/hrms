@@ -31,13 +31,11 @@ def is_safe_url(target):
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-    app.config['SECRET_KEY'] = 'your_secret_key'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Mysql_1234@localhost/saffo_db'
+    app.config['SECRET_KEY'] = 'ajsgfkjsgfkgsdfkgsdajsbfjkkjhbh'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Mysql_1234@localhost/new_saffo_db'
     app.config['MAIL_SERVER'] = 'smtp.office365.com'
     app.config['MAIL_PORT'] = 587
     app.config['MAIL_USE_TLS'] = True
-    app.config['MAIL_USERNAME'] = 'your_email@example.com'
-    app.config['MAIL_PASSWORD'] = 'your_password'
     app.config['UPLOAD_FOLDER'] = 'website/static/uploads'
     app.config['ALLOWED_EXTENSIONS'] = {'jpg', 'png', 'jpeg', 'pdf', 'txt', 'doc', 'docx', 'xls', 'xlsx'}
     app.config['SESSION_PERMANENT'] = True
@@ -82,7 +80,7 @@ def create_app():
         db.create_all()
 
         # Schedule the job to run daily at 14:31
-        scheduler.add_job(id='update_leave_balances', func=update_leave_balances, trigger='cron', hour=15, minute=57)
+        scheduler.add_job(id='update_leave_balances', func=update_leave_balances, trigger='cron', hour=17, minute=55)
 
     @app.after_request
     def add_header(response):
@@ -95,20 +93,24 @@ def create_app():
 
 def update_leave_balances():
     from .models.attendance import LeaveBalance
+    from .models.Admin_models import Admin  
 
-     
     with scheduler.app.app_context():
         leave_balances = LeaveBalance.query.all()
-        
+
         if not leave_balances:
             print("No leave balances found in the database.")
-        
+
         for balance in leave_balances:
-            
-            
-            balance.personal_leave_balance += 1.08
-            balance.casual_leave_balance += 0.67
-            
+            admin = Admin.query.filter_by(id=balance.admin_id).first() 
+            if admin and admin.Doj:
+                doj = admin.Doj
+                six_months_after_doj = doj + timedelta(days=6*30) 
+                
+                if datetime.datetime.now().date() >= six_months_after_doj:
+                    balance.personal_leave_balance += 1.08
+                    balance.casual_leave_balance += 0.67
+
         try:
             db.session.commit()
             print("Database commit successful.")

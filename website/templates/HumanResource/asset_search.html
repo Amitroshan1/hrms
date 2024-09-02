@@ -1,0 +1,37 @@
+{% extends "HumanResource/hr_base.html" %} 
+{% block title %}Assets{% endblock %} 
+{% block content %}
+
+
+<div class="container">
+    <h2 class="centered-heading">Search Employee</h2>
+<form method="POST" class="search-result">
+    {{ form.hidden_tag() }}
+    {{ form.emp_id.label }} {{ form.emp_id(size=20) }}
+    {{ form.submit() }}
+</form>
+
+{% if employee %}
+    <h2 class="centered-heading">Employee Details</h2>
+    <table class="employee-details-table-2">
+        <tr>
+            <th>Name</th>
+            <td>{{ employee.first_name | capitalize }}</td>
+        </tr>
+        <tr>
+            <th>Employee Type</th>
+            <td>{{ employee.Emp_type | capitalize }}</td>
+        </tr>
+        <tr>
+            <th>Circle</th>
+            <td>{{ employee.circle | upper }}</td>
+        </tr>
+    </table>
+
+    
+    <a href="{{ url_for('hr.add_asset', admin_id=employee.id) }}" class="btn btn-primary">Add Asset</a>
+    
+    {% endif %}
+</div>
+    
+{% endblock %}

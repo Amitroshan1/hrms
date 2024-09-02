@@ -664,3 +664,30 @@ h3 {
     align-items: center;
 }
 
+.asset-table {
+    width: 50%;
+    margin: 20px auto; /* Center the table */
+    border-collapse: collapse;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.asset-table th, 
+.asset-table td {
+    border: 1px solid #ccc;
+    padding: 12px;
+    text-align: left;
+}
+
+.asset-table th {
+    background-color: #58a4f7;
+    color: white;
+    font-weight: bold;
+}
+
+.asset-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.asset-table tr:hover {
+    background-color: #eaeaea;
+}

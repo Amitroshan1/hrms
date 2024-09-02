@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from flask import current_app,url_for
 from .. import db
 
+
 class NewsFeed(db.Model):
     __tablename__ = 'news_feeds'
 
@@ -9,6 +10,8 @@ class NewsFeed(db.Model):
     title = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text, nullable=False)
     file_path = db.Column(db.String(255), nullable=True)
+    circle = db.Column(db.String(50), nullable=False)  
+    emp_type = db.Column(db.String(50), nullable=False)  
     created_at = db.Column(db.DateTime, default=datetime.now)
 
     def is_new(self):

@@ -7,23 +7,24 @@ Sign Up
 {% block content %}
 <div class="login-header">
     <h1>Welcome...</h1>
-    <h4><p>Please SignUp to continue......</p></h4>
+    <h4><p>Please SignUp to continue...</p></h4>
 </div>
-    {% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-        <div class="alert-message block-message">
-            <ul>
-                {% for category, msg in messages %}
-                    <li class="{{ category }}">{{ msg }}<a class="close" href="/Adminsign-up">X</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
-    {% endwith %}
 
+{% with messages = get_flashed_messages(with_categories=True) %}
+{% if messages %}
+    <div class="alert-message block-message">
+        <ul>
+            {% for category, msg in messages %}
+                <li class="{{ category }}">{{ msg }}<a class="close" href="/Adminsign-up">X</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+{% endwith %}
 
 <form class="SignUp-form" method="POST" action="{{ url_for('Admin_auth.admin_sign_up') }}">
-        {{ form.hidden_tag() }}
+    {{ form.hidden_tag() }}
+
     <div class="signup-content">
         <div class="form-group">
             {{ form.first_name.label }}
@@ -36,6 +37,7 @@ Sign Up
                 </div>
             {% endif %}
         </div>
+
         <div class="form-group">
             {{ form.email.label }}
             {{ form.email(class="form-control") }}
@@ -47,6 +49,7 @@ Sign Up
                 </div>
             {% endif %}
         </div>
+
         <div class="form-group">
             {{ form.emp_id.label }}
             {{ form.emp_id(class="form-control") }}
@@ -58,6 +61,7 @@ Sign Up
                 </div>
             {% endif %}
         </div>
+
         <div class="form-group">
             {{ form.mobile.label }}
             {{ form.mobile(class="form-control") }}
@@ -70,11 +74,22 @@ Sign Up
             {% endif %}
         </div>
 
-       
+        <div class="form-group">
+            {{ form.Doj.label }}
+            {{ form.Doj(class="form-control") }}
+            {% if form.Doj.errors %}
+                <div class="text-danger">
+                    {% for error in form.Doj.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
 
         <div class="form-group">
             {{ form.password.label }}
             {{ form.password(class="form-control") }}
+            
             {% if form.password.errors %}
                 <div class="text-danger">
                     {% for error in form.password.errors %}
@@ -120,22 +135,12 @@ Sign Up
             {% endif %}
         </div>
 
-        
-
-       
-
-        
         <div id="btm">
             <button type="submit" class="submit-btn">Create Account</button>
             <p class="btm-text">
                 Already have an account..? <a href="/login">Login</a>
             </p>
         </div>
-
-        </div>
+    </div>
 </form>
-
-
-
 {% endblock %}
-

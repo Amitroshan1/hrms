@@ -1,0 +1,49 @@
+{% extends "HumanResource/hr_base.html" %}
+{% block title %}Update Asset{% endblock %}
+{% block content %}
+<div class="container mt-5">
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+
+    <h3 class="centered-heading">Update Asset</h3>
+    <form method="POST" enctype="multipart/form-data" class="asset">
+        {{ asset_form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ asset_form.name.label }} 
+            {{ asset_form.name(class="form-control", size=20) }}
+        </div>
+        
+        <div class="form-group">
+            {{ asset_form.description.label }} 
+            {{ asset_form.description(class="form-control", rows=3, cols=20) }}
+        </div>
+        
+        <div class="form-group">
+            {{ asset_form.image_file.label }} 
+            {{ asset_form.image_file(class="form-control-file") }}
+        </div>
+        
+        <div class="form-group">
+            {{ asset_form.issue_date.label }}
+            {{ asset_form.issue_date(class="form-control") }}
+        </div>
+        
+        <div class="form-group">
+            {{ asset_form.return_date.label }}
+            {{ asset_form.return_date(class="form-control") }}
+        </div>
+        
+        {{ asset_form.submit(class="btn btn-success", value='Update Asset') }}
+        <a href="{{ url_for('hr.add_asset', admin_id=asset.admin_id) }}" class="btn btn-primary">Back to Assets</a>
+    </form>
+</div>
+{% endblock %}

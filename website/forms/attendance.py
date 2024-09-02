@@ -26,6 +26,7 @@ class LeaveForm(FlaskForm):
     casual_leave_days = DecimalField('Casual Leave ', places=1, validators=[NumberRange(min=0.5, max=8.0)], default=0)
     start_date = DateField('Start Date', format='%Y-%m-%d', validators=[DataRequired()])
     end_date = DateField('End Date', format='%Y-%m-%d', validators=[DataRequired()])
+    
     submit = SubmitField('Apply for Leave')
 
 

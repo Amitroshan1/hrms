@@ -16,7 +16,7 @@ from .models.prev_com import PreviousCompany
 from .models.attendance import Punch,LeaveApplication,LeaveBalance
 from .forms.attendance import PunchForm,LeaveForm
 import datetime 
-from flask_wtf.csrf import CSRFError
+
 
 
 
@@ -133,7 +133,7 @@ def family_details():
             occupation=form.occupation.data,
             income=form.Income.data,
             address=form.Address.data,
-            remarks=form.Remarks.data,
+            remarks  =form.Remarks.data,
             
         )
         
@@ -141,7 +141,7 @@ def family_details():
         db.session.commit()
         
         flash('Family member details saved successfully!', 'success')
-        return redirect(url_for('profile.fam_det'))  
+        return redirect(url_for('profile.fam_det'))
    
     return render_template('profile/form_E_FAM.html', form=form)
 

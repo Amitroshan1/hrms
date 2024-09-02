@@ -1,15 +1,13 @@
-from flask import render_template, flash, redirect,Blueprint, session,url_for, current_app,send_from_directory
+from flask import render_template, flash, redirect,Blueprint, session,url_for, current_app,send_from_directory,request
 from flask_login import login_required
-from .forms.search_from import SearchForm,DetailForm,NewsFeedForm
+from .forms.search_from import SearchForm,DetailForm,NewsFeedForm,SearchEmp_Id,AssetForm
 from .models.Admin_models import Admin
 from . import db
-from .models.Admin_models import Admin
-from .models.emp_detail_models import Employee
+from .models.emp_detail_models import Employee,Asset
 from .models.family_models import FamilyDetails
 from .models.prev_com import PreviousCompany
 from .models.education import UploadDoc, Education
 from .models.attendance import Punch, LeaveBalance
-from .models.manager_model import ManagerContact
 from .models.news_feed import NewsFeed
 from .forms.attendance import MonthYearForm,BalanceUpdateForm
 from datetime import datetime
@@ -18,31 +16,34 @@ from werkzeug.utils import secure_filename
 import os
 
 
+
 hr=Blueprint('hr',__name__)
 
 
 @hr.route('/hr_dashbord',methods=['GET','POST'])
 @login_required
 def hr_dashbord():
-    form = SearchForm()
-    if form.validate_on_submit():
-        circle = form.circle.data
-        emp_type = form.emp_type.data
+    today = datetime.today()
+    current_day = today.day
+    current_month = today.month
 
-        admins = Admin.query.filter_by(circle=circle, Emp_type=emp_type).all()
+    employees_with_anniversaries = Admin.query.filter(
+        db.extract('month', Admin.Doj) == current_month,
+        db.extract('day', Admin.Doj) == current_day
+    ).all()
+    
 
-        if not admins:
-            flash('No matching entries found', category='error')
-            return redirect(url_for('hr.search'))
+    employees_with_birthdays = Employee.query.filter(
+        db.extract('month', Employee.dob) == current_month,
+        db.extract('day', Employee.dob) == current_day
+    ).all()
+    print(employees_with_birthdays)
 
-        
-        session['admins'] = [admin.id for admin in admins]
-        session['circle'] = circle
-        session['emp_type'] = emp_type
+    return render_template('HumanResource/hr_dashboard.html',
+                           employees_with_anniversaries=employees_with_anniversaries,
+                           employees_with_birthdays=employees_with_birthdays)
+   
 
-        return redirect(url_for('hr.search_results'))
-
-    return render_template('HumanResource/hr_dashboard.html', form=form)
     
 
 
@@ -151,10 +152,9 @@ def display_details():
                     detail['punch_out'] = punch.punch_out
     elif detail_type == 'document':
         details = UploadDoc.query.filter_by(admin_id=user_id).all()
-    elif detail_type == 'leave_bal':
-        details = LeaveBalance.query.filter_by(admin_id=user_id).all()
-    elif detail_type == 'manager_contact':
-        details = ManagerContact.query.filter_by(admin_id=user_id).all()
+    
+        
+
 
     if admin is None:
         return redirect(url_for('hr.view_details'))
@@ -176,15 +176,15 @@ def employee_list():
         emp_type = form.emp_type.data
         circle = form.circle.data
 
-        # Store search criteria in session
+       
         session['emp_type'] = emp_type
         session['circle'] = circle
 
-        # Fetch employees based on selected emp_type and circle
+        
         employees = Admin.query.filter_by(Emp_type=emp_type, circle=circle).all()
 
     else:
-        # Use the search criteria from the session if available
+        
         emp_type = session.get('emp_type')
         circle = session.get('circle')
 
@@ -230,10 +230,13 @@ def add_news_feed():
             file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
             file.save(file_path)
 
+       
         news_feed = NewsFeed(
             title=form.title.data,
             content=form.content.data,
-            file_path=filename if file else None
+            file_path=filename if file else None,
+            circle=form.circle.data,
+            emp_type=form.emp_type.data
         )
         db.session.add(news_feed)
         db.session.commit()
@@ -255,5 +258,87 @@ def view_news_feed(news_feed_id):
 def download_file(filename):
     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
 
+   
 
+
+@hr.route('/search_employee', methods=['GET', 'POST'])
+def search_employee():
+    form = SearchEmp_Id()
+    employee = None
+
+    if form.validate_on_submit():
+        emp_id = form.emp_id.data
+        employee = Admin.query.filter_by(emp_id=emp_id).first()
+
+        if employee is None:
+            flash('Employee not found!', 'danger')
+        else:
+            return render_template('HumanResource/asset_search.html', form=form, employee=employee)
+
+    return render_template('HumanResource/asset_search.html', form=form, employee=employee)
+
+
+@hr.route('/add_asset/<int:admin_id>', methods=['GET', 'POST'])
+def add_asset(admin_id):
+    asset_form = AssetForm()
+    employee = Admin.query.get(admin_id)
+
+    if asset_form.validate_on_submit():
+        photo_filename = None
+        if asset_form.image_file.data:
+            photo_filename = secure_filename(asset_form.image_file.data.filename)
+            asset_form.image_file.data.save(os.path.join(current_app.config['UPLOAD_FOLDER'], photo_filename))
+        
+        new_asset = Asset(
+            name=asset_form.name.data,
+            description=asset_form.description.data,
+            admin_id=employee.id,
+            image_file=photo_filename,
+            issue_date=asset_form.issue_date.data,
+            return_date=asset_form.return_date.data if asset_form.return_date.data else None
+        )
+        db.session.add(new_asset)
+        db.session.commit()
+        flash('Asset added successfully!', 'success')
+
+        return redirect(url_for('hr.add_asset', admin_id=admin_id))
+
+    assets = employee.assets if employee else []
+
+    return render_template('HumanResource/assets.html', asset_form=asset_form, employee=employee, assets=assets)
+
+
+
+@hr.route('/update_asset/<int:asset_id>', methods=['GET', 'POST'])
+def update_asset(asset_id):
+    asset = Asset.query.get(asset_id)
+    asset_form = AssetForm()
+
+    if request.method == 'GET':
+        # Pre-fill the form with the asset's existing data
+        asset_form.name.data = asset.name
+        asset_form.description.data = asset.description
+        asset_form.image_file.data = asset.image_file  # If you want to pre-fill image (you might handle this differently)
+        asset_form.issue_date.data = asset.issue_date
+        asset_form.return_date.data = asset.return_date
+
+    if asset_form.validate_on_submit():
+        photo_filename = None
+        if asset_form.image_file.data:
+            photo_filename = secure_filename(asset_form.image_file.data.filename)
+            asset_form.image_file.data.save(os.path.join(current_app.config['UPLOAD_FOLDER'], photo_filename))
+        
+        # Update asset with new data
+        asset.name = asset_form.name.data
+        asset.description = asset_form.description.data
+        asset.image_file = photo_filename if photo_filename else asset.image_file
+        asset.issue_date = asset_form.issue_date.data
+        asset.return_date = asset_form.return_date.data if asset_form.return_date.data else None
+
+        db.session.commit()
+        flash('Asset updated successfully!', 'success')
+
+        return redirect(url_for('hr.add_asset', admin_id=asset.admin_id))
+
+    return render_template('HumanResource/assets_update.html', asset_form=asset_form, asset=asset)
 

@@ -1,0 +1,50 @@
+{% extends "employee/E_homeBase.html" %}
+{% block title %}Assets{% endblock %}
+{% block content %}
+
+<h1 class="centered-heading">My Assets</h1>
+
+{% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+    <ul>
+    {% for category, message in messages %}
+      <li class="{{ category }}">{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+{% if assets %}
+    <table class="asset-table">
+        <thead>
+            <tr>
+                <th>Asset Name</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>Issue Date</th>
+                <th>Return Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for asset in assets %}
+            <tr>
+                <td>{{ asset.name }}</td>
+                <td>{{ asset.description }}</td>
+                <td>
+                    {% if asset.image_file %}
+                        <img src="{{ url_for('static', filename='uploads/' + asset.image_file) }}" alt="{{ asset.name }}" class="img-thumbnail" width="100">
+                    {% else %}
+                        No Image
+                    {% endif %}
+                </td>
+                <td>{{ asset.issue_date.strftime('%Y-%m-%d') if asset.issue_date else 'N/A' }}</td>
+                <td>{{ asset.return_date.strftime('%Y-%m-%d') if asset.return_date else 'N/A' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No assets to display.</p>
+{% endif %}
+
+{% endblock %}

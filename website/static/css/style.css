@@ -174,7 +174,8 @@ input[type='text'],
 input[type='number'],
 input[type='tel'],
 select[id='user_type'],
-select[id='circle']{
+select[id='circle'],
+input[id='Doj']{
   border: 1px solid black;
   height: 55px;
   padding: 0 2rem;

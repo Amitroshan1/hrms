@@ -5,7 +5,7 @@
 
 
 <div class="container">
-    <h2 class="centered-heading">Details for {{ admin.first_name }}</h2>
+    <h2 class="centered-heading">Details for {{ admin.first_name | capitalize }}</h2>
 
     {% if detail_type == 'attendance' %}
     <form method="POST" action="{{ url_for('hr.display_details') }}">
@@ -49,15 +49,15 @@
                 <tbody>
                     {% for detail in details %}
                         <tr>
-                            <td>{{ detail.name }}</td>
+                            <td>{{ detail.name | capitalize  }}</td>
                             <td>{{ detail.email }}</td>
                             <td>{{ detail.dob }}</td>
                             <td>{{ detail.age }}</td>
-                            <td>{{ detail.relation }}</td>
-                            <td>{{ detail.occupation }}</td>
+                            <td>{{ detail.relation | capitalize }}</td>
+                            <td>{{ detail.occupation | capitalize  }}</td>
                             <td>{{ detail.income }}</td>
-                            <td>{{ detail.address }}</td>
-                            <td>{{ detail.remarks }}</td>
+                            <td>{{ detail.address  | capitalize }}</td>
+                            <td>{{ detail.remarks | capitalize }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -83,17 +83,17 @@
                 <tbody>
                     {% for detail in details %}
                         <tr>
-                            <td>{{ detail.com_name }}</td>
-                            <td>{{ detail.designation }}</td>
+                            <td>{{ detail.com_name | capitalize  }}</td>
+                            <td>{{ detail.designation | capitalize }}</td>
                             <td>{{ detail.doj }}</td>
                             <td>{{ detail.dol }}</td>
-                            <td>{{ detail.reason }}</td>
+                            <td>{{ detail.reason | capitalize }}</td>
                             <td>{{ detail.uan }}</td>
                             <td>{{ detail.pan }}</td>
                             <td>{{ detail.contact }}</td>
                             <td>{{ detail.name_contact }}</td>
                             <td>{{ detail.pf_num }}</td>
-                            <td>{{ detail.address }}</td>
+                            <td>{{ detail.address | capitalize }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -129,25 +129,25 @@
                     {% for detail in details %}
                         <tr>
                             <td><img src="{{ url_for('static', filename='uploads/' ~ detail.photo_filename) }}" alt="Employee Photo" width="50"></td>
-                            <td>{{ detail.name }}</td>
+                            <td>{{ detail.name | capitalize }}</td>
                             <td>{{ detail.email }}</td>
-                            <td>{{ detail.father_name }}</td>
-                            <td>{{ detail.mother_name }}</td>
+                            <td>{{ detail.father_name | capitalize }}</td>
+                            <td>{{ detail.mother_name | capitalize }}</td>
                             <td>{{ detail.marital_status }}</td>
-                            <td>{{ detail.spouse_name }}</td>
+                            <td>{{ detail.spouse_name | capitalize }}</td>
                             <td>{{ detail.dob }}</td>
                             <td>{{ detail.emp_id }}</td>
                             <td>{{ detail.mobile }}</td>
-                            <td>{{ detail.gender }}</td>
+                            <td>{{ detail.gender| capitalize }}</td>
                             <td>{{ detail.emergency_mobile }}</td>
-                            <td>{{ detail.caste }}</td>
-                            <td>{{ detail.nationality }}</td>
-                            <td>{{ detail.language }}</td>
-                            <td>{{ detail.religion }}</td>
+                            <td>{{ detail.caste | capitalize }}</td>
+                            <td>{{ detail.nationality | capitalize }}</td>
+                            <td>{{ detail.language | capitalize }}</td>
+                            <td>{{ detail.religion | capitalize }}</td>
                             <td>{{ detail.blood_group }}</td>
                             <td>{{ detail.designation }}</td>
-                            <td>{{ detail.permanent_address_line1 }}, {{ detail.permanent_address_line2 }}, {{ detail.permanent_address_line3 }}, {{ detail.permanent_pincode }}, {{ detail.permanent_district }}, {{ detail.permanent_state }}</td>
-                            <td>{{ detail.present_address_line1 }}, {{ detail.present_address_line2 }}, {{ detail.present_address_line3 }}, {{ detail.present_pincode }}, {{ detail.present_district }}, {{ detail.present_state }}</td>
+                            <td>{{ detail.permanent_address_line1 | capitalize  }}, {{ detail.permanent_address_line2 | capitalize }}, {{ detail.permanent_address_line3 | capitalize }}, {{ detail.permanent_pincode }}, {{ detail.permanent_district | capitalize }}, {{ detail.permanent_state | capitalize }}</td>
+                            <td>{{ detail.present_address_line1 | capitalize }}, {{ detail.present_address_line2 | capitalize }}, {{ detail.present_address_line3 | capitalize }}, {{ detail.present_pincode }}, {{ detail.present_district | capitalize }}, {{ detail.present_state | capitalize }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -168,8 +168,8 @@
                 <tbody>
                     {% for detail in details %}
                         <tr>
-                            <td>{{ detail.qualification }}</td>
-                            <td>{{ detail.institution }}</td>
+                            <td>{{ detail.qualification | capitalize }}</td>
+                            <td>{{ detail.institution | capitalize }}</td>
                             <td>{{ detail.board }}</td>
                             <td>{{ detail.start }}</td>
                             <td>{{ detail.end }}</td>
@@ -212,7 +212,7 @@
                 <tbody>
                     {% for detail in details %}
                         <tr>
-                            <td>{{ detail.doc_name }}</td>
+                            <td>{{ detail.doc_name | capitalize }}</td>
                             <td>{{ detail.doc_number }}</td>
                             <td>{{ detail.issue_date }}</td>
                             <td><a href="{{ url_for('static', filename='uploads/' ~ detail.doc_file) }}" target="_blank">{{ detail.doc_file }}</a></td>

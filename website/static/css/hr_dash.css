@@ -1,4 +1,3 @@
-
 * {
     margin: 0;
     padding: 0;
@@ -16,7 +15,6 @@ html {
 body {
     background: white;
 }
-
 
 header {
     width: 100%;
@@ -61,6 +59,56 @@ header .logo img {
     background: #eee;
 }
 
+/* Dropdown container */
+.dropdown {
+    float: left;
+    overflow: hidden;
+}
+
+.dropdown .dropbtn {
+    font-size: 20px;
+    border: none;
+    outline: none;
+    color: black;
+    padding: 10px 25px;
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+    border-radius: 50px;
+    transition: .2s;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 8px;
+}
+
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    border-radius: 0;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #eee;
+}
 
 .hamburger {
     display: none;
@@ -73,7 +121,6 @@ header .logo img {
     background-color: black;
     margin: 4px 0;
 }
-
 
 @media (max-width: 768px) {
     header {
@@ -104,10 +151,17 @@ header .logo img {
         color: black;
     }
 
+    .dropdown-content {
+        position: relative;
+        min-width: 100%;
+        box-shadow: none;
+    }
+
     .hamburger {
         display: block;
     }
 }
+
 .container {
     max-width: 800px;
     margin: 0 auto;
@@ -157,7 +211,6 @@ form {
 }
 
 .btn-primary {
-  
     background-color: #3498db;
     color: white;
     padding: 10px 20px;
@@ -168,9 +221,9 @@ form {
 }
 
 .btn-primary:hover {
-    
     background-color: #2980b9;
 }
+
 .centered-heading {
     text-align: center;
     margin-bottom: 20px;
@@ -188,19 +241,18 @@ form {
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
 }
 
-
 .table th, .table td {
     padding: 10px;
     text-align: center;
     border: 1px solid #dee2e6;
 }
+
 .table thead tr {
     background-color: #43d6f5;
     color: #ffffff;
     text-align: left;
     font-weight: bold;
 }
-
 
 .bg-success {
     background-color: hsl(136, 56%, 19%) !important; 
@@ -223,11 +275,9 @@ form {
     color: white !important;
 }
 
-
 .form-group-cal {
     margin-bottom: 15px;
 }
-
 
 .form-control-cal {
     width: auto; 
@@ -236,12 +286,10 @@ form {
 
 .btn {
     margin: 5px;
-   
 }
 
 .container {
     margin: 20px auto;
-    
 }
 
 .search {
@@ -250,8 +298,6 @@ form {
     padding: 10px 20px;
     width: auto; 
 }
-
-
 
 .container_list {
     display: flex;
@@ -270,10 +316,6 @@ form {
     margin-bottom: 30px;
 }
 
-.form-group {
-    margin-bottom: 15px;
-}
-
 .table-container_list {
     width: 80%;
 }
@@ -284,14 +326,127 @@ form {
     border-collapse: collapse;
 }
 
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f2f2f2;
+}
+
 .table th, .table td {
     padding: 30px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: #f2f2f2;
+/* Asset Form Styles */
+.asset {
+    max-width: 400px; /* Set a maximum width for the form */
+    margin: 20px auto; /* Center the form horizontally */
+    padding: 20px; /* Add padding inside the form */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #f9f9f9; /* Light background color */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.asset label {
+    font-weight: bold; /* Make labels bold */
+    margin-bottom: 5px; /* Space between label and input */
+    display: block; /* Make labels block elements */
+}
+
+.asset input[type="text"],
+.asset textarea {
+    width: 100%; /* Make inputs and textareas full width */
+    padding: 10px; /* Padding inside inputs */
+    margin-bottom: 15px; /* Space between inputs */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 3px; /* Rounded corners */
+    font-size: 14px; /* Font size */
+}
+
+.asset input[type="submit"] {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    padding: 10px 15px; /* Padding for button */
+    border-radius: 3px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s; /* Transition for hover effect */
+}
+
+.asset input[type="submit"]:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+.asset input[type="submit"]:active {
+    background-color: #004085; /* Even darker shade on active */
 }
 
 
+/* Table Styles */
+.employee-details-table-2 {
+    width: 40%; /* Set width of the table */
+    border-collapse: collapse; /* Collapse borders for a cleaner look */
+    margin: 20px auto; /* Center the table horizontally with auto margins */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow around the table */
+}
+
+.employee-details-table-2 th, 
+.employee-details-table-2 td {
+    border: 1px solid #ccc; /* Light gray border */
+    padding: 12px; /* Padding inside cells */
+    text-align: left; /* Align text to the left */
+}
+
+.employee-details-table-2 th {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white; /* White text color for headers */
+    font-weight: bold; /* Bold text for headers */
+}
+
+.employee-details-table-2 tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light gray background for even rows */
+}
+
+.employee-details-table-2 tr:hover {
+    background-color: #eaeaea; /* Highlight row on hover */
+}
+
+.employee-details-table-2 td {
+    font-size: 16px; /* Set font size for table cells */
+}
+
+.employee-details-table-2 th, 
+.employee-details-table-2 td {
+    border-radius: 5px; /* Rounded corners for cells */
+}
+
+/* Asset Table Styles */
+/* Asset Table Styles */
+.asset-table {
+    width: 50%; /* Set the table width */
+    border-collapse: collapse;
+    margin: 20px auto; /* Center the table horizontally and add top margin */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.asset-table th, 
+.asset-table td {
+    border: 1px solid #ccc;
+    padding: 12px;
+    text-align: left;
+}
+
+.asset-table th {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.asset-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.asset-table tr:hover {
+    background-color: #eaeaea;
+}

@@ -1,5 +1,6 @@
 from .. import db
 from flask_login import UserMixin
+from datetime import datetime
 
 
 
@@ -53,3 +54,18 @@ class Employee(db.Model,UserMixin):
     
     def __repr__(self):
         return f'<Employee {self.name}>'
+    
+
+
+class Asset(db.Model):
+    __tablename__ = 'assets'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(255))
+    image_file = db.Column(db.String(255))  
+    issue_date = db.Column(db.Date, default=datetime.now())  
+    return_date = db.Column(db.Date)
+    admin_id = db.Column(db.Integer, db.ForeignKey('admins.id'), nullable=False)
+
+    admin = db.relationship('Admin', back_populates='assets')

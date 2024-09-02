@@ -16,3 +16,6 @@ class ManagerContact(db.Model):
     l3_mobile = db.Column(db.String(15), nullable=False)
     l3_email = db.Column(db.String(100), nullable=False)
 
+
+
+ 

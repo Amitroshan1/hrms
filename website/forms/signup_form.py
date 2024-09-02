@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField,BooleanField,SelectField
+from wtforms import StringField, PasswordField, SubmitField,BooleanField,SelectField,DateField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
 from website.models.Admin_models import Admin
 from .custom_validator import validate_password
@@ -17,6 +17,7 @@ class AdminSignUpForm(FlaskForm):
     first_name = StringField('Name', 
                              validators=[DataRequired(), Length(min=2, max=150)], 
                              render_kw={"placeholder": "Enter your Full_Name"})
+    Doj = DateField('Date of Joining', format='%Y-%m-%d', validators=[DataRequired()])
     
     password = PasswordField('Password', 
                              validators=[DataRequired(),validate_password], 
@@ -37,7 +38,7 @@ class AdminSignUpForm(FlaskForm):
                               validators=[DataRequired()])
     
     user_type = SelectField('Employee Type', 
-                            choices=[('','Select Employee Type'),('hr','Human Resource'),('finance','Accounts & Finance'), ('employee', 'Software'),('it_department', 'IT Department')],
+                            choices=[('','Select Employee Type'),('hr','Human Resource'),('Accounts & Finance','Accounts & Finance'), ('Software', 'Software'),('it_department', 'IT Department')],
                               validators=[DataRequired()])
     
 

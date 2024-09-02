@@ -13,19 +13,20 @@ class Admin(db.Model, UserMixin):
     first_name = db.Column(db.String(150), nullable=False)
     mobile = db.Column(db.String(15), unique=True, nullable=False)
     emp_id = db.Column(db.String(10), unique=True, nullable=False)
+    Doj = db.Column(db.Date, nullable=False)
     Emp_type = db.Column(db.String(50), nullable=False, default='employee')
     circle=db.Column(db.String(50), nullable=False, default=None)
     
     
-    employee_details = db.relationship('Employee', back_populates='admin', uselist=False)
+    employee_details = db.relationship('Employee', back_populates='admin', uselist=False, cascade="all, delete-orphan")
     family_details = db.relationship('FamilyDetails', back_populates='admin', cascade="all, delete-orphan")
-    previous_companies = db.relationship('PreviousCompany', back_populates='admin', lazy=True)
-    education_details = db.relationship('Education', back_populates='admin', lazy='dynamic')
-    document_details = db.relationship('UploadDoc', back_populates='admin', lazy='dynamic')
-    leave_balance = db.relationship('LeaveBalance', back_populates='admin', uselist=False)
-    leave_applications = db.relationship('LeaveApplication', back_populates='admin', lazy='dynamic')
-
-    punch_records = db.relationship('Punch', back_populates='admin', lazy='dynamic')
+    previous_companies = db.relationship('PreviousCompany', back_populates='admin', lazy=True, cascade="all, delete-orphan")
+    education_details = db.relationship('Education', back_populates='admin', lazy='dynamic', cascade="all, delete-orphan")
+    document_details = db.relationship('UploadDoc', back_populates='admin', lazy='dynamic', cascade="all, delete-orphan")
+    leave_balance = db.relationship('LeaveBalance', back_populates='admin', uselist=False, cascade="all, delete-orphan")
+    leave_applications = db.relationship('LeaveApplication', back_populates='admin', lazy='dynamic', cascade="all, delete-orphan")
+    punch_records = db.relationship('Punch', back_populates='admin', lazy='dynamic', cascade="all, delete-orphan")
+    assets = db.relationship('Asset', back_populates='admin', cascade="all, delete-orphan")
 
 
     
