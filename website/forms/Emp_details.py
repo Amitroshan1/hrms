@@ -37,36 +37,36 @@ class Employee_Details(FlaskForm):
 
 
     designation  = SelectField('Designation *', 
-                            choices=[('choose your Designation', 'Choose Your Designation '),
-                                      ('test Engineer','Test Engineer'),
-                                      ('senior test engineer','Senior Test Engineer'),
-                                      ('qa Engineer','QA Engineer'),
-                                      ('dt','DT Engineer'),
-                                      ('technical service Engineer','Technical Service Engineer'),
-                                       ('associate software Engineer','Associate Software Engineer'),
-                                        ('software engineer','Software Engineer'),
-                                         ('senior software engineer','Senior Software Engineer'),
-                                         ('project lead','Project Lead'),
-                                         ('project manager','Project Manager'),
-                                     ('vice President-Sales and operation', 'Vice President-Sales and Operation'),
-                                     ('GM- electronics security','GM- Electronics Security'),
-                                     ('deputy manager - Operations and Admin',"Deputy Manager - Operations and Admin"),
-                                     ('technical accounts Manager','Technical Accounts Manager'),
-                                     ('accounts Manager','Accounts Manager'),
-                                     ('accounts executive','Accounts Executive'),
-                                     ('senior Executive - HR','Senior Executive - HR'),
-                                     ('hr Executive','HR Executive'),
-                                     ('inventory Executive','Inventory Executive'),
-                                     ('office Boy','Office Boy'),
-                                     ('business Development Management','Business Development Management'),
-                                     ('sales executive','Sales Executive'),
-                                     ('circle Head','Circle Head'),
-                                     ('delivery Head','Delivery Head'),
-                                     ('seniorManager - Auditor','SeniorManager - Auditor'),
-                                     ('travel Executive','Travel Executive'),
-                                     ('visa Executive','Visa Executive'),
+                            choices=[('', 'Choose Your Designation '),
+                                      ('Test Engineer','Test Engineer'),
+                                      ('Senior test engineer','Senior Test Engineer'),
+                                      ('Qa Engineer','QA Engineer'),
+                                      ('DT Engineer','DT Engineer'),
+                                      ('Technical Service Engineer','Technical Service Engineer'),
+                                       ('Associate Software Engineer','Associate Software Engineer'),
+                                        ('Software Engineer','Software Engineer'),
+                                   ('Senior Software Engineer','Senior Software Engineer'),
+                                   ('Project Lead','Project Lead'),
+                                   ('Project Manager','Project Manager'),
+                                     ('Vice President-Sales and Operation', 'Vice President-Sales and Operation'),
+                                     ('GM-Electronics Security','GM-Electronics Security'),
+                                     ('Deputy Manager - Operations and Admin',"Deputy Manager - Operations and Admin"),
+                                     ('Technical Accounts Manager','Technical Accounts Manager'),
+                                     ('Accounts Manager','Accounts Manager'),
+                                     ('Accounts Executive','Accounts Executive'),
+                                     ('Senior Executive - HR','Senior Executive - HR'),
+                                     ('Hr Executive','HR Executive'),
+                                     ('Inventory Executive','Inventory Executive'),
+                                     ('Office Boy','Office Boy'),
+                                     ('Business Development Management','Business Development Management'),
+                                     ('Sales executive','Sales Executive'),
+                                     ('Circle Head','Circle Head'),
+                                     ('Delivery Head','Delivery Head'),
+                                     ('SeniorManager - Auditor','SeniorManager - Auditor'),
+                                     ('Travel Executive','Travel Executive'),
+                                     ('Visa Executive','Visa Executive'),
                                      ('Tender Executive','Tender Executive'),
-                                     ('project manager','Project Manager')],
+                                     ('Project manager','Project Manager')],
                               validators=[DataRequired()])
 
 
@@ -81,7 +81,7 @@ class Employee_Details(FlaskForm):
                          render_kw={"placeholder": "Enter your Mobile number"})
     
     gender = SelectField('Gender *', 
-                            choices=[('male', 'Male'), ('female', 'Female')],
+                            choices=[('Male', 'Male'), ('Female', 'Female')],
                               validators=[DataRequired()])
     
     emergency_mobile = StringField('Emergency Number *', 
@@ -89,8 +89,9 @@ class Employee_Details(FlaskForm):
                          render_kw={"placeholder": "Enter your Emergency Conatct Number"})
     
     caste = SelectField('Caste *', 
-                            choices=[('choose your caste', 'Choose Your Caste '), ('general', 'General'),('obc','Obc'),('sc','SC'),
-                                     ('st',"ST")],
+                            choices=[('', 'Choose Your Caste '), 
+                                     ('General', 'General'),('Obc','Obc'),('Sc','SC'),
+                                     ('St',"ST")],
                               validators=[DataRequired()])
     
     nationality = StringField('Nationality *', 
@@ -102,8 +103,10 @@ class Employee_Details(FlaskForm):
                              render_kw={"placeholder": "Enter the Language"})
     
     religion = SelectField('Religion *', 
-                            choices=[('choose your religion', 'Choose Your Religion '), ('hindu', 'Hindu'),('muslim','Muslim'),('christian','Christian'),
-                                     ('buddhism',"Buddhism"),('sikh','Sikh'),('jain','Jain')],
+                            choices=[('', 'Choose Your Religion '), 
+                                     ('hindu', 'Hindu'),('muslim','Muslim'),
+                                     ('christian','Christian'),
+                                     ('Buddhism',"Buddhism"),('Sikh','Sikh'),('Jain','Jain')],
                               validators=[DataRequired()])
     
     blood_group = StringField('Blood Group *', 

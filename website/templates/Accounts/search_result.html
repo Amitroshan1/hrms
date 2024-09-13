@@ -1,0 +1,48 @@
+{% extends "Accounts/Acc_base.html" %} 
+{% block title %}Accounts Search_result{% endblock %} 
+{% block content %}
+
+<div class="container">
+    {% with errors = get_flashed_messages(category_filter=["error","success"]) %}
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {%- for msg in errors %}
+                <h3>{{ msg }}</h3>
+                {% endfor -%}
+            </ul>
+        </div>
+    {% endif %}
+    {% endwith %}
+
+    <h2 class="centered-heading">Circle: {{ circle | upper }} and Employee Type: {{ emp_type | upper }}</h2>
+    {% if admins %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Employee Id</th>
+                    <th>Update</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for admin in admins %}
+                    <tr>
+                        <td>{{ admin.first_name }}</td>
+                        <td>{{ admin.email }}</td>
+                        <td>{{ admin.emp_id }}</td>
+                        <td>
+                            <a href="{{ url_for('Accounts.add_payslip', admin_id=admin.id) }}">Add PaySlip</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No matching entries found.</p>
+    {% endif %}
+    <a href="{{ url_for('Accounts.search') }}" class="btn btn-primary search">Back to Search</a>
+</div>
+
+{% endblock %}

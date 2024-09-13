@@ -37,7 +37,6 @@ def hr_dashbord():
         db.extract('month', Employee.dob) == current_month,
         db.extract('day', Employee.dob) == current_day
     ).all()
-    print(employees_with_birthdays)
 
     return render_template('HumanResource/hr_dashboard.html',
                            employees_with_anniversaries=employees_with_anniversaries,
@@ -45,8 +44,6 @@ def hr_dashbord():
    
 
     
-
-
 @hr.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
@@ -69,6 +66,8 @@ def search():
         return redirect(url_for('hr.search_results'))
 
     return render_template('HumanResource/search_form.html', form=form)
+
+
 
 @hr.route('/search_results', methods=['GET'])
 @login_required
@@ -107,8 +106,6 @@ def view_details():
         return redirect(url_for('hr.display_details'))
 
     return render_template('HumanResource/details.html', form=form)
-
-
 
 
 @hr.route('/display_details', methods=['GET', 'POST'])
@@ -153,16 +150,11 @@ def display_details():
     elif detail_type == 'document':
         details = UploadDoc.query.filter_by(admin_id=user_id).all()
     
-        
-
 
     if admin is None:
         return redirect(url_for('hr.view_details'))
 
     return render_template('HumanResource/details.html', admin=admin, details=details, detail_type=detail_type, selected_month=month, selected_year=year, form=form, datetime=datetime)
-
-
-
 
 
 
@@ -253,6 +245,8 @@ def view_news_feed(news_feed_id):
     news_feed = NewsFeed.query.get_or_404(news_feed_id)
     return render_template('employee/view_news_feed.html', news_feed=news_feed)
 
+
+
 @hr.route('/uploads/<filename>')
 @login_required
 def download_file(filename):
@@ -315,10 +309,10 @@ def update_asset(asset_id):
     asset_form = AssetForm()
 
     if request.method == 'GET':
-        # Pre-fill the form with the asset's existing data
+       
         asset_form.name.data = asset.name
         asset_form.description.data = asset.description
-        asset_form.image_file.data = asset.image_file  # If you want to pre-fill image (you might handle this differently)
+        asset_form.image_file.data = asset.image_file 
         asset_form.issue_date.data = asset.issue_date
         asset_form.return_date.data = asset.return_date
 
@@ -328,7 +322,7 @@ def update_asset(asset_id):
             photo_filename = secure_filename(asset_form.image_file.data.filename)
             asset_form.image_file.data.save(os.path.join(current_app.config['UPLOAD_FOLDER'], photo_filename))
         
-        # Update asset with new data
+       
         asset.name = asset_form.name.data
         asset.description = asset_form.description.data
         asset.image_file = photo_filename if photo_filename else asset.image_file

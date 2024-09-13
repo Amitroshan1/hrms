@@ -1,0 +1,50 @@
+{% extends "employee/E_homeBase.html" %} 
+{% block title %} Query{% endblock %}
+
+{% block content %}
+{% with errors = get_flashed_messages(category_filter=["error","success"]) %}
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {%- for msg in errors %}
+                <h3>{{ msg }}</h3>
+                {% endfor -%}
+            </ul>
+        </div>
+    {% endif %}
+    {% endwith %}
+<h2 class="centered-heading">Queries for {{ current_user.Emp_type }}</h2>
+<table class="queries">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Circle</th>
+            <th>Created At</th>
+            <th>Status</th>
+            <th>Action</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        {% for query in queries %}
+            <tr>
+                <td>{{ query.admin_details.first_name }}</td>
+                <td>{{ query.admin_details.circle }}</td>
+                <td>{{ query.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ query.status }}</td>
+                <td>
+                    <a href="{{ url_for('Accounts.chat_query', query_id=query.id) }}">Chat</a>
+                </td>
+               
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">No queries found for your department.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+{% endblock %}

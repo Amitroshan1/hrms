@@ -1,0 +1,35 @@
+{% extends "Accounts/Acc_base.html" %} 
+{% block title %}Account Search{% endblock %} 
+{% block content %}
+
+<div class="container">
+    {% with errors = get_flashed_messages(category_filter=["error","success"]) %}
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {%- for msg in errors %}
+                <h3>{{ msg }}</h3>
+                {% endfor -%}
+            </ul>
+        </div>
+    {% endif %}
+    {% endwith %}
+
+
+    <h2 class="centered-heading">Search Employees</h2>
+    <form method="POST" action="{{ url_for('Accounts.search') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label for="circle">Circle</label>
+            {{ form.circle(class="form-control") }}
+        </div>
+        <div class="form-group">
+            <label for="emp_type">Employee Type</label>
+            {{ form.emp_type(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+    </form>
+</div>
+
+
+{% endblock %}

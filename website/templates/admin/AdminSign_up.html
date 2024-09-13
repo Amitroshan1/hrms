@@ -1,28 +1,23 @@
-{% extends "employee/base.html" %}
-
-{% block title %}
-Sign Up
-{% endblock %}
-
+{% extends "HumanResource/hr_base.html" %} 
+{% block title %}Sign Up{% endblock %}
 {% block content %}
-<div class="login-header">
-    <h1>Welcome...</h1>
-    <h4><p>Please SignUp to continue...</p></h4>
-</div>
 
+<div class="container">
 {% with messages = get_flashed_messages(with_categories=True) %}
 {% if messages %}
     <div class="alert-message block-message">
         <ul>
             {% for category, msg in messages %}
-                <li class="{{ category }}">{{ msg }}<a class="close" href="/Adminsign-up">X</a></li>
+                <li class="{{ category }}">{{ msg }}</li>
             {% endfor %}
         </ul>
     </div>
 {% endif %}
 {% endwith %}
 
-<form class="SignUp-form" method="POST" action="{{ url_for('Admin_auth.admin_sign_up') }}">
+
+    <h2 class="centered-heading">SignUp</h2>
+<form method="POST" action="{{ url_for('Admin_auth.admin_sign_up') }}">
     {{ form.hidden_tag() }}
 
     <div class="signup-content">
@@ -137,10 +132,9 @@ Sign Up
 
         <div id="btm">
             <button type="submit" class="submit-btn">Create Account</button>
-            <p class="btm-text">
-                Already have an account..? <a href="/login">Login</a>
-            </p>
+            
         </div>
     </div>
+</div>
 </form>
 {% endblock %}

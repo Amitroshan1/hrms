@@ -3,9 +3,9 @@
 {% block title %}View Details{% endblock %}
 {% block content %}
 
-
+<h2 class="centered-heading">Details for {{ admin.first_name | capitalize }}</h2>
 <div class="container">
-    <h2 class="centered-heading">Details for {{ admin.first_name | capitalize }}</h2>
+    
 
     {% if detail_type == 'attendance' %}
     <form method="POST" action="{{ url_for('hr.display_details') }}">
@@ -224,6 +224,7 @@
     {% else %}
         <p>No details found for the selected type.</p>
     {% endif %}
+   
 </div>
 
 {% endblock %}

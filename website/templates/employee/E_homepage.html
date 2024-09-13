@@ -7,7 +7,7 @@
 
     <div class="punch-container">
         {% if employee %}
-        <h2>Welcome   {{ employee.name }}</h2>
+        <h2>Welcome,   {{ employee.name }}..({{ employee.designation | upper}})</h2>
         {% else %}
                 <p>Please Update Employee Details</p>
         {% endif %}
@@ -24,6 +24,13 @@
         
         
     </div>
+    {% if show_notification %}
+    <div class="notification">
+        
+        <a href="{{ url_for('Accounts.view_emp_type_queries') }}" class="btn btn-primary">View Queries</a>
+    </div>
+    {% endif %}
+
     {% if employee %}
         <div class="container-image text-center">
             {% if employee.photo_filename %}

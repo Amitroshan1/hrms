@@ -1,5 +1,4 @@
-
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -7,14 +6,17 @@
   list-style-type: none;
   font-family: poppins;
 }
-html{
+
+html {
   -webkit-tap-highlight-color: rgba(0,0,0,0);
   scroll-behavior: smooth;
 }
-body{
+
+body {
   background: white;
 }
-header{
+
+header {
   width: 100%;
   height: 80px;
   background: white;
@@ -24,18 +26,22 @@ header{
   padding: 0 100px;
   padding-top: 2px;
 }
-header .logo a{
+
+header .logo a {
   font-size: 30px;
   font-weight: bold;
   color: black;
 }
-.hamburger{
+
+.hamburger {
   display: none;
   cursor: pointer;
 }
-.nav-bar ul{
+
+.nav-bar ul {
   display: flex;
 }
+
 .nav-bar ul li a {
   display: block;
   color: black;
@@ -44,66 +50,75 @@ header .logo a{
   border-radius: 50px;
   transition: .2s;
 }
-.nav-bar ul li a:hover{
+
+.nav-bar ul li a:hover {
   color: black;
   background: #eee;
 }
-.nav-bar ul li a.active{
+
+.nav-bar ul li a.active {
   background-color: #eee;
 }
-.login{
+
+.login {
   padding-left: 20px;
 }
-.nav-bar ul li a.navlogin{
+
+.nav-bar ul li a.navlogin {
   color: #eee;
   background-color: #11101b;
   transition: .5s;
 }
-.nav-bar ul li a.navlogin:hover{
+
+.nav-bar ul li a.navlogin:hover {
   background-color: #eee;
   color: black;
 }
-.container{
+
+.container {
   min-height: calc(100vh - 40px * 2);
   display: grid;
   grid-template-columns: 50% 50%;
   border-radius: 10px;
   overflow: hidden;
 }
-.login-left{
+
+.login-left {
   display: flex;
   flex-direction: column;
   justify-content: content;
   padding-left: 100px;
   background-color: white;
 }
-.login-right{
+
+.login-right {
   display: flex;
   justify-content: center;
 }
-
 
 .pass-key {
   padding-right: 30px;
 }
 
 .password-toggle {
-  position: absolute;
-  top: 58%;
-  right: 830px; /* Adjust as needed */
+  position: fixed;
+  top: 59%;
+  right: 820px; /* Adjust as needed */
   transform: translateY(-50%);
   cursor: pointer;
   width: 30px;
 }
+
 .remember-forgot {
   margin-top: 215px;
   padding: 10px 0; /* Adjust padding as needed */
   font-size: 16px; /* Adjust font size as needed */
-  position: absolute;  
+  position: absolute;
   transform: translate(30px, -10px);
   margin-left: 250px;
 }
-.bg-grey{
+
+.bg-grey {
   width: 100%;
   border-top: 0;
   border-bottom-left-radius: 10px;
@@ -112,36 +127,44 @@ header .logo a{
   text-align: center;
   color: #212022a9;
 }
-.login-right img{
+
+.login-right img {
   width: 100%;
 }
-.login-header{
+
+.login-header {
   margin-top: 50px;
 }
-.login-header h1{
+
+.login-header h1 {
   font-size: 2rem;
   font-weight: 700;
 }
-.login-header p{
+
+.login-header p {
   margin-top: 10px;
   opacity: .7;
 }
-.login-form{
+
+.login-form {
   width: 450px;
   margin-top: 20px;
 }
-.login-content{
+
+.login-content {
   display: flex;
   flex-direction: column;
   gap: 5px;
 }
-.login-footer{
+
+.login-footer {
   display: flex;
   gap: 10px;
   margin-top: 10px;
   font-size: 1rem;
 }
-.login-footer a{
+
+.login-footer a {
   flex: 6;
   gap: 15px;
   background-color: #eee;
@@ -155,11 +178,13 @@ header .logo a{
   cursor: pointer;
   transition: .5s;
 }
-.login-footer a:hover{
+
+.login-footer a:hover {
   background-color: black;
   color: white;
 }
-.form-tem label:not(.checkboxLabel){
+
+.form-tem label:not(.checkboxLabel) {
   display: inline-block;
   background-color: white;
   margin-bottom: 10px;
@@ -168,6 +193,7 @@ header .logo a{
   transform: translate(30px, -10px);
   font-size: 14px;
 }
+
 input[type='email'],
 input[type='password'],
 input[type='text'],
@@ -175,7 +201,19 @@ input[type='number'],
 input[type='tel'],
 select[id='user_type'],
 select[id='circle'],
-input[id='Doj']{
+input[id='Doj'] {
+  border: 1px solid black;
+  height: 55px;
+  padding: 0 2rem;
+  width: 100%;
+  outline: none;
+  transition: background .5s;
+  font-size: 18px;
+  border-radius: 100px;
+  position: relative;
+}
+
+.pass-key {
   border: 1px solid black;
   height: 55px;
   padding: 0 2rem;
@@ -185,17 +223,8 @@ input[id='Doj']{
   font-size: 18px;
   border-radius: 100px;
 }
-.pass-key{
-  border: 1px solid black;
-  height: 55px;
-  padding: 0 2rem;
-  width: 100%;
-  outline: none;
-  transition: background .5s;
-  font-size: 18px;
-  border-radius: 100px;
-}
-.show{
+
+.show {
   display: block;
   position: absolute;
   margin-left: 380px;
@@ -205,17 +234,19 @@ input[id='Doj']{
   cursor: pointer;
 }
 
-.checkbox{
+.checkbox {
   display: flex;
   align-items: center;
   gap: 7px;
 }
-input[type="checkbox"]{
+
+input[type="checkbox"] {
   width: 20px;
   height: 20px;
   accent-color: black;
 }
-button{
+
+button {
   border: none;
   padding: 1rem;
   height: 55px;
@@ -226,71 +257,92 @@ button{
   margin-bottom: 30px;
   transition: .5s;
 }
-button:hover{
+
+button:hover {
   background: black;
   color: white;
 }
-::placeholder{
+
+::placeholder {
   color: grey;
   font-size: 1rem;
 }
-/* optimisaton for low res devices */
 
-@media(max-width:1300px){
-  header{
+
+.login-home a {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    margin-left: 15px;
+    margin-top: 20px;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 1.5rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.login-home a:hover {
+    background-color: #0056b3;
+}
+
+/* Optimizations for low-res devices */
+@media(max-width:1300px) {
+  header {
       position: 0 50px;
   }
-  .login-left{
+  .login-left {
       padding: 50px !important;
   }
-  .login-right{
+  .login-right {
       width: 500px;
   }
-  .login-form{
+  .login-form {
       width:100%;
   }
-  .login-footer{
+  .login-footer {
       flex-direction: column;
       gap: 15px;
   }
 }
-@media(max-width:1100px){
-  header{
+
+@media(max-width:1100px) {
+  header {
       padding: 0 30px;
   }
-  .login-right{
+  .login-right {
       width: 400px;
   }
 }
-@media(max-width:900px){
-  .login-header h1{
+
+@media(max-width:900px) {
+  .login-header h1 {
       font-size: 25px;
   }
-  .login-header p{
+  .login-header p {
       font-size: 16px;
   }
-  .login-right{
+  .login-right {
       width: 400px;
   }
-  .container.active{
+  .container.active {
       filter: blur();
   }
-  .container.active{
+  .container.active {
       filter: blur(15px);
   }
-  .hamburger{
+  .hamburger {
       display: block;
       z-index: 99999;
   }
-  .hamburger .line{
+  .hamburger .line {
       width: 30px;
       height: 3px;
       background: black;
       margin: 6px 0;
-      /* z-index: 999; */
       cursor: pointer;
   }
-  .nav-bar{
+  .nav-bar {
       height: 0;
       position: absolute;
       top: 90px;
@@ -299,12 +351,12 @@ button:hover{
       width: 100vw;
       z-index: 999;
       transition: .5;
-      overflow: hidden;
+      overflow: auto;
   }
-  .nav-bar.active{
+  .nav-bar.active {
       height: 800px;
   }
-  .nav-bar ul{
+  .nav-bar ul {
       display: block;
       width: fit-content;
       margin: 160px auto 0 auto;
@@ -312,7 +364,7 @@ button:hover{
       transition: .5s;
       opacity: 0;
   }
-  .nav-bar.active ul{
+  .nav-bar.active ul {
       opacity: 1;
       transition: .5;
   }
@@ -324,22 +376,23 @@ button:hover{
       font-weight: 900;
       margin-bottom: 12px;
   }
-  }
-@media(max-width:768px){
-  .login-header h1{
+}
+
+@media(max-width:768px) {
+  .login-header h1 {
       font-size: 30px;
   }
-  body{
+  body {
       padding: 20px;
   }
-  .container{
+  .container {
       grid-template-columns: auto;
   }
-  .login-right{
+  .login-right {
       display: none;
   }
-
 }
+
 .alert {
   position: fixed;
   top: 20px;
@@ -349,29 +402,12 @@ button:hover{
   border-radius: 5px;
 }
 
-.alert-success {
-  background-color: #4CAF50;
-  color: white;
-}
-
 .alert-danger {
-  background-color:white;
-  color: red;
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
-.alert .close {
-  margin-left: 15px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
 }
-
-
-
-
-
-
-
-
-
-

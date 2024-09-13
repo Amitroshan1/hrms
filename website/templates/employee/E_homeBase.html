@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- ===== CSS ===== -->
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/E_homepage.css') }}">
     <title>{% block title %}{% endblock %}</title>
 </head>
@@ -27,17 +27,24 @@
                         <span class="nav__name">Attendance</span>
                     </a>
 
-                    {% if current_user.Emp_type == 'hr' %}
+                    {% if current_user.Emp_type == 'Human Resource' %}
                     <a href="/hr_dashbord" class="nav__link">
                         <ion-icon name="open-outline" class="nav__icon"></ion-icon>
                         <span class="nav__name">Human Resource</span>
                     </a>
                     {% endif %}
 
-                    {% if current_user.Emp_type == 'finance' %}
-                    <a href="#" class="nav__link">
+                    {% if current_user.Emp_type == 'Accounts & Finance' %}
+                    <a href="/Acc_dashbord" class="nav__link">
                         <ion-icon name="wallet-outline" class="nav__icon"></ion-icon>
                         <span class="nav__name">Accounts</span>
+                    </a>
+                    {% endif %}
+
+                    {% if current_user.Emp_type == 'It Department' %}
+                    <a href="#" class="nav__link">
+                        <ion-icon name="wallet-outline" class="nav__icon"></ion-icon>
+                        <span class="nav__name">It Department</span>
                     </a>
                     {% endif %}
 
@@ -59,9 +66,10 @@
                         <span class="nav__name">General</span>
                         <ion-icon name="chevron-down-outline" class="collapse__link"></ion-icon>
                         <ul class="collapse__menu">
-                            <a href="#" class="collapse__sublink">Query</a>
-                            <a href="#" class="collapse__sublink">Claim</a>
+                            <a href="/create_query" class="collapse__sublink">Query</a>
+                            <a href="/payslips" class="collapse__sublink">PaySlip</a>
                             <a href="/my_assets" class="collapse__sublink">Assets</a>
+                            <a href="#" class="collapse__sublink">Claim</a> 
                            
                         </ul>
                     </div>

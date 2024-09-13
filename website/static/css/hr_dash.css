@@ -163,16 +163,17 @@ header .logo img {
 }
 
 .container {
-    max-width: 800px;
+    max-width: 600px;
     margin: 0 auto;
     padding: 20px;
 }
 
 h2 {
     color: #2c3e50;
-    border-bottom: 2px solid #3498db;
+   
     padding-bottom: 10px;
     margin-bottom: 30px;
+    padding-left: 10px;
 }
 
 .form-group {
@@ -243,8 +244,11 @@ form {
 
 .table th, .table td {
     padding: 10px;
-    text-align: center;
-    border: 1px solid #dee2e6;
+    text-align: left; /* Align text to the left */
+    white-space: nowrap; /* Prevent text from wrapping to a new line */
+    text-overflow: ellipsis; /* Truncate text with ellipsis if it overflows */
+    overflow: hidden; /* Hide overflowing text */
+    border-bottom: 1px solid #ddd;
 }
 
 .table thead tr {
@@ -290,6 +294,7 @@ form {
 
 .container {
     margin: 20px auto;
+    overflow-x: auto;
 }
 
 .search {
@@ -333,6 +338,7 @@ form {
 .table th, .table td {
     padding: 30px;
     text-align: left;
+    white-space: nowrap;
     border-bottom: 1px solid #ddd;
 }
 

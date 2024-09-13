@@ -17,6 +17,7 @@ class AdminSignUpForm(FlaskForm):
     first_name = StringField('Name', 
                              validators=[DataRequired(), Length(min=2, max=150)], 
                              render_kw={"placeholder": "Enter your Full_Name"})
+    
     Doj = DateField('Date of Joining', format='%Y-%m-%d', validators=[DataRequired()])
     
     password = PasswordField('Password', 
@@ -33,12 +34,20 @@ class AdminSignUpForm(FlaskForm):
     
 
     circle = SelectField('Circle', 
-                            choices=[('','Select Circle'),('nhq', 'NHQ'), ('noida', 'Noida'),('punjab', 'Punjab'),('haryana', 'Haryana'),('gurugram','Gurugram'),('pune','Pune'),('banglore','Banglore'),('hydrabad','Hydrabad'),
-                                     ('chennai','Chennai'),('kolkata','Kolkata')],
+                            choices=[('','Select Circle'),('NHQ', 'NHQ'),
+                                      ('Noida', 'Noida'),('Punjab', 'Punjab'),
+                                      ('Haryana', 'Haryana'),('Gurugram','Gurugram'),
+                                      ('Pune','Pune'),('Banglore','Banglore'),('Hydrabad','Hydrabad'),
+                                     ('Chennai','Chennai'),('Kolkata','Kolkata')],
                               validators=[DataRequired()])
     
     user_type = SelectField('Employee Type', 
-                            choices=[('','Select Employee Type'),('hr','Human Resource'),('Accounts & Finance','Accounts & Finance'), ('Software', 'Software'),('it_department', 'IT Department')],
+                            choices=[('','Select Employee Type'),
+                                     ('Human Resource','Human Resource'),
+                                     ('Accounts & Finance','Accounts & Finance'),
+                                       ('Testing', 'Testing'),
+                                       ('Software Development', 'Software Development'),
+                                       ('It Department', 'IT Department')],
                               validators=[DataRequired()])
     
 

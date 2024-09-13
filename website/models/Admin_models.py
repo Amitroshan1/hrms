@@ -27,6 +27,10 @@ class Admin(db.Model, UserMixin):
     leave_applications = db.relationship('LeaveApplication', back_populates='admin', lazy='dynamic', cascade="all, delete-orphan")
     punch_records = db.relationship('Punch', back_populates='admin', lazy='dynamic', cascade="all, delete-orphan")
     assets = db.relationship('Asset', back_populates='admin', cascade="all, delete-orphan")
+    payslips = db.relationship('PaySlip', back_populates='admin', cascade="all, delete-orphan")
+    queries = db.relationship('Query', back_populates='admin', cascade="all, delete-orphan")
+    query_replies = db.relationship('QueryReply', back_populates='admin', cascade="all, delete-orphan")
+
 
 
     

@@ -1,25 +1,25 @@
-/*===== GOOGLE FONTS =====*/
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
 
-/*===== VARIABLES CSS =====*/
+
 :root {
     --nav-width: 92px;
-    /*===== Colors =====*/
+    
     --first-color: #0C5DF4;
     --bg-color: #12192C;
     --sub-color: #B6CEFC;
     --white-color: #FFF;
 
-    /*===== Font and typography =====*/
+    
     --body-font: 'Poppins', sans-serif;
     --normal-font-size: 1rem;
     --small-font-size: .875rem;
 
-    /*===== z index =====*/
+   
     --z-fixed: 100;
 }
 
-/*===== BASE =====*/
+
 *, ::before, ::after {
     box-sizing: border-box;
 }
@@ -28,7 +28,7 @@ body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
     color: #333;
-    max-width: 80%;
+    max-width: 70%;
     margin: 0 auto;
     padding: 20px;
 }
@@ -42,6 +42,85 @@ ul {
     padding: 20;
     list-style: none;
 }
+
+
+.notification .btn {
+    display: inline-block;
+    padding: 10px 15px;
+    
+    background-color:#238af1; /* Primary color */
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.notification .btn:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+
+table.queries {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+    text-align: left;
+    table-layout:fixed; 
+}
+
+table.queries th, 
+table.queries td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    white-space: nowrap; 
+    overflow:scroll; /* Hides overflowed content */
+    /* Displays '...' for overflowing text */
+}
+
+table.queries th {
+    background-color: #f8f8f8;
+    color: #333;
+    font-weight: bold;
+}
+
+table.queries tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table.queries tr:hover {
+    background-color: #f1f1f1;
+}
+
+table.queries td {
+    vertical-align: middle;
+}
+
+table.queries td:last-child {
+    text-align: center;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    table.queries th, 
+    table.queries td {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    table.queries thead {
+        font-size: 16px;
+    }
+}
+
+/* Text overflow handling */
+table.queries th, 
+table.queries td {
+    white-space: nowrap;     /* Prevent text wrapping */
+    overflow: hidden;        /* Hide overflow */
+    text-overflow: ellipsis; /* Add ellipsis for overflow */
+}
+
 
 a {
     text-decoration: none;
@@ -167,11 +246,7 @@ a {
     transform: rotate(180deg);
 }
 
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
+
 
 h2 {
     color: #2c3e50;
@@ -215,9 +290,7 @@ h5 {
     border-color: #666;
 }
 
-.form-group {
-    margin-bottom: 15px;
-}
+
 
 .form-section {
     margin-top: 40px;
@@ -236,6 +309,14 @@ form {
     font-weight: lighter;
 }
 
+.container-close {
+    max-width: 600px; /* Sets a maximum width for the container */
+    margin: 0 auto; /* Centers the container */
+    padding: 20px; /* Adds padding around the content */
+    background-color: #f9f9f9; /* Light background color */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
 .form-control, .form-control-file {
     width: 100%;
     padding: 8px;
@@ -289,14 +370,6 @@ form {
 img {
     width: 200px;
     height: 200px;
-}
-
-
-
-.container {
-    width: 80%;
-    margin: auto;
-    overflow: hidden;
 }
 
 /* Header Styles */
@@ -375,8 +448,8 @@ h3 {
 
 /* Ensuring the container width and margin is appropriate */
 .container {
-    width: 100%;
-    
+    width: 90%;
+    padding: 20px;
     margin: auto;
     overflow: hidden;
 }
@@ -390,6 +463,7 @@ h3 {
 
 .col-md-6 {
     flex: 0 0 50%;
+    
     max-width: 50%;
     padding-right: 10px;
     padding-left: 10px;

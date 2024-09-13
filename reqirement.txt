@@ -1,9 +1,9 @@
-pip install flask
-pip install flask_sqlalchemy
-pip install flask_bcrypt
-pip install flask_login
-pip install flask_mail
-pip install flask_migrate
-pip install flask_wtf
-pip install Flask-APScheduler
 
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Bcrypt==1.0.1
+Flask-Login==0.6.3
+Flask-Mail==0.10.0
+Flask-Migrate==4.0.7
+Flask-WTF==1.2.1
+Flask-APScheduler==1.13.1

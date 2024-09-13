@@ -1,0 +1,43 @@
+{% extends "employee/E_homeBase.html" %}
+{% block title %}My PaySlips{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h3 class="centered-heading">My PaySlips</h3>
+
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    {% endwith %}
+
+    {% if payslips %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Year</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payslip in payslips %}
+                <tr>
+                    <td>{{ payslip.month }}</td>
+                    <td>{{ payslip.year }}</td>
+                    <td>
+                        <a href="{{ url_for('Accounts.download_payslip', payslip_id=payslip.id) }}" class="btn btn-success">Download</a>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No PaySlips available for download.</p>
+    {% endif %}
+</div>
+{% endblock %}

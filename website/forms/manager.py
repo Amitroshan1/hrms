@@ -1,17 +1,26 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField
+from wtforms import StringField, SubmitField, SelectField,FileField
 from wtforms.validators import DataRequired, Email, Length, Optional
+from flask_wtf.file import FileAllowed
 
 class ManagerContactForm(FlaskForm):
     circle_name = SelectField('Circle', 
-                              choices=[('', 'Choose Your Circle'), ('nhq', 'NHQ'), ('noida', 'Noida'), ('haryana', 'Haryana'),
-                                       ('gurugram', 'Gurugram'), ('pune', 'Pune'), ('bangalore', 'Bangalore'), ('punjab', 'Punjab'),
-                                       ('hyderabad', 'Hyderabad'), ('chennai', 'Chennai'), ('kolkata', 'Kolkata')],
+                              choices=[('', 'Choose Your Circle'), ('nhq', 'NHQ'),
+                                        ('noida', 'Noida'), ('haryana', 'Haryana'),
+                                       ('gurugram', 'Gurugram'), ('pune', 'Pune'), 
+                                       ('bangalore', 'Bangalore'), ('punjab', 'Punjab'),
+                                       ('hyderabad', 'Hyderabad'), ('chennai', 'Chennai'), 
+                                       ('kolkata', 'Kolkata')],
                               validators=[DataRequired()])
     
     user_type = SelectField('Department', 
-                            choices=[('', 'Select Department'), ('hr', 'Human Resource'), ('finance', 'Accounts & Finance'), 
-                                     ('employee', 'Software'),('it department','IT Department')],
+                            choices=[('', 'Select Department'),
+                                      ('Human Resource', 'Human Resource'),
+                                        ('Accounts & Finance', 'Accounts & Finance'), 
+                                     ('IT Department','IT Department'),
+                                     ('Testing', 'Testing'),
+                                     ('Software Development', 'Software Development')],
+                                     
                             validators=[DataRequired()])
     
     l1_name = StringField('L1 Name', validators=[Optional()])
@@ -26,6 +35,22 @@ class ManagerContactForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
+
+
+
+class PaySlipForm(FlaskForm):
+    month = SelectField('Month', choices=[
+        ('January', 'January'), ('February', 'February'), ('March', 'March'), 
+        ('April', 'April'), ('May', 'May'), ('June', 'June'),
+        ('July', 'July'), ('August', 'August'), ('September', 'September'),
+        ('October', 'October'), ('November', 'November'), ('December', 'December')
+    ], validators=[DataRequired()])
+    
+    year = SelectField('Year', choices=[(str(year), str(year)) for year in range(2024, 2036)],
+                       validators=[DataRequired()])
+    
+    payslip_file = FileField('Upload PaySlip', validators=[FileAllowed(['pdf', 'doc', 'docx', 'jpg', 'png'], 'Files only!')])
+    submit = SubmitField('Add PaySlip')
 
 
     

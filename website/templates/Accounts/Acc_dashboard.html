@@ -1,0 +1,23 @@
+{% extends "Accounts/Acc_base.html" %} 
+{% block title %}Account Dashboard{% endblock %} 
+{% block content %}
+
+<div class="container">
+    {% with errors = get_flashed_messages(category_filter=["error","success"]) %}
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {%- for msg in errors %}
+                <h3>{{ msg }}</h3>
+                {% endfor -%}
+            </ul>
+        </div>
+    {% endif %}
+    {% endwith %}
+
+
+    <h3>This is Account Dashboard</h3>
+
+
+
+{% endblock %}

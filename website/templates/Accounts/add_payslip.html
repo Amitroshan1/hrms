@@ -1,0 +1,36 @@
+{% extends "Accounts/Acc_base.html" %}
+{% block title %}Add PaySlip{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    {% with errors = get_flashed_messages(category_filter=["error","success"]) %}
+    {% if errors %}
+        <div class="alert alert-danger">
+            <ul>
+                {%- for msg in errors %}
+                <h3>{{ msg }}</h3>
+                {% endfor -%}
+            </ul>
+        </div>
+    {% endif %}
+    {% endwith %}
+
+    <h3 class="centered-heading">Add PaySlip for {{ employee.first_name | capitalize }} {{ employee.last_name }}</h3>
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.month.label }} 
+            {{ form.month(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.year.label }} 
+            {{ form.year(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.payslip_file.label }} 
+            {{ form.payslip_file(class="form-control-file") }}
+        </div>
+        <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+        <a href="{{ url_for('Accounts.search_results') }}" class="btn btn-primary">Back to Results</a>
+    </form>
+</div>
+{% endblock %}

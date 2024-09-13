@@ -1,53 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   
-    <link rel="stylesheet" href="../static/css/home.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-    <title>Home</title>
-</head>
-
-<body>
-    <header id="header">
-        <div class="logo"><img src="../static/photo/saffo logo.png" alt="None"></div>
-        <nav class="nav-bar" id="navbar">
-            <ul>
-                <li>
-                    <a href="/" class="active">Home</a>
-                </li>
-                <li>
-                    <a href="https://www.saffotech.com/">Services</a>
-                </li>
-                
-                <li>
-                    <a href="https://www.saffotech.com/about">About Us</a>
-                </li>
-                
-            </ul>
-        </nav>
-      
-    </header>
-
-    <div class="container" id="home">
-      <div class="login-left">
-        <img src="../static/photo/HR.webp" alt="">
-        <a href="#" target="_blank">Admin</a>
-      </div>
-
-      <div class="login-right">
-        <img src="../static/photo/employee.jpg" alt="">
-        <a href="/login" target="_blank">Employee</a>
-      </div>
-
+{% extends "employee/base.html" %} 
+{% block title %}Home{% endblock %} 
+{% block content %}
+    <div class="login-header">
+        <h1>Welcome...</h1>
+        <br>
+        <p><h2 style="color: rgb(68, 75, 4);">Unlock Your Potential with our Innovative Platform. Streamline Your Processes and Enhance Your team's Productivity. <br> <br> Ready to get started?...</h2></p>
+  
+       
+        <h3>Please Login to Contiune...</h3>
     </div>
-    
-    <script src="../static/css/javascript.js"></script>
-</body>
 
-</html>
+
+    <div class="login-home">
+        
+        <a href="/login" target="_blank">LogIn</a>
+      </div>
+
+  
+{% endblock %}

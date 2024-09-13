@@ -2,13 +2,8 @@ from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import *
 from flask_wtf.file import FileAllowed
-from wtforms.widgets import ListWidget, CheckboxInput
 
 
-
-class MultiCheckboxField(SelectMultipleField):
-    widget = ListWidget(prefix_label=False)
-    option_widget = CheckboxInput()
 
 
 

@@ -9,6 +9,7 @@ from .models.attendance import Punch
 from .models.manager_model import ManagerContact
 from .models.news_feed import NewsFeed
 from .models.emp_detail_models import Asset
+from .models.query import Query
 
 
 
@@ -75,8 +76,26 @@ def E_homepage():
     
     news_feeds = NewsFeed.query.filter(
         (NewsFeed.circle == circle) & (NewsFeed.emp_type == emp_type) |
-        (NewsFeed.circle == 'all') & (NewsFeed.emp_type == 'all')
+        (NewsFeed.circle == 'All') & (NewsFeed.emp_type == 'All') |
+        (NewsFeed.circle == circle) & (NewsFeed.emp_type == 'All') |
+        (NewsFeed.circle == 'All') & (NewsFeed.emp_type == emp_type)
     ).order_by(NewsFeed.created_at.desc()).all()
+
+    all_queries = Query.query.all()
+    queries_for_emp_type = []
+
+    for query in all_queries:
+        
+        query_emp_types = query.emp_type.split(',') if query.emp_type else []
+        #print(query_emp_types)
+        if emp_type in query_emp_types:  # Check if the current employee's emp_type matches any in the query
+            queries_for_emp_type.append(query)
+    
+
+    show_notification = bool(queries_for_emp_type)
+
+
+    
 
    
     return render_template("employee/E_homepage.html", 
@@ -85,7 +104,9 @@ def E_homepage():
                            punch_out_time=punch_out_time,
                            manager_contact=manager_contact,
                            news_feeds=news_feeds,
-                           DOJ=DOJ)
+                           DOJ=DOJ,
+                           show_notification=show_notification,
+                        queries_for_emp_type=queries_for_emp_type )
 
 
 

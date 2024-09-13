@@ -21,3 +21,16 @@ class NewsFeed(db.Model):
         if self.file_path:
             return url_for('static', filename=f'uploads/{self.file_path}', _external=True)
         return None
+    
+
+
+class PaySlip(db.Model):
+    __tablename__ = 'payslips'
+
+    id = db.Column(db.Integer, primary_key=True)
+    admin_id = db.Column(db.Integer, db.ForeignKey('admins.id'), nullable=False)
+    month = db.Column(db.String(20), nullable=False)
+    year = db.Column(db.String(4), nullable=False)
+    file_path = db.Column(db.String(255), nullable=False)
+
+    admin = db.relationship('Admin', back_populates='payslips')

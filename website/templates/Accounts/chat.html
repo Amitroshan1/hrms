@@ -1,0 +1,30 @@
+{% extends "employee/E_homeBase.html" %} 
+{% block title %}Chat{% endblock %}
+
+{% block content %}
+
+<h2 class="centered-heading">Query By: {{ query.admin.first_name }}</h2>
+
+<div class="query-text-box">
+    <p><strong>Query Title: {{ query.title }}</strong></p>
+    <p><strong>Query:</strong> {{ query.query_text }}</p>
+</div>
+
+
+<div class="chat-box">
+    {% for reply in replies %}
+        <p><strong>{{ reply.admin.first_name }}:</strong> {{ reply.reply_text }} <em>({{ reply.created_at.strftime('%Y-%m-%d %H:%M:%S') }})</em></p>
+    {% else %}
+        <p>No replies yet. Be the first to respond!</p>
+    {% endfor %}
+</div>
+
+
+<form method="POST" action="{{ url_for('Accounts.chat_query', query_id=query.id) }}">
+    {{ form.hidden_tag() }}
+    <textarea name="reply_text" rows="3" cols="60" placeholder="Enter your reply"></textarea><br>
+    <input type="submit" value="Send">
+    
+</form>
+
+{% endblock %}

@@ -7,7 +7,7 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center">
         <h2 class="mt-5 centered-heading">Family Members Details</h2>
-        <a href="/family_details" class="btn btn-primary">Add Member</a>
+        <a  href="/family_details" class="btn btn-primary">Add Member</a>
     </div>
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
@@ -20,20 +20,27 @@
     {% for member in family_members %}
         <div class="card mt-3">
             <div class="card-header">
-                <h4>{{ member.relation }}</h4>
+                <h4 class="centered-heading">{{ member.relation |upper }}</h4>
             </div>
             <div class="card-body">
                 {% if member.photo_filename %}
-                    <img src="{{ url_for('static', filename='uploads/' ~ member.photo_filename) }}" alt="Photo of {{ member.name }}" class="img-thumbnail mb-3" style="max-width: 150px;">
+                    <img class="centered-heading" src="{{ url_for('static', filename='uploads/' ~ member.photo_filename) }}" alt="Photo of {{ member.name }}" class="img-thumbnail mb-3" style="max-width: 150px;">
                 {% endif %}
-                <p><strong>1. Name:</strong> {{ member.name }}</p>
-                <p><strong>2. Email:</strong> {{ member.email }}</p>
-                <p><strong>3. Date of Birth:</strong> {{ member.dob.strftime('%Y-%m-%d') }}</p>
-                <p><strong>4. Age:</strong> {{ member.age }}</p>
-                <p><strong>5. Occupation:</strong> {{ member.occupation }}</p>
-                <p><strong>6. Annual Income:</strong> {{ member.income }}</p>
-                <p><strong>7. Address:</strong> {{ member.address }}</p>
-                <p><strong>8. Remarks:</strong> {{ member.remarks }}</p>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <p><strong>1. Name:</strong> {{ member.name }}</p>
+                        <p><strong>2. Email:</strong> {{ member.email }}</p>
+                        <p><strong>3. Date of Birth:</strong> {{ member.dob.strftime('%Y-%m-%d') }}</p>
+                        <p><strong>4. Age:</strong> {{ member.age }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>5. Occupation:</strong> {{ member.occupation }}</p>
+                        <p><strong>6. Annual Income:</strong> {{ member.income }}</p>
+                        <p><strong>7. Address:</strong> {{ member.address }}</p>
+                        <p><strong>8. Remarks:</strong> {{ member.remarks }}</p>
+                    </div>
+                </div>
             </div>
         </div>
     {% endfor %}

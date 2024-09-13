@@ -1,16 +1,27 @@
-# forms.py
+
 from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import DataRequired,Optional
 
 class SearchForm(FlaskForm):
     circle = SelectField('Circle', 
-                            choices=[("",'Select Circle'),('nhq', 'NHQ'),('punjab', 'Punjab'),('haryana', 'Haryana'),('noida', 'Noida'),('gurugram','Gurugram'),('pune','Pune'),('banglore','Banglore'),('hydrabad','Hydrabad'),
-                                     ('chennai','Chennai'),('kolkata','Kolkata')],
+                            choices=[('','Select Circle'),('NHQ', 'NHQ'),
+                                    ('Noida', 'Noida'),('Punjab', 'Punjab'),
+                                    ('Haryana', 'Haryana'),('Gurugram','Gurugram'),
+                                    ('Pune','Pune'),('Banglore','Banglore'),
+                                    ('Hydrabad','Hydrabad'),
+                                    ('Chennai','Chennai'),('Kolkata','Kolkata')],
                               validators=[DataRequired()])
+    
     emp_type = SelectField('Employee Type', 
-                            choices=[("",'Select Employee Type'),('hr','Human Resource'),('finance','Accounts & Finanace'), ('employee', 'Software'),('it_department', 'IT Department')],
+                            choices=[('','Select Employee Type'),
+                                     ('Human Resource','Human Resource'),
+                                     ('Accounts & Finance','Accounts & Finance'), 
+                                     ('Testing', 'Testing'),
+                                     ('Software Development', 'Software Development'),
+                                     ('It Department', 'IT Department')],
                               validators=[DataRequired()])
+    
     submit = SubmitField('Search')
 
 
@@ -18,17 +29,15 @@ class SearchForm(FlaskForm):
 class DetailForm(FlaskForm):
     user = SelectField('User', choices=[], coerce=int)
     detail_type = SelectField('Detail Type', choices=[
-        
-        ('family', 'Family Details'),
-        ('emp_details','Employee details'),
-        ('document','Document'),
-       
-        ('previous_company', 'Previous Company'),
-        ('education', 'Education'),
-        ('attendance', 'Attendance')
-        
-        
-    ])
+        ('','Select Employee Details'),
+        ('Family Details', 'Family Details'),
+        ('Employee details','Employee Details'),
+        ('Document','Document'),
+        ('Previous_company', 'Previous Company'),
+        ('Education', 'Education'),
+        ('Attendance', 'Attendance')
+        ])
+    
     submit = SubmitField('View Details')
 
 
@@ -37,11 +46,19 @@ class DetailForm(FlaskForm):
 
 class NewsFeedForm(FlaskForm):
     circle = SelectField('Circle', 
-                            choices=[("",'Select Circle'),('all','All'),('nhq', 'NHQ'),('punjab', 'Punjab'),('haryana', 'Haryana'),('noida', 'Noida'),('gurugram','Gurugram'),('pune','Pune'),('banglore','Banglore'),('hydrabad','Hydrabad'),
-                                     ('chennai','Chennai'),('kolkata','Kolkata')],
+                            choices=[("",'Select Circle'),('All','All'),('NHQ', 'NHQ'),
+                                     ('Punjab', 'Punjab'),('Haryana', 'Haryana'),
+                                     ('Noida', 'Noida'),('Gurugram','Gurugram'),
+                                     ('Pune','Pune'),('Banglore','Banglore'),
+                                     ('Hydrabad','Hydrabad'),
+                                     ('Chennai','Chennai'),('Kolkata','Kolkata')],
                               validators=[DataRequired()])
     emp_type = SelectField('Employee Type', 
-                            choices=[("",'Select Employee Type'),('all','All'),('hr','Human Resource'),('finance','Accounts & Finanace'), ('employee', 'Software'),('it_department', 'IT Department')],
+                            choices=[("",'Select Employee Type'),('All','All'),
+                                     ('Human Resource','Human Resource'),
+                                     ('Accounts & Finanace','Accounts & Finanace'),
+                                    ('Testing', 'Testing'),('Software Development', 'Software Development'),
+                                    ('IT Department', 'IT Department')],
                               validators=[DataRequired()])
     
     title = StringField('Title', validators=[DataRequired()])

@@ -26,21 +26,28 @@ def is_safe_url(target):
     test_url = urlparse(urljoin(request.host_url, target))
     return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
-# Initialization code remains the same
+
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     app.config['SECRET_KEY'] = 'ajsgfkjsgfkgsdfkgsdajsbfjkkjhbh'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Mysql_1234@localhost/new_saffo_db'
-    app.config['MAIL_SERVER'] = 'smtp.office365.com'
+
+    app.config['MAIL_SERVER'] = 'smtp-mail.outlook.com'
     app.config['MAIL_PORT'] = 587
     app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USE_SSL'] = False
+    app.config['MAIL_USERNAME'] = 'yourmailoutlook.com'
+    app.config['MAIL_PASSWORD'] = 'amitskdh'
+    app.config['MAIL_DEFAULT_SENDER'] = 'yourmailoutlook.com'
+    
+
     app.config['UPLOAD_FOLDER'] = 'website/static/uploads'
-    app.config['ALLOWED_EXTENSIONS'] = {'jpg', 'png', 'jpeg', 'pdf', 'txt', 'doc', 'docx', 'xls', 'xlsx'}
+    app.config['ALLOWED_EXTENSIONS'] = {'jpg', 'png', 'jpeg', 'pdf', 'txt', 'doc', 'docx', 'xls', 'xlsx','jfif'}
     app.config['SESSION_PERMANENT'] = True
     app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
-    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=5)
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
     app.config['WTF_CSRF_ENABLED'] = True
 
     mail.init_app(app)
@@ -51,7 +58,7 @@ def create_app():
     csrf.init_app(app)
     scheduler.init_app(app)
 
-    # Register your blueprints here
+   
     from .views import views
     from .auth import auth
     from .Amdin_auth import Admin_auth
@@ -59,6 +66,7 @@ def create_app():
     from .finance import finance
     from .hr import hr
     from .Updatemanager import manager_bp
+    from .Aoocunts import Accounts
 
     app.register_blueprint(profile, url_prefix='/')
     app.register_blueprint(views, url_prefix='/')
@@ -67,6 +75,7 @@ def create_app():
     app.register_blueprint(finance, url_prefix='/')
     app.register_blueprint(hr, url_prefix='/')
     app.register_blueprint(manager_bp, url_prefix='/')
+    app.register_blueprint(Accounts, url_prefix='/')
 
     from .models.Admin_models import Admin
     from .models.emp_detail_models import Employee
@@ -75,11 +84,12 @@ def create_app():
     from .models.education import UploadDoc, Education
     from .models.attendance import Punch, LeaveBalance, LeaveApplication
     from .models.manager_model import ManagerContact
+    from .models.query import Query,QueryReply
 
     with app.app_context():
         db.create_all()
 
-        # Schedule the job to run daily at 14:31
+        
         scheduler.add_job(id='update_leave_balances', func=update_leave_balances, trigger='cron', hour=17, minute=55)
 
     @app.after_request
