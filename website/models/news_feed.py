@@ -11,10 +11,10 @@ class NewsFeed(db.Model):
     content = db.Column(db.Text, nullable=False)
     file_path = db.Column(db.String(255), nullable=True)
     circle = db.Column(db.String(50), nullable=False)  
-    emp_type = db.Column(db.String(50), nullable=False)  
+    emp_type = db.Column(db.String(50), nullable=False) 
     created_at = db.Column(db.DateTime, default=datetime.now)
 
-    def is_new(self):
+    def is_new(self): 
         return datetime.now() - self.created_at <= timedelta(weeks=1)
 
     def file_url(self):

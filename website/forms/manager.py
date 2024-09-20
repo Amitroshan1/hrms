@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField,FileField
-from wtforms.validators import DataRequired, Email, Length, Optional
+from wtforms import StringField, SubmitField, SelectField,FileField,PasswordField
+from wtforms.validators import DataRequired, Email, Length, Optional,EqualTo
 from flask_wtf.file import FileAllowed
 
 class ManagerContactForm(FlaskForm):
@@ -52,5 +52,13 @@ class PaySlipForm(FlaskForm):
     payslip_file = FileField('Upload PaySlip', validators=[FileAllowed(['pdf', 'doc', 'docx', 'jpg', 'png'], 'Files only!')])
     submit = SubmitField('Add PaySlip')
 
+
+
+class ChangePasswordForm(FlaskForm):
+    original_password = PasswordField('Original Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[DataRequired()])
+    confirm_new_password = PasswordField('Confirm New Password', 
+                                         validators=[DataRequired(), EqualTo('new_password', message='Passwords must match')])
+    submit = SubmitField('Change Password')
 
     

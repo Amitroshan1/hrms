@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect,Blueprint, request, url_for, current_app as app
+from flask import render_template, flash, redirect,Blueprint, request, url_for, current_app as app,session
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 import os
@@ -15,17 +15,13 @@ from .forms.previous_company import Previous_company
 from .models.prev_com import PreviousCompany
 from .models.attendance import Punch,LeaveApplication,LeaveBalance
 from .forms.attendance import PunchForm,LeaveForm
-import datetime 
-
-
+from .models.manager_model import ManagerContact
+from .common import verify_password_and_send_email
+from .forms.query_form import PasswordForm
 
 
 
 profile=Blueprint('profile',__name__)
-
-
-
-
 
 
 @profile.route('/emp_details',methods=['GET','POST'])
@@ -33,6 +29,10 @@ profile=Blueprint('profile',__name__)
 def emp_profile():
     form=Employee_Details()
     return render_template("profile/emp_det.html",form=form)
+
+
+
+
 
 
 @profile.route('/emp_det2', methods=['GET', 'POST'])
@@ -104,11 +104,17 @@ def empl_det():
     return render_template('profile/emp_det.html', form=form)
 
 
+
+
+
 @profile.route('/family_det')
 @login_required
 def fam_det():
     family_members = FamilyDetails.query.filter_by(admin_id=current_user.id).all()
     return render_template('profile/E_Family_details.html',family_members = family_members)
+
+
+
 
 
 @profile.route('/family_details', methods=['GET', 'POST'])
@@ -144,6 +150,8 @@ def family_details():
         return redirect(url_for('profile.fam_det'))
    
     return render_template('profile/form_E_FAM.html', form=form)
+
+
 
 
 
@@ -209,6 +217,9 @@ def education():
     return render_template('profile/education.html', form=form, education=education)
 
 
+
+
+
 @profile.route('/delete_education/<int:education_id>', methods=['POST'])
 @login_required
 def delete_education(education_id):
@@ -221,8 +232,6 @@ def delete_education(education_id):
     db.session.commit()
     flash('Education detail deleted successfully!', 'success')
     return redirect(url_for('profile.education'))
-
-
 
 
 
@@ -256,6 +265,9 @@ def upload_docs():
     return render_template('profile/upload_doc.html', form=form, upload_doc=upload_doc)
 
 
+
+
+
 @profile.route('/delete_document/<int:doc_id>', methods=['POST'])
 @login_required
 def delete_document(doc_id):
@@ -264,7 +276,7 @@ def delete_document(doc_id):
         flash('You do not have permission to delete this item.', 'danger')
         return redirect(url_for('profile.upload_docs'))
     
-    # Delete the file from the filesystem if it exists
+   
     if document.doc_file:
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], document.doc_file)
         if os.path.exists(file_path):
@@ -308,7 +320,7 @@ def punch():
             else:
                 if not punch:
                     punch = Punch(admin_id=current_user.id, punch_date=today)
-                punch.punch_in = datetime.datetime.now().time()
+                punch.punch_in = datetime.now().time()
                 db.session.add(punch)
                 db.session.commit()
                 flash('Punched in successfully!', 'warning')
@@ -317,7 +329,7 @@ def punch():
             if not punch or not punch.punch_in:
                 flash('You need to punch in first!', 'danger')
             else:
-                punch.punch_out = datetime.datetime.now().time()
+                punch.punch_out = datetime.now().time()
                 db.session.commit()
                 flash('Punch out time updated successfully!', 'success')
 
@@ -331,47 +343,123 @@ def punch():
 @login_required
 def apply_leave():
     form = LeaveForm()
+    password_form = PasswordForm()
     leave_balance = LeaveBalance.query.filter_by(admin_id=current_user.id).first()
 
-    if form.validate_on_submit():
-        personal_leave_days = form.personal_leave_days.data
-        casual_leave_days = form.casual_leave_days.data
-        comp_off_leave = form.comp_off_leave.data
-        
-        start_date = form.start_date.data
-        end_date = form.end_date.data
+    
+    if 'leave_data' in session and password_form.validate_on_submit():
+        leave_data = session.pop('leave_data')
 
-        
-        if personal_leave_days > 0 and leave_balance.personal_leave_balance >= personal_leave_days:
-            leave_balance.personal_leave_balance -= personal_leave_days
-        elif personal_leave_days > 0:
-            flash('Insufficient personal leave balance', 'danger')
-            return redirect(url_for('profile.apply_leave'))
+       
+        start_date = datetime.strptime(leave_data['start_date'], '%a, %d %b %Y %H:%M:%S %Z').date()
+        end_date = datetime.strptime(leave_data['end_date'], '%a, %d %b %Y %H:%M:%S %Z').date()
 
-        # Check and update casual leave balance
-        if casual_leave_days > 0 and leave_balance.casual_leave_balance >= casual_leave_days:
-            leave_balance.casual_leave_balance -= casual_leave_days
-        elif casual_leave_days > 0:
-            flash('Insufficient casual leave balance', 'danger')
-            return redirect(url_for('profile.apply_leave'))
+        leave_type = leave_data['leave_type']
+        leave_days = (end_date - start_date).days + 1
 
-      
+       
+        if leave_type == 'Casual Leave':
+            if leave_days > 2:
+                flash('Casual leave cannot exceed 2 days.', 'danger')
+                return redirect(url_for('profile.apply_leave'))
 
+            if leave_days > leave_balance.casual_leave_balance:
+                leave_balance.casual_leave_balance = 0
+            else:
+                leave_balance.casual_leave_balance -= leave_days
+
+    
+        elif leave_type == 'Privilege Leave':
+            if leave_days > leave_balance.privilege_leave_balance:
+                leave_balance.privilege_leave_balance = 0
+            else:
+                leave_balance.privilege_leave_balance -= leave_days
+
+       
         leave_application = LeaveApplication(
-            admin_id=current_user.id,
-            leave_type="Other",
-            leave_days= personal_leave_days + casual_leave_days + comp_off_leave,
+            admin_id=leave_data['admin_id'],
+            leave_type=leave_data['leave_type'],
+            reason=leave_data['reason'],
             start_date=start_date,
             end_date=end_date,
-            status='Approved'
+            status='Pending'
         )
 
         db.session.add(leave_application)
         db.session.commit()
-        flash('Leave applied successfully!', 'success')
+
+        approval_link = url_for('profile.approve_leave', leave_id=leave_application.id, _external=True)
+
+
+
+       
+        manager_contact = ManagerContact.query.filter_by(circle_name=current_user.circle, user_type=current_user.Emp_type).first()
+        department_email = 'HumanResourcesaffo@outlook.com'
+        cc_emails = ['demoaountsaffo4353@outlook.com']
+
+        if manager_contact:
+            cc_emails += [manager_contact.l2_email, manager_contact.l3_email]
+
+        
+        subject = f"New Leave Application Submitted: {leave_application.leave_type}"
+        body = (
+            f"Leave application has been submitted by {current_user.first_name}.\n"
+            f"Leave Type: {leave_application.leave_type}\n\n"
+            f"Reason: {leave_application.reason}\n\n"
+            f"Start Date: {leave_application.start_date}\n"
+            f"End Date: {leave_application.end_date}\n"
+            f" Total Leave {leave_days}\n\n"
+            f"Also click on link to Approve : { approval_link } "
+
+           
+        )
+
+        if verify_password_and_send_email(current_user, password_form.password.data, subject, body, department_email, cc_emails):
+            flash('Your leave application has been submitted and email notification sent to the department.', 'success')
+        else:
+            flash('Password verification failed or email could not be sent.', 'error')
+
         return redirect(url_for('profile.apply_leave'))
 
-    return render_template('profile/apply_leave.html', form=form, leave_balance=leave_balance)
+    
+    if form.validate_on_submit():
+       
+        session['leave_data'] = {
+            'admin_id': current_user.id,
+            'leave_type': form.leave_type.data,
+            'reason': form.reason.data,
+            'start_date': form.start_date.data, 
+            'end_date': form.end_date.data,
+        }
+
+        
+        return render_template('Accounts/verify_password.html', form=password_form)
+
+    
+    leave = LeaveApplication.query.filter_by(admin_id=current_user.id).all()
+
+    return render_template('profile/apply_leave.html', form=form, leave_balance=leave_balance, user_leaves=leave)
+
+
+@profile.route('/approve-leave/<int:leave_id>', methods=['GET'])
+def approve_leave(leave_id):
+    leave_application = LeaveApplication.query.get_or_404(leave_id)
+
+    
+    leave_application.status = 'Approved'
+    db.session.commit()
+
+    
+    return """
+        <h1>Leave application has been approved.</h1>
+        <p>Thank you for approving the leave application. The status has been updated successfully.</p>
+    """
+
+
+  
+    
+
+
 
 
 

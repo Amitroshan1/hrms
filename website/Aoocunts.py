@@ -7,11 +7,10 @@ import os
 from werkzeug.utils import secure_filename
 from .models.Admin_models import Admin
 from . import db
-from flask_mail import Mail,Message
 from .models.query import Query, QueryReply
 from .forms.query_form import QueryForm, QueryReplyForm,PasswordForm
-from . import mail
-from .common import verify_password_and_send_email
+
+from .common import verify_password_and_send_email,send_email_from_company
 
 
 
@@ -34,10 +33,10 @@ def search():
     if form.validate_on_submit():
         circle = form.circle.data
         emp_type = form.emp_type.data
-        print(circle,emp_type)
+        
 
         admins = Admin.query.filter_by(circle=circle, Emp_type=emp_type).all()
-        print(admins)
+        
 
         if not admins:
             flash('No matching entries found', category='error')
@@ -94,7 +93,20 @@ def add_payslip(admin_id):
 
         db.session.add(new_payslip)
         db.session.commit()
-        flash('PaySlip added successfully!', 'success')
+
+        email=employee.email
+        
+       
+        account_email='demoaountsaffo4353@outlook.com'
+        password ='Demo@1234'
+        subject=f'payslip of Month {form.month.data} Uploded'
+        body=f'Dear {employee.first_name},\n\n'
+        body+=f'This mail is to inform you that Playslip of month {form.month.data} generated.\nPlease find the Payslip in HRMS \n \n  '
+        body+='Thanks\n Accounts'
+
+        send_email_from_company(account_email,password,subject,body,email,cc_emails=None)
+
+        flash('PaySlip added successfully! and Mail has Been Send', 'success')
         return redirect(url_for('Accounts.search_results'))
 
     return render_template('Accounts/add_payslip.html', form=form, employee=employee)
@@ -144,29 +156,92 @@ def download_payslip(payslip_id):
 
 
 
-
 @Accounts.route('/create_query', methods=['GET', 'POST'])
 @login_required
 def create_query():
     form = QueryForm()
-    if form.validate_on_submit():
-        emp_types = form.emp_type.data  
-        emp_type_str = ', '.join(emp_types)  
+    password_form = PasswordForm()
+
+    if 'query_data' in session and password_form.validate_on_submit():
+        
+
+        
+        query_data = session.pop('query_data')
+        
+        
         new_query = Query(
             admin_id=current_user.id,
-            emp_type=emp_type_str,
-            title =form.title.data,  
-            query_text=form.query_text.data
+            emp_type=query_data['emp_type'],
+            title=query_data['title'],
+            query_text=query_data['query_text']
         )
         db.session.add(new_query)
         db.session.commit()
-        flash('Your query has been created!', 'success')
+
+        
+        depart = new_query.emp_type
+        department= depart.split(',')
+        
+
+        
+        
+        if len(department) > 1:
+            
+            
+            if department[0] == 'Human Resource':
+                
+                department_email = 'HumanResourcesaffo@outlook.com'
+                cc = 'demoaountsaffo4353@outlook.com'
+                print("human+departement")
+            else:
+                department_email = 'demoaountsaffo4353@outlook.com'
+                cc = 'HumanResourcesaffo@outlook.com'
+                print("department+human")
+        else:
+            
+            if department[0] == 'Human Resource':
+                department_email = 'HumanResourcesaffo@outlook.com'
+                cc = None
+               
+            else:
+                department_email = 'demoaountsaffo4353@outlook.com'
+                cc = None
+                
+
+        
+        subject = f"New Query Created: {new_query.title}"
+        body = f"A new query has been raised by {current_user.first_name}.\n\n"
+        body += f"Department: {new_query.emp_type}\n\nQuery Title: {new_query.title}\n\n"
+        body += f"Query Details: {new_query.query_text}\n\nPlease address this query at your earliest convenience."
+
+    
+        if verify_password_and_send_email(current_user, password_form.password.data, subject, body, department_email, cc):
+            flash('Your query has been created and email notification sent to the department.', 'success')
+        else:
+            flash('Password verification failed or email could not be sent.', 'error')
+
         return redirect(url_for('Accounts.create_query'))
 
-   
-    user_queries = Query.query.filter_by(admin_id=current_user.id).order_by(Query.created_at.desc()).all()
+    elif form.validate_on_submit():
+       
 
+        
+        session['query_data'] = {
+            'emp_type': ', '.join(form.emp_type.data),
+            'title': form.title.data,
+            'query_text': form.query_text.data
+        }
+
+       
+        return render_template('Accounts/verify_password.html',form=password_form)
+
+ 
+    user_queries = Query.query.filter_by(admin_id=current_user.id).order_by(Query.created_at.desc()).all()
+    
     return render_template('Accounts/create_query.html', form=form, queries=user_queries)
+
+
+    
 
 
 @Accounts.route('/query/<int:query_id>/chat', methods=['GET', 'POST'])
@@ -230,6 +305,8 @@ def close_query(query_id):
     query = Query.query.filter_by(id=query_id).first()
     replies = QueryReply.query.filter_by(query_id=query_id).all()
 
+
+
     body_chat = f"Query Title: {query.title}\n"
     body_chat += f"Department: {query.emp_type}\n\n"
     body_chat += "Chat History:\n"
@@ -248,12 +325,28 @@ def close_query(query_id):
        
         subject = f"Satisfied with query: {query.title}"
         body = body_chat
-        department_email = 'HumanResourcesaffo@outlook.com'
+
+        department = [query.emp_type]
+        if len(department)>1:
+            if department[0] == 'Human Resource' :
+                department_email= 'HumanResourcesaffo@outlook.com'
+                cc='demoaountsaffo4353@outlook.com'
+            else:
+                department_email= 'demoaountsaffo4353@outlook.com'
+                cc='HumanResourcesaffo@outlook.com'
+        else:
+            if department[0] == 'Human Resource' :
+                department_email= 'HumanResourcesaffo@outlook.com'
+                cc=None
+            else:
+                department_email= 'demoaountsaffo4353@outlook.com'
+                cc=None
 
     
-        if verify_password_and_send_email(current_user, form.password.data, subject, body, department_email):
+        if verify_password_and_send_email(current_user, form.password.data, subject, body, department_email,cc):
             
             db.session.delete(query)
+
             db.session.commit()
             flash('Query resolved and deleted successfully. Notification sent to departments.', 'success')
             return redirect(url_for('Accounts.create_query'))

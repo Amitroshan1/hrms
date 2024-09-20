@@ -7,9 +7,9 @@ from .models.emp_detail_models import Employee,Asset
 from .models.family_models import FamilyDetails
 from .models.prev_com import PreviousCompany
 from .models.education import UploadDoc, Education
-from .models.attendance import Punch, LeaveBalance
+from .models.attendance import Punch, LeaveApplication
 from .models.news_feed import NewsFeed
-from .forms.attendance import MonthYearForm,BalanceUpdateForm
+from .forms.attendance import MonthYearForm
 from datetime import datetime
 import calendar
 from werkzeug.utils import secure_filename
@@ -114,11 +114,13 @@ def display_details():
     form = MonthYearForm()
     user_id = session.get('viewing_user_id')
     detail_type = session.get('viewing_detail_type')
+    print(detail_type)
 
     if not user_id or not detail_type:
         return redirect(url_for('hr.view_details'))
 
     admin = Admin.query.get(user_id)
+    
     details = None
 
     if form.validate_on_submit():
@@ -128,15 +130,17 @@ def display_details():
         month = datetime.now().month
         year = datetime.now().year
 
-    if detail_type == 'family':
+    if detail_type == 'Family Details':
         details = FamilyDetails.query.filter_by(admin_id=user_id).all()
-    elif detail_type == 'previous_company':
+    elif detail_type == 'Previous_company':
         details = PreviousCompany.query.filter_by(admin_id=user_id).all()
-    elif detail_type == 'emp_details':
+    elif detail_type == 'Employee Details':
+        
         details = Employee.query.filter_by(admin_id=user_id).all()
-    elif detail_type == 'education':
+        
+    elif detail_type == 'Education':
         details = Education.query.filter_by(admin_id=user_id).all()
-    elif detail_type == 'attendance':
+    elif detail_type == 'Attendance':
         num_days = calendar.monthrange(year, month)[1]
         details = [{'punch_date': f'{year}-{month:02d}-{day:02d}', 'punch_in': 'Leave', 'punch_out':'Leave'} for day in range(1, num_days + 1)]
         punches = Punch.query.filter(
@@ -147,8 +151,10 @@ def display_details():
                 if detail['punch_date'] == punch.punch_date.strftime('%Y-%m-%d'):
                     detail['punch_in'] = punch.punch_in
                     detail['punch_out'] = punch.punch_out
-    elif detail_type == 'document':
+    elif detail_type == 'Document':
         details = UploadDoc.query.filter_by(admin_id=user_id).all()
+    elif detail_type == 'Leave Details':
+        details = LeaveApplication.query.filter_by(admin_id=user_id).all()   
     
 
     if admin is None:
@@ -187,26 +193,6 @@ def employee_list():
 
 
 
-
-@hr.route('/leave_balance/<int:admin_id>', methods=['GET', 'POST'])
-@login_required
-def leave_balance(admin_id):
-    leave_balance = LeaveBalance.query.filter_by(admin_id=admin_id).first()
-
-    if leave_balance is None:
-        flash('Leave balance record not found.', 'error')
-        return redirect(url_for('hr.employee_list'))
-
-    form = BalanceUpdateForm(obj=leave_balance)
-
-    if form.validate_on_submit():
-        leave_balance.personal_leave_balance = form.personal_leave_balance.data
-        leave_balance.casual_leave_balance = form.casual_leave_balance.data
-        db.session.commit()
-        flash('Leave balances updated successfully.', category='success')
-        return redirect(url_for('hr.leave_balance', admin_id=admin_id)) 
-
-    return render_template('HumanResource/update_leave_balance.html', leave_balance=leave_balance, form=form)
 
 
 

@@ -1,8 +1,9 @@
 {% extends "employee/E_homeBase.html" %} 
 {% block title %}Create Query{% endblock %}
-
 {% block content %}
 
+<div class="container">
+<h2 class="centered-heading">Create Query</h2>
     {% with messages = get_flashed_messages(with_categories=True) %}
         {% if messages %}
             <ul>
@@ -13,7 +14,7 @@
         {% endif %}
     {% endwith %}
 
-    <h2 class="centered-heading">Create Query</h2>
+    
     <form method="POST">
         {{ form.hidden_tag() }}
         
@@ -33,7 +34,7 @@
         {{ form.query_text(cols=80, rows=10) }}<br><br>
         {{ form.submit() }}
     </form>
-
+</div>
     <h2 class="centered-heading">Your Queries</h2>
     <table class="queries">
         <thead>

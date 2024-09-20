@@ -1,13 +1,11 @@
-<!-- templates/view_details.html -->
 {% extends "HumanResource/hr_base.html" %}
 {% block title %}View Details{% endblock %}
 {% block content %}
 
 <h2 class="centered-heading">Details for {{ admin.first_name | capitalize }}</h2>
 <div class="container">
-    
 
-    {% if detail_type == 'attendance' %}
+    {% if detail_type == 'Attendance' %}
     <form method="POST" action="{{ url_for('hr.display_details') }}">
         {{ form.hidden_tag() }}
         <div class="form-group">
@@ -29,8 +27,9 @@
         <button type="submit" class="btn btn-primary">View Attendance</button>
     </form>
     {% endif %}
+
     {% if details %}
-        {% if detail_type == 'family' %}
+        {% if detail_type == 'Family Details' %}
         <h3 class="centered-heading">Family Details</h3>
             <table class="table table-striped">
                 <thead>
@@ -62,7 +61,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-        {% elif detail_type == 'previous_company' %}
+        {% elif detail_type == 'Previous_company' %}
         <h3 class="centered-heading">Previous Company Details</h3>
             <table class="table table-striped">
                 <thead>
@@ -98,7 +97,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-        {% elif detail_type == 'emp_details' %}
+        {% elif detail_type == 'Employee Details' %}
         <h3 class="centered-heading">Employee Details</h3>
             <table class="table table-striped">
                 <thead>
@@ -152,7 +151,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-        {% elif detail_type == 'education' %}
+        {% elif detail_type == 'Education' %}
         <h3 class="centered-heading">Education Details</h3>
             <table class="table table-striped">
                 <thead>
@@ -178,7 +177,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-        {% elif detail_type == 'attendance' %}
+        {% elif detail_type == 'Attendance' %}
         <h3 class="centered-heading">Attendance</h3>
             <table class="table table-striped">
                 <thead>
@@ -198,7 +197,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-        {% elif detail_type == 'document' %}
+        {% elif detail_type == 'Document' %}
         <h3 class="centered-heading">Documents</h3>
             <table class="table table-striped">
                 <thead>
@@ -215,16 +214,34 @@
                             <td>{{ detail.doc_name | capitalize }}</td>
                             <td>{{ detail.doc_number }}</td>
                             <td>{{ detail.issue_date }}</td>
-                            <td><a href="{{ url_for('static', filename='uploads/' ~ detail.doc_file) }}" target="_blank">{{ detail.doc_file }}</a></td>
+                            <td><a href="{{ url_for('static', filename='uploads/' ~ detail.doc_file) }}" target="_blank">View Document</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            {% elif detail_type == 'Leave Details' %}
+            <h3 class="centered-heading">Leave Applied</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Leave Type</th>
+                            <th>Status</th>
+                            <th>Created at</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detail in details %}
+                            <tr>
+                                <td>{{ detail.leave_type | capitalize }}</td>
+                                <td>{{ detail.status }}</td>
+                                <td>{{ detail.created_at }}</td>
+                                </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
         {% endif %}
-    {% else %}
-        <p>No details found for the selected type.</p>
     {% endif %}
-   
 </div>
 
 {% endblock %}

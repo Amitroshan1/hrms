@@ -63,7 +63,7 @@ def create_app():
     from .auth import auth
     from .Amdin_auth import Admin_auth
     from .profile import profile
-    from .finance import finance
+
     from .hr import hr
     from .Updatemanager import manager_bp
     from .Aoocunts import Accounts
@@ -72,7 +72,7 @@ def create_app():
     app.register_blueprint(views, url_prefix='/')
     app.register_blueprint(auth, url_prefix='/')
     app.register_blueprint(Admin_auth, url_prefix='/')
-    app.register_blueprint(finance, url_prefix='/')
+    
     app.register_blueprint(hr, url_prefix='/')
     app.register_blueprint(manager_bp, url_prefix='/')
     app.register_blueprint(Accounts, url_prefix='/')
@@ -118,7 +118,7 @@ def update_leave_balances():
                 six_months_after_doj = doj + timedelta(days=6*30) 
                 
                 if datetime.datetime.now().date() >= six_months_after_doj:
-                    balance.personal_leave_balance += 1.08
+                    balance.privilege_leave_balance += 1.08
                     balance.casual_leave_balance += 0.67
 
         try:

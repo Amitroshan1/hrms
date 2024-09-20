@@ -14,33 +14,97 @@
     {% endwith %}
 
     <div class="leave-balance">
-        <p><strong>Personal Leave Balance:</strong> {{ leave_balance.personal_leave_balance }}</p>
+        <p><strong>Privilege Leave Balance:</strong> {{ leave_balance.privilege_leave_balance }}</p>
         <p><strong>Casual Leave Balance:</strong> {{ leave_balance.casual_leave_balance }}</p>
-        
     </div>
 
     <form method="POST" action="{{ url_for('profile.apply_leave') }}" class="leave-form">
         {{ form.hidden_tag() }}
+
         <div class="form-group-leave">
-            {{ form.personal_leave_days.label }} {{ form.personal_leave_days(class_='form-control') }}
+            {{ form.leave_type.label }} {{ form.leave_type(class_='form-control') }}
         </div>
+
         <div class="form-group-leave">
-            {{ form.casual_leave_days.label }}
-            <input type="number" name="{{ form.casual_leave_days.name }}" step="0.5" min="0.5" max="8.0" value="{{ form.casual_leave_days.data }}" class="form-control">
+            {{ form.reason.label }} {{ form.reason(class_='form-control') }}
         </div>
-        
+
         <div class="form-row">
             <div class="form-group-leave col-md-6">
                 {{ form.start_date.label }} {{ form.start_date(class_='form-control') }}
             </div>
             <div class="form-group-leave col-md-6">
                 {{ form.end_date.label }} {{ form.end_date(class_='form-control') }}
+            </div><br>
+            <div>
+                <h5>Total Days: <span id="total_days">0</span></h5>
             </div>
         </div>
+
         <div class="form-group-leave text-center">
             {{ form.submit(class_='btn btn-primary') }}
         </div>
     </form>
+
+    <hr>
+
+    <h3  class="centered-heading">Your Leave Applications</h3>
+    {% if user_leaves %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Leave Type</th>
+                    <th>Reason</th>
+                    <th>Created Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for leave in user_leaves %}
+                    <tr>
+                        <td>{{ leave.leave_type }}</td>
+                        <td>{{ leave.reason }}</td>
+                        <td>{{ leave.created_at.strftime('%Y-%m-%d') }}</td>
+                        
+                        <td>{{ leave.status }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>You haven't applied for any leave yet.</p>
+    {% endif %}
 </div>
 
+<!-- Add JavaScript to calculate total leave days dynamically -->
+<script type="text/javascript">
+    function calculateTotalDays() {
+        var startDate = document.getElementById('start_date').value;
+        var endDate = document.getElementById('end_date').value;
+
+        if (startDate && endDate) {
+            // Convert the string values to Date objects
+            var start = new Date(startDate);
+            var end = new Date(endDate);
+
+            // Calculate the difference in time (milliseconds)
+            var timeDifference = end.getTime() - start.getTime();
+
+            // Convert time difference from milliseconds to days
+            var totalDays = Math.ceil(timeDifference / (1000 * 3600 * 24)) + 1;
+
+            if (totalDays > 0) {
+                document.getElementById('total_days').textContent = totalDays;
+            } else {
+                document.getElementById('total_days').textContent = 0;
+            }
+        } else {
+            document.getElementById('total_days').textContent = 0;
+        }
+    }
+
+    // Add event listeners to call calculateTotalDays when date fields are changed
+    document.getElementById('start_date').addEventListener('change', calculateTotalDays);
+    document.getElementById('end_date').addEventListener('change', calculateTotalDays);
+</script>
 {% endblock %}

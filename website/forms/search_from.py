@@ -31,11 +31,12 @@ class DetailForm(FlaskForm):
     detail_type = SelectField('Detail Type', choices=[
         ('','Select Employee Details'),
         ('Family Details', 'Family Details'),
-        ('Employee details','Employee Details'),
+        ('Employee Details','Employee Details'),
         ('Document','Document'),
         ('Previous_company', 'Previous Company'),
         ('Education', 'Education'),
-        ('Attendance', 'Attendance')
+        ('Attendance', 'Attendance'),
+        ('Leave Details', 'Leave Details')
         ])
     
     submit = SubmitField('View Details')

@@ -1,8 +1,8 @@
 
-from wtforms import SubmitField
+from wtforms import *
 from flask_wtf import FlaskForm
-from wtforms import  DateField,  DecimalField, SelectField,FloatField
-from wtforms.validators import DataRequired, NumberRange
+
+from wtforms.validators import DataRequired
 from datetime import datetime
 
 
@@ -22,8 +22,15 @@ class MonthYearForm(FlaskForm):
 
 
 class LeaveForm(FlaskForm):
-    personal_leave_days = DecimalField('Personal Leave ', places=1, validators=[NumberRange(min=0.5, max=13.0)], default=0)
-    casual_leave_days = DecimalField('Casual Leave ', places=1, validators=[NumberRange(min=0.5, max=8.0)], default=0)
+    leave_type = SelectField('Leave Type', 
+                            choices=[('','Select Leave Option'),
+                                     ('Privilege Leave','Privilege Leave'),
+                                     ('Casual Leave','Casual Leave')
+                                    ],
+                              validators=[DataRequired()])
+    reason= StringField('Reason For Leave * ', 
+                         validators=[DataRequired()], 
+                         render_kw={"placeholder": "Reason For Leave.... "})
     start_date = DateField('Start Date', format='%Y-%m-%d', validators=[DataRequired()])
     end_date = DateField('End Date', format='%Y-%m-%d', validators=[DataRequired()])
     

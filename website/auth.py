@@ -10,7 +10,9 @@ from .models.manager_model import ManagerContact
 from .models.news_feed import NewsFeed
 from .models.emp_detail_models import Asset
 from .models.query import Query
-
+from werkzeug.security import check_password_hash, generate_password_hash
+from . import db
+from .forms.manager import ChangePasswordForm
 
 
 
@@ -140,3 +142,26 @@ def my_assets():
 
 
 
+@auth.route('/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    
+    if form.validate_on_submit():
+        original_password = form.original_password.data
+        new_password = form.new_password.data
+        
+
+        # Verify original password
+        if not current_user.check_password(original_password):
+            flash('Original password is incorrect', 'danger')
+            return redirect(url_for('auth.change_password'))
+
+        # Update the password
+        current_user.set_password(new_password)
+        db.session.commit()
+
+        flash('Your password has been updated successfully', 'success')
+        return redirect(url_for('auth.change_password'))  # Redirect to profile or wherever you like
+
+    return render_template('profile/change_password.html',form=form)

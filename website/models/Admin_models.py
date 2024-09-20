@@ -9,7 +9,7 @@ class Admin(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(150), nullable=False)
+    password = db.Column(db.String(350), nullable=False)
     first_name = db.Column(db.String(150), nullable=False)
     mobile = db.Column(db.String(15), unique=True, nullable=False)
     emp_id = db.Column(db.String(10), unique=True, nullable=False)

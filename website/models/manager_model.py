@@ -1,5 +1,9 @@
 from website import db
 
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+from website import login_manager
+
 class ManagerContact(db.Model):
     __tablename__ = 'manager_contacts'
 
@@ -15,6 +19,11 @@ class ManagerContact(db.Model):
     l3_name = db.Column(db.String(100), nullable=False)
     l3_mobile = db.Column(db.String(15), nullable=False)
     l3_email = db.Column(db.String(100), nullable=False)
+
+
+
+
+
 
 
 
