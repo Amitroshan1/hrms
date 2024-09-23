@@ -32,7 +32,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     app.config['SECRET_KEY'] = 'ajsgfkjsgfkgsdfkgsdajsbfjkkjhbh'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Mysql_1234@localhost/new_saffo_db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:saffodev2024@localhost/saffo_production'
 
     app.config['MAIL_SERVER'] = 'smtp-mail.outlook.com'
     app.config['MAIL_PORT'] = 587
