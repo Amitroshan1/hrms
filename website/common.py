@@ -15,17 +15,17 @@ def verify_password_and_send_email(user, form_password, subject, body, recipient
 
             mail = Mail(current_app)
 
-            print(cc_emails,type(cc_emails))
+            
             msg = Message(subject, recipients=[recipient_email], body=body)
 
             
             if cc_emails and type(cc_emails)!=list:
-                print('yes')
+                
                 if isinstance(cc_emails, str):
                     cc_emails = [cc_emails]  
                 msg.cc = cc_emails
             else:
-                print('no',cc_emails,type(cc_emails))
+                
                 msg.cc = cc_emails
 
             mail.send(msg)

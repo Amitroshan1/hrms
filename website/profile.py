@@ -364,16 +364,20 @@ def apply_leave():
                 return redirect(url_for('profile.apply_leave'))
 
             if leave_days > leave_balance.casual_leave_balance:
-                leave_balance.casual_leave_balance = 0
+                flash('You do not have enough Casual leave, Try Privilege Leave.', 'danger')
+                return redirect(url_for('profile.apply_leave'))
             else:
                 leave_balance.casual_leave_balance -= leave_days
 
     
         elif leave_type == 'Privilege Leave':
             if leave_days > leave_balance.privilege_leave_balance:
-                leave_balance.privilege_leave_balance = 0
+                extra = leave_days - leave_balance.privilege_leave_balance
+                leave_balance.privilege_leave_balance = leave_balance.privilege_leave_balance % 1
             else:
                 leave_balance.privilege_leave_balance -= leave_days
+            
+
 
        
         leave_application = LeaveApplication(
@@ -394,8 +398,8 @@ def apply_leave():
 
        
         manager_contact = ManagerContact.query.filter_by(circle_name=current_user.circle, user_type=current_user.Emp_type).first()
-        department_email = 'HumanResourcesaffo@outlook.com'
-        cc_emails = ['demoaountsaffo4353@outlook.com']
+        department_email = 'hr@saffotech.com'
+        cc_emails = ['accounts@saffotech.com']
 
         if manager_contact:
             cc_emails += [manager_contact.l2_email, manager_contact.l3_email]
@@ -406,6 +410,7 @@ def apply_leave():
             f"Leave application has been submitted by {current_user.first_name}.\n"
             f"Leave Type: {leave_application.leave_type}\n\n"
             f"Reason: {leave_application.reason}\n\n"
+            f'Extra Days: {extra}\n\n'
             f"Start Date: {leave_application.start_date}\n"
             f"End Date: {leave_application.end_date}\n"
             f" Total Leave {leave_days}\n\n"

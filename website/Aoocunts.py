@@ -190,21 +190,21 @@ def create_query():
             
             if department[0] == 'Human Resource':
                 
-                department_email = 'HumanResourcesaffo@outlook.com'
-                cc = 'demoaountsaffo4353@outlook.com'
-                print("human+departement")
+                department_email = 'hr@saffotech.com'
+                cc = 'accounts@saffotech.com'
+                
             else:
-                department_email = 'demoaountsaffo4353@outlook.com'
-                cc = 'HumanResourcesaffo@outlook.com'
-                print("department+human")
+                department_email = 'accounts@saffotech.com'
+                cc = 'hr@saffotech.com'
+                
         else:
             
             if department[0] == 'Human Resource':
-                department_email = 'HumanResourcesaffo@outlook.com'
+                department_email = 'hr@saffotech.com'
                 cc = None
                
             else:
-                department_email = 'demoaountsaffo4353@outlook.com'
+                department_email = 'accounts@saffotech.com'
                 cc = None
                 
 
