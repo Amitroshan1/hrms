@@ -6,11 +6,12 @@ from .models.news_feed import PaySlip
 import os
 from werkzeug.utils import secure_filename
 from .models.Admin_models import Admin
+from .models.signup import Signup
 from . import db
 from .models.query import Query, QueryReply
 from .forms.query_form import QueryForm, QueryReplyForm,PasswordForm
 
-from .common import verify_password_and_send_email,send_email_from_company
+from .common import verify_oauth2_and_send_email,send_email_from_company
 
 
 
@@ -70,46 +71,67 @@ def search_results():
     return render_template('Accounts/search_result.html', admins=admins, circle=circle, emp_type=emp_type, form=detail_form)
 
 
-
 @Accounts.route('/add_payslip/<int:admin_id>', methods=['GET', 'POST'])
 @login_required
 def add_payslip(admin_id):
     form = PaySlipForm()
-    employee = Admin.query.get_or_404(admin_id)
+    try:
+        # Fetch the employee details
+        employee = Admin.query.get_or_404(admin_id)
+    except Exception as e:
+        flash(f"Error fetching employee details: {e}", 'error')
+        return redirect(url_for('Accounts.search_results'))
 
     if form.validate_on_submit():
-        file_path = None
-        if form.payslip_file.data:
-            filename = secure_filename(form.payslip_file.data.filename)
-            file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-            form.payslip_file.data.save(file_path)
+        try:
+            file_path = None
+            filename = None
+            # Handle file upload
+            if form.payslip_file.data:
+                filename = secure_filename(form.payslip_file.data.filename)
+                file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                form.payslip_file.data.save(file_path)
+        except Exception as e:
+            flash(f"Error saving file: {e}", 'error')
+            return redirect(url_for('Accounts.add_payslip', admin_id=admin_id))
 
-        new_payslip = PaySlip(
-            admin_id=employee.id,
-            month=form.month.data,
-            year=form.year.data,
-            file_path=filename  
-        )
+        try:
+            # Create a new PaySlip entry
+            new_payslip = PaySlip(
+                admin_id=employee.id,
+                month=form.month.data,
+                year=form.year.data,
+                file_path=filename  
+            )
+            db.session.add(new_payslip)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error saving PaySlip to the database: {e}", 'error')
+            return redirect(url_for('Accounts.add_payslip', admin_id=admin_id))
 
-        db.session.add(new_payslip)
-        db.session.commit()
+        try:
+            # Send email notification
+            email = employee.email
+            account_email = 'demoaountsaffo4353@outlook.com'
+            password = 'Demo@1234'
+            subject = f'Payslip of Month {form.month.data} Uploaded'
+            body = (
+                f"Dear {employee.first_name},\n\n"
+                f"This mail is to inform you that Payslip for the month {form.month.data} has been generated.\n"
+                f"Please find the Payslip in HRMS.\n\n"
+                f"Thanks,\nAccounts"
+            )
+            send_email_from_company(account_email, password, subject, body, email, cc_emails=None)
+        except Exception as e:
+            flash(f"Error sending email: {e}", 'error')
+            return redirect(url_for('Accounts.add_payslip', admin_id=admin_id))
 
-        email=employee.email
-        
-       
-        account_email='demoaountsaffo4353@outlook.com'
-        password ='Demo@1234'
-        subject=f'payslip of Month {form.month.data} Uploded'
-        body=f'Dear {employee.first_name},\n\n'
-        body+=f'This mail is to inform you that Playslip of month {form.month.data} generated.\nPlease find the Payslip in HRMS \n \n  '
-        body+='Thanks\n Accounts'
-
-        send_email_from_company(account_email,password,subject,body,email,cc_emails=None)
-
-        flash('PaySlip added successfully! and Mail has Been Send', 'success')
+        flash('PaySlip added successfully! Email has been sent.', 'success')
         return redirect(url_for('Accounts.search_results'))
 
     return render_template('Accounts/add_payslip.html', form=form, employee=employee)
+
 
 
 
@@ -127,6 +149,8 @@ def view_payslips():
         return render_template('Accounts/view_payslips.html', payslips=payslips)  # Redirect to the dashboard or any other relevant page
 
     return render_template('Accounts/view_payslips.html', payslips=payslips)
+
+
 
 
 @Accounts.route('/download_payslip/<int:payslip_id>', methods=['GET'])
@@ -154,91 +178,32 @@ def download_payslip(payslip_id):
 
 
 
-
-
 @Accounts.route('/create_query', methods=['GET', 'POST'])
 @login_required
 def create_query():
     form = QueryForm()
-    password_form = PasswordForm()
 
-    if 'query_data' in session and password_form.validate_on_submit():
-        
-
-        
-        query_data = session.pop('query_data')
-        
-        
+    if form.validate_on_submit():
+        # Create a new query and save it to the database
         new_query = Query(
             admin_id=current_user.id,
-            emp_type=query_data['emp_type'],
-            title=query_data['title'],
-            query_text=query_data['query_text']
+            emp_type=', '.join(form.emp_type.data),
+            title=form.title.data,
+            query_text=form.query_text.data
         )
         db.session.add(new_query)
         db.session.commit()
 
-        
-        depart = new_query.emp_type
-        department= depart.split(',')
-        
-
-        
-        
-        if len(department) > 1:
-            
-            
-            if department[0] == 'Human Resource':
-                
-                department_email = 'hr@saffotech.com'
-                cc = 'accounts@saffotech.com'
-                
-            else:
-                department_email = 'accounts@saffotech.com'
-                cc = 'hr@saffotech.com'
-                
-        else:
-            
-            if department[0] == 'Human Resource':
-                department_email = 'hr@saffotech.com'
-                cc = None
-               
-            else:
-                department_email = 'accounts@saffotech.com'
-                cc = None
-                
-
-        
-        subject = f"New Query Created: {new_query.title}"
-        body = f"A new query has been raised by {current_user.first_name}.\n\n"
-        body += f"Department: {new_query.emp_type}\n\nQuery Title: {new_query.title}\n\n"
-        body += f"Query Details: {new_query.query_text}\n\nPlease address this query at your earliest convenience."
-
-    
-        if verify_password_and_send_email(current_user, password_form.password.data, subject, body, department_email, cc):
-            flash('Your query has been created and email notification sent to the department.', 'success')
-        else:
-            flash('Password verification failed or email could not be sent.', 'error')
+        # Notify the user that the query has been created
+        flash('Your query has been created successfully.', 'success')
 
         return redirect(url_for('Accounts.create_query'))
 
-    elif form.validate_on_submit():
-       
-
-        
-        session['query_data'] = {
-            'emp_type': ', '.join(form.emp_type.data),
-            'title': form.title.data,
-            'query_text': form.query_text.data
-        }
-
-       
-        return render_template('Accounts/verify_password.html',form=password_form)
-
- 
+    # Display the user's previous queries
     user_queries = Query.query.filter_by(admin_id=current_user.id).order_by(Query.created_at.desc()).all()
     
     return render_template('Accounts/create_query.html', form=form, queries=user_queries)
+
 
 
     
@@ -278,7 +243,9 @@ def chat_query(query_id):
 @Accounts.route('/emp_type_queries')
 @login_required
 def view_emp_type_queries():
-    emp_type = current_user.Emp_type
+    email=current_user.email
+    emp = Signup.query.filter_by(email=email).first()
+    emp_type = emp.emp_type
     
     
     queries_for_emp_type = Query.query.filter(
@@ -290,7 +257,7 @@ def view_emp_type_queries():
         admin_details = Admin.query.filter_by(id=query.admin_id).first()
         query.admin_details = admin_details  
 
-    return render_template('Accounts/view_emp_type_queries.html', queries=queries_for_emp_type)
+    return render_template('Accounts/view_emp_type_queries.html', queries=queries_for_emp_type,emp=emp)
 
 
 
@@ -343,7 +310,7 @@ def close_query(query_id):
                 cc=None
 
     
-        if verify_password_and_send_email(current_user, form.password.data, subject, body, department_email,cc):
+        if verify_oauth2_and_send_email(current_user, form.password.data, subject, body, department_email,cc):
             
             db.session.delete(query)
 

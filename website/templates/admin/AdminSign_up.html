@@ -1,4 +1,4 @@
-{% extends "HumanResource/hr_base.html" %} 
+{% extends "HumanResource/hr_base.html" %}
 {% block title %}Sign Up{% endblock %}
 {% block content %}
 
@@ -15,126 +15,124 @@
 {% endif %}
 {% endwith %}
 
-
     <h2 class="centered-heading">SignUp</h2>
-<form method="POST" action="{{ url_for('Admin_auth.admin_sign_up') }}">
-    {{ form.hidden_tag() }}
+    <form method="POST" action="{{ url_for('Admin_auth.admin_sign_up') }}">
+        {{ form.hidden_tag() }}
 
-    <div class="signup-content">
-        <div class="form-group">
-            {{ form.first_name.label }}
-            {{ form.first_name(class="form-control") }}
-            {% if form.first_name.errors %}
-                <div class="text-danger">
-                    {% for error in form.first_name.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
+        <div class="signup-content">
+            <div class="form-group">
+                {{ form.first_name.label }}
+                {{ form.first_name(class="form-control", placeholder="Enter your Full Name") }}
+                {% if form.first_name.errors %}
+                    <div class="text-danger">
+                        {% for error in form.first_name.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
 
-        <div class="form-group">
-            {{ form.email.label }}
-            {{ form.email(class="form-control") }}
-            {% if form.email.errors %}
-                <div class="text-danger">
-                    {% for error in form.email.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
+            <div class="form-group">
+                {{ form.email.label }}
+                {{ form.email(class="form-control", placeholder="Enter your Email ID") }}
+                {% if form.email.errors %}
+                    <div class="text-danger">
+                        {% for error in form.email.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
 
-        <div class="form-group">
-            {{ form.emp_id.label }}
-            {{ form.emp_id(class="form-control") }}
-            {% if form.emp_id.errors %}
-                <div class="text-danger">
-                    {% for error in form.emp_id.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
+            <div class="form-group">
+                {{ form.emp_id.label }}
+                {{ form.emp_id(class="form-control", placeholder="Enter your Employee ID") }}
+                {% if form.emp_id.errors %}
+                    <div class="text-danger">
+                        {% for error in form.emp_id.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
 
-        <div class="form-group">
-            {{ form.mobile.label }}
-            {{ form.mobile(class="form-control") }}
-            {% if form.mobile.errors %}
-                <div class="text-danger">
-                    {% for error in form.mobile.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
+            <div class="form-group">
+                {{ form.mobile.label }}
+                {{ form.mobile(class="form-control", placeholder="Enter your Mobile Number") }}
+                {% if form.mobile.errors %}
+                    <div class="text-danger">
+                        {% for error in form.mobile.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
 
-        <div class="form-group">
-            {{ form.Doj.label }}
-            {{ form.Doj(class="form-control") }}
-            {% if form.Doj.errors %}
-                <div class="text-danger">
-                    {% for error in form.Doj.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
+            <div class="form-group">
+                {{ form.doj.label }}
+                {{ form.doj(class="form-control") }}
+                {% if form.doj.errors %}
+                    <div class="text-danger">
+                        {% for error in form.doj.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
 
-        <div class="form-group">
-            {{ form.password.label }}
-            {{ form.password(class="form-control") }}
-            
-            {% if form.password.errors %}
-                <div class="text-danger">
-                    {% for error in form.password.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
+            <div class="form-group">
+                {{ form.user_type.label }}
+                {{ form.user_type(class="form-control") }}
+                {% if form.user_type.errors %}
+                    <div class="text-danger">
+                        {% for error in form.user_type.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
 
-        <div class="form-group">
-            {{ form.confirm_password.label }}
-            {{ form.confirm_password(class="form-control") }}
-            {% if form.confirm_password.errors %}
-                <div class="text-danger">
-                    {% for error in form.confirm_password.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
+            <div class="form-group">
+                {{ form.circle.label }}
+                {{ form.circle(class="form-control") }}
+                {% if form.circle.errors %}
+                    <div class="text-danger">
+                        {% for error in form.circle.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
 
-        <div class="form-group">
-            {{ form.user_type.label }}
-            {{ form.user_type(class="form-control") }}
-            {% if form.user_type.errors %}
-                <div class="text-danger">
-                    {% for error in form.user_type.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
+            <!-- Password Fields -->
+            <div class="form-group">
+                {{ form.password.label }}
+                {{ form.password(class="form-control", placeholder="Enter your Password") }}
+                {% if form.password.errors %}
+                    <div class="text-danger">
+                        {% for error in form.password.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
 
-        <div class="form-group">
-            {{ form.circle.label }}
-            {{ form.circle(class="form-control") }}
-            {% if form.circle.errors %}
-                <div class="text-danger">
-                    {% for error in form.circle.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
+            <div class="form-group">
+                {{ form.confirm_password.label }}
+                {{ form.confirm_password(class="form-control", placeholder="Confirm your Password") }}
+                {% if form.confirm_password.errors %}
+                    <div class="text-danger">
+                        {% for error in form.confirm_password.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
 
-        <div id="btm">
-            <button type="submit" class="submit-btn">Create Account</button>
-            
+            <div id="btm">
+                <button type="submit" class="submit-btn">Create Account</button>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
-</form>
 {% endblock %}

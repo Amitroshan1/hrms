@@ -2,38 +2,50 @@
 {% block title %}Update Leave Balance{% endblock %}
 
 {% block content %}
-    <div class="container_list">
-        {% with errors = get_flashed_messages(category_filter=["error", "success"]) %}
-            {% if errors %}
-                <div class="alert alert-danger">
-                    <ul>
-                        {%- for msg in errors %}
-                            <h3>{{ msg }}</h3>
-                        {% endfor -%}
-                    </ul>
+    <div class="container_list_emp">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div>
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
                 </div>
             {% endif %}
         {% endwith %}
 
-        <h2>Update Leave Balance</h2>
-        <form method="POST">
+        <h2>Leave Balance for: {{ employee.first_name }} {{ employee.last_name }}</h2>
+
+        <form method="POST" action="{{ url_for('hr.leave_balance', employee_id=employee.id) }}">
+
             {{ form.hidden_tag() }}
-
+        
             <div class="form-group">
-                {{ form.personal_leave_balance.label }} 
+                {{ form.personal_leave_balance.label }}
                 {{ form.personal_leave_balance(class="form-control") }}
+                {% if form.personal_leave_balance.errors %}
+                    <small class="text-danger">
+                        {{ form.personal_leave_balance.errors[0] }}
+                    </small>
+                {% endif %}
             </div>
-
+        
             <div class="form-group">
-                {{ form.casual_leave_balance.label }} 
+                {{ form.casual_leave_balance.label }}
                 {{ form.casual_leave_balance(class="form-control") }}
+                {% if form.casual_leave_balance.errors %}
+                    <small class="text-danger">
+                        {{ form.casual_leave_balance.errors[0] }}
+                    </small>
+                {% endif %}
             </div>
+        
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a href="{{ url_for('hr.employee_list') }}" class="btn btn-secondary">Back to Employee List</a>
 
-            <div class="form-group">
-                {{ form.submit(class="btn btn-primary") }}
-                <a href="{{ url_for('hr.employee_list') }}" class="btn btn-secondary">Back to Employee List</a>
-            </div>
         </form>
+        
     </div>
 {% endblock %}
-

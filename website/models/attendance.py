@@ -15,20 +15,28 @@ class Punch(db.Model,UserMixin):
 
 
 
-
 class LeaveBalance(db.Model):
     __tablename__ = 'leave_balances'
 
     id = db.Column(db.Integer, primary_key=True)
-    admin_id = db.Column(db.Integer, db.ForeignKey('admins.id'), nullable=False)
-    privilege_leave_balance = db.Column(db.Float, default=0.0)
-    casual_leave_balance = db.Column(db.Float, default=0.0)
+    
+    # Foreign keys for Signup and Admin
+    signup_id = db.Column(db.Integer, db.ForeignKey('signups.id', ondelete="CASCADE"), unique=True, nullable=False)
+    
+    privilege_leave_balance = db.Column(db.Float, default=0.0, nullable=False)
+    casual_leave_balance = db.Column(db.Float, default=0.0, nullable=False)
 
-    admin = db.relationship('Admin', back_populates='leave_balance')
+    # Relationships
+    signup = db.relationship('Signup', back_populates='leave_balance')
+    
+    def __init__(self, signup_id, admin_id=None, privilege_leave_balance=0.0, casual_leave_balance=0.0, **kwargs):
+        super().__init__(**kwargs)
+        self.signup_id = signup_id
+        self.admin_id = admin_id
+        self.privilege_leave_balance = privilege_leave_balance
+        self.casual_leave_balance = casual_leave_balance
 
-    def __init__(self, admin_id, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.admin_id = admin_id  # Set the admin_id when initializing
+
 
     
 

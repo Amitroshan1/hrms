@@ -46,7 +46,8 @@
                     <td>{{ employee.emp_id }}</td>
                     <td>{{ employee.first_name | capitalize }}</td>
                     <td>
-                        <a href="{{ url_for('hr.leave_balance', admin_id=employee.id) }}">
+                        <a href="{{ url_for('hr.leave_balance', employee_id=employee.id) }}">
+
                             View Leave Balance
                         </a>
                     </td>

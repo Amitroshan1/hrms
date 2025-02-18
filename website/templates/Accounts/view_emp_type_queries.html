@@ -13,7 +13,7 @@
         </div>
     {% endif %}
     {% endwith %}
-<h2 class="centered-heading">Queries for {{ current_user.Emp_type }}</h2>
+<h2 class="centered-heading">Queries for {{ emp.emp_type }}</h2>
 <table class="queries">
     <thead>
         <tr>
@@ -29,7 +29,7 @@
         {% for query in queries %}
             <tr>
                 <td>{{ query.admin_details.first_name }}</td>
-                <td>{{ query.admin_details.circle }}</td>
+                <td>{{ emp.circle }}</td>
                 <td>{{ query.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                 <td>{{ query.status }}</td>
                 <td>

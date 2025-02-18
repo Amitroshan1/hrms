@@ -16,8 +16,9 @@ from .models.prev_com import PreviousCompany
 from .models.attendance import Punch,LeaveApplication,LeaveBalance
 from .forms.attendance import PunchForm,LeaveForm
 from .models.manager_model import ManagerContact
-from .common import verify_password_and_send_email
+from .common import verify_oauth2_and_send_email
 from .forms.query_form import PasswordForm
+from .models.signup import Signup
 
 
 
@@ -342,111 +343,94 @@ def punch():
 
 
 
+
+
+
+
 @profile.route('/apply-leave', methods=['GET', 'POST'])
-@login_required
 def apply_leave():
+    """ Route to apply for leave with OAuth2 authentication and email notification """
+    
+    
+
+
+    # Ensure the user is authenticated via OAuth2
+    if "session_id" not in session:
+        flash("Please log in using Microsoft OAuth.", "danger")
+        return redirect(url_for("auth.login"))
+
+    # Get user info from OAuth2 session
+    user_info = session["session_id"]
+    user_email = user_info.get("email")
+
+    # Fetch employee record from the database
+    employee = Signup.query.filter_by(email=user_email).first()
+    if not employee:
+        flash("Employee record not found.", "danger")
+        return redirect(url_for("auth.logout"))
+
+    leave_balance = LeaveBalance.query.filter_by(signup_id=employee.id).first()
     form = LeaveForm()
-    password_form = PasswordForm()
-    leave_balance = LeaveBalance.query.filter_by(admin_id=current_user.id).first()
 
-    
-    if 'leave_data' in session and password_form.validate_on_submit():
-        leave_data = session.pop('leave_data')
-
-       
-        start_date = datetime.strptime(leave_data['start_date'], '%a, %d %b %Y %H:%M:%S %Z').date()
-        end_date = datetime.strptime(leave_data['end_date'], '%a, %d %b %Y %H:%M:%S %Z').date()
-
-        leave_type = leave_data['leave_type']
+    if form.validate_on_submit():
+        start_date = form.start_date.data
+        end_date = form.end_date.data
+        leave_type = form.leave_type.data
         leave_days = (end_date - start_date).days + 1
+        reason = form.reason.data
 
-       
+        # Validate leave balances
+        if leave_type == 'Casual Leave' and leave_days > leave_balance.casual_leave_balance:
+            flash('You do not have enough Casual Leave balance.', 'danger')
+            return redirect(url_for('profile.apply_leave'))
+
+        if leave_type == 'Privilege Leave' and leave_days > leave_balance.privilege_leave_balance:
+            flash('You do not have enough Privilege Leave balance.', 'danger')
+            return redirect(url_for('profile.apply_leave'))
+
+        # Deduct leave balance
         if leave_type == 'Casual Leave':
-            if leave_days > 2:
-                flash('Casual leave cannot exceed 2 days.', 'danger')
-                return redirect(url_for('profile.apply_leave'))
-
-            if leave_days > leave_balance.casual_leave_balance:
-                flash('You do not have enough Casual leave, Try Privilege Leave.', 'danger')
-                return redirect(url_for('profile.apply_leave'))
-            else:
-                leave_balance.casual_leave_balance -= leave_days
-
-    
+            leave_balance.casual_leave_balance -= leave_days
         elif leave_type == 'Privilege Leave':
-            if leave_days > leave_balance.privilege_leave_balance:
-                extra = leave_days - leave_balance.privilege_leave_balance
-                leave_balance.privilege_leave_balance = leave_balance.privilege_leave_balance % 1
-            else:
-                leave_balance.privilege_leave_balance -= leave_days
-            
+            leave_balance.privilege_leave_balance -= leave_days
 
-
-       
+        # Save leave application
         leave_application = LeaveApplication(
-            admin_id=leave_data['admin_id'],
-            leave_type=leave_data['leave_type'],
-            reason=leave_data['reason'],
+            admin_id=employee.id,
+            leave_type=leave_type,
+            reason=reason,
             start_date=start_date,
             end_date=end_date,
             status='Pending'
         )
-
         db.session.add(leave_application)
         db.session.commit()
 
-        approval_link = url_for('profile.approve_leave', leave_id=leave_application.id, _external=True)
-
-
-
-       
-        manager_contact = ManagerContact.query.filter_by(circle_name=current_user.circle, user_type=current_user.Emp_type).first()
+        # Fetch manager contact details for notification
+        manager_contact = ManagerContact.query.filter_by(circle_name=employee.circle, user_type=employee.Emp_type).first()
         department_email = 'hr@saffotech.com'
         cc_emails = ['accounts@saffotech.com']
-
         if manager_contact:
             cc_emails += [manager_contact.l2_email, manager_contact.l3_email]
 
+        # Email notification details
+        subject = f"New Leave Application: {leave_type}"
+        body = (f"Leave application submitted by {employee.first_name} {employee.last_name}.\n"
+                f"Leave Type: {leave_type}\n"
+                f"Reason: {reason}\n"
+                f"Start Date: {start_date}\n"
+                f"End Date: {end_date}\n"
+                f"Total Days: {leave_days}\n"
+                f"Click here to approve: {url_for('profile.approve_leave', leave_id=leave_application.id, _external=True)}")
         
-        subject = f"New Leave Application Submitted: {leave_application.leave_type}"
-        body = (
-            f"Leave application has been submitted by {current_user.first_name}.\n"
-            f"Leave Type: {leave_application.leave_type}\n\n"
-            f"Reason: {leave_application.reason}\n\n"
-            f'Extra Days: {extra}\n\n'
-            f"Start Date: {leave_application.start_date}\n"
-            f"End Date: {leave_application.end_date}\n"
-            f" Total Leave {leave_days}\n\n"
-            f"Also click on link to Approve : { approval_link } "
-
-           
-        )
-
-        if verify_password_and_send_email(current_user, password_form.password.data, subject, body, department_email, cc_emails):
-            flash('Your leave application has been submitted and email notification sent to the department.', 'success')
-        else:
-            flash('Password verification failed or email could not be sent.', 'error')
-
+        verify_oauth2_and_send_email(subject, body, department_email, cc_emails)
+        flash('Your leave application has been submitted.', 'success')
         return redirect(url_for('profile.apply_leave'))
 
-    
-    if form.validate_on_submit():
-       
-        session['leave_data'] = {
-            'admin_id': current_user.id,
-            'leave_type': form.leave_type.data,
-            'reason': form.reason.data,
-            'start_date': form.start_date.data, 
-            'end_date': form.end_date.data,
-        }
+    user_leaves = LeaveApplication.query.filter_by(admin_id=employee.id).all()
+    return render_template('profile/apply_leave.html', form=form, leave_balance=leave_balance, user_leaves=user_leaves)
 
-        
-        return render_template('Accounts/verify_password.html', form=password_form)
 
-    
-    leave = LeaveApplication.query.filter_by(admin_id=current_user.id).all()
-
-    return render_template('profile/apply_leave.html', form=form, leave_balance=leave_balance, user_leaves=leave)
 
 
 @profile.route('/approve-leave/<int:leave_id>', methods=['GET'])

@@ -3,22 +3,22 @@
 {% block content %}
 
 <h2 class="centered-heading">Details for {{ admin.first_name | capitalize }}</h2>
-<div class="container">
+<div class="container_details">
 
     {% if detail_type == 'Attendance' %}
     <form method="POST" action="{{ url_for('hr.display_details') }}">
         {{ form.hidden_tag() }}
-        <div class="form-group">
+        <div class="form-group_details">
             <label for="month">Select Month</label>
-            <select name="month" class="form-control">
+            <select name="month" class="form-control_details">
                 {% for i in range(1, 13) %}
                     <option value="{{ i }}" {% if i == selected_month %}selected{% endif %}>{{ i }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="form-group">
+        <div class="form-group_details">
             <label for="year">Select Year</label>
-            <select name="year" class="form-control">
+            <select name="year" class="form-control_details">
                 {% for i in range(2000, datetime.now().year + 1) %}
                     <option value="{{ i }}" {% if i == selected_year %}selected{% endif %}>{{ i }}</option>
                 {% endfor %}
@@ -31,155 +31,234 @@
     {% if details %}
         {% if detail_type == 'Family Details' %}
         <h3 class="centered-heading">Family Details</h3>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Date of Birth</th>
-                        <th>Age</th>
-                        <th>Relation</th>
-                        <th>Occupation</th>
-                        <th>Income</th>
-                        <th>Address</th>
-                        <th>Remarks</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for detail in details %}
-                        <tr>
-                            <td>{{ detail.name | capitalize  }}</td>
-                            <td>{{ detail.email }}</td>
-                            <td>{{ detail.dob }}</td>
-                            <td>{{ detail.age }}</td>
-                            <td>{{ detail.relation | capitalize }}</td>
-                            <td>{{ detail.occupation | capitalize  }}</td>
-                            <td>{{ detail.income }}</td>
-                            <td>{{ detail.address  | capitalize }}</td>
-                            <td>{{ detail.remarks | capitalize }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <table class="table_details table-striped" border="1">
+            <thead>
+                {% for detail in details %}
+                <tr>
+                    <th>Name</th>
+                    <td>{{ detail.name | capitalize }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ detail.email }}</td>
+                </tr>
+                <tr>
+                    <th>Date of Birth</th>
+                    <td>{{ detail.dob }}</td>
+                </tr>
+                <tr>
+                    <th>Age</th>
+                    <td>{{ detail.age }}</td>
+                </tr>
+                <tr>
+                    <th>Relation</th>
+                    <td>{{ detail.relation | capitalize }}</td>
+                </tr>
+                <tr>
+                    <th>Occupation</th>
+                    <td>{{ detail.occupation | capitalize }}</td>
+                </tr>
+                <tr>
+                    <th>Income</th>
+                    <td>{{ detail.income }}</td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td>{{ detail.address | capitalize }}</td>
+                </tr>
+                <tr>
+                    <th>Remarks</th>
+                    <td>{{ detail.remarks | capitalize }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2"><hr></td>
+                </tr>
+                {% endfor %}
+            </thead>
+        </table>
+        
         {% elif detail_type == 'Previous_company' %}
         <h3 class="centered-heading">Previous Company Details</h3>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Company Name</th>
-                        <th>Position</th>
-                        <th>D.O.J</th>
-                        <th>D.O.L</th>
-                        <th>Reason for Leaving</th>
-                        <th>UAN</th>
-                        <th>PAN</th>
-                        <th>Contact of Company</th>
-                        <th>Name of Contact</th>
-                        <th>PF Number</th>
-                        <th>Address of Company</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for detail in details %}
-                        <tr>
-                            <td>{{ detail.com_name | capitalize  }}</td>
-                            <td>{{ detail.designation | capitalize }}</td>
-                            <td>{{ detail.doj }}</td>
-                            <td>{{ detail.dol }}</td>
-                            <td>{{ detail.reason | capitalize }}</td>
-                            <td>{{ detail.uan }}</td>
-                            <td>{{ detail.pan }}</td>
-                            <td>{{ detail.contact }}</td>
-                            <td>{{ detail.name_contact }}</td>
-                            <td>{{ detail.pf_num }}</td>
-                            <td>{{ detail.address | capitalize }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <table class="table_details table-striped" >
+            
+                        <thead>
+                            {% for detail in details %}
+                            <tr>
+                                <th>Company Name</th>
+                                <td>{{ detail.com_name | capitalize }}</td>
+                            </tr>
+                            <tr>
+                                <th>Position</th>
+                                <td>{{ detail.designation | capitalize }}</td>
+                            </tr>
+                            <tr>
+                                <th>D.O.J</th>
+                                <td>{{ detail.doj }}</td>
+                            </tr>
+                            <tr>
+                                <th>D.O.L</th>
+                                <td>{{ detail.dol }}</td>
+                            </tr>
+                            <tr>
+                                <th>Reason for Leaving</th>
+                                <td>{{ detail.reason | capitalize }}</td>
+                            </tr>
+                            <tr>
+                                <th>UAN</th>
+                                <td>{{ detail.uan }}</td>
+                            </tr>
+                            <tr>
+                                <th>PAN</th>
+                                <td>{{ detail.pan }}</td>
+                            </tr>
+                            <tr>
+                                <th>Contact of Company</th>
+                                <td>{{ detail.contact }}</td>
+                            </tr>
+                            <tr>
+                                <th>Name of Contact</th>
+                                <td>{{ detail.name_contact }}</td>
+                            </tr>
+                            <tr>
+                                <th>PF Number</th>
+                                <td>{{ detail.pf_num }}</td>
+                            </tr>
+                            <tr>
+                                <th>Address of Company</th>
+                                <td>{{ detail.address | capitalize }}</td>
+                            </tr>
+                            
+                            {% endfor %}
+                        </thead>
+                    </table>
+                    
+                    
         {% elif detail_type == 'Employee Details' %}
         <h3 class="centered-heading">Employee Details</h3>
-            <table class="table table-striped">
+            <table class="table_details table-striped">
                 <thead>
+                    {% for detail in details %}
                     <tr>
                         <th>Photo</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Father's Name</th>
-                        <th>Mother's Name</th>
-                        <th>Marital Status</th>
-                        <th>Spouse's Name</th>
-                        <th>Date of Birth</th>
-                        <th>Employee ID</th>
-                        <th>Mobile</th>
-                        <th>Gender</th>
-                        <th>Emergency Mobile</th>
-                        <th>Caste</th>
-                        <th>Nationality</th>
-                        <th>Language</th>
-                        <th>Religion</th>
-                        <th>Blood Group</th>
-                        <th>Designation</th>
-                        <th>Permanent Address</th>
-                        <th>Present Address</th>
+                        <td><img src="{{ url_for('static', filename='uploads/' ~ detail.photo_filename) }}" alt="Employee Photo" width="50"></td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for detail in details %}
-                        <tr>
-                            <td><img src="{{ url_for('static', filename='uploads/' ~ detail.photo_filename) }}" alt="Employee Photo" width="50"></td>
-                            <td>{{ detail.name | capitalize }}</td>
-                            <td>{{ detail.email }}</td>
-                            <td>{{ detail.father_name | capitalize }}</td>
-                            <td>{{ detail.mother_name | capitalize }}</td>
-                            <td>{{ detail.marital_status }}</td>
-                            <td>{{ detail.spouse_name | capitalize }}</td>
-                            <td>{{ detail.dob }}</td>
-                            <td>{{ detail.emp_id }}</td>
-                            <td>{{ detail.mobile }}</td>
-                            <td>{{ detail.gender| capitalize }}</td>
-                            <td>{{ detail.emergency_mobile }}</td>
-                            <td>{{ detail.caste | capitalize }}</td>
-                            <td>{{ detail.nationality | capitalize }}</td>
-                            <td>{{ detail.language | capitalize }}</td>
-                            <td>{{ detail.religion | capitalize }}</td>
-                            <td>{{ detail.blood_group }}</td>
-                            <td>{{ detail.designation }}</td>
-                            <td>{{ detail.permanent_address_line1 | capitalize  }}, {{ detail.permanent_address_line2 | capitalize }}, {{ detail.permanent_address_line3 | capitalize }}, {{ detail.permanent_pincode }}, {{ detail.permanent_district | capitalize }}, {{ detail.permanent_state | capitalize }}</td>
-                            <td>{{ detail.present_address_line1 | capitalize }}, {{ detail.present_address_line2 | capitalize }}, {{ detail.present_address_line3 | capitalize }}, {{ detail.present_pincode }}, {{ detail.present_district | capitalize }}, {{ detail.present_state | capitalize }}</td>
-                        </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ detail.name | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ detail.email }}</td>
+                    </tr>
+                    <tr></tr>
+                        <th>Father's Name</th>
+                        <td>{{ detail.father_name | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mother's Name</th>
+                        <td>{{ detail.mother_name | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Marital Status</th>
+                        <td>{{ detail.marital_status }}</td>
+                    </tr>
+                    <tr>
+                        <th>Spouse's Name</th>
+                        <td>{{ detail.spouse_name | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date of Birth</th>
+                        <td>{{ detail.dob }}</td>
+                    </tr>
+                    <tr>
+                        <th>Employee ID</th>
+                        <td>{{ detail.emp_id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mobile</th>
+                        <td>{{ detail.mobile }}</td>
+                    </tr>
+                    <tr>
+                        <th>Gender</th>
+                        <td>{{ detail.gender| capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Emergency Mobile</th>
+                        <td>{{ detail.emergency_mobile }}</td>
+                    </tr>
+                    <tr>
+                        <th>Caste</th>
+                        <td>{{ detail.caste | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nationality</th>
+                        <td>{{ detail.nationality | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Language</th>
+                        <td>{{ detail.language | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Religion</th>
+                        <td>{{ detail.religion | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Blood Group</th>
+                        <td>{{ detail.blood_group }}</td>
+                    </tr>
+                    <tr>
+                        <th>Designation</th>
+                        <td>{{ detail.designation }}</td>
+                    </tr>
+                    <tr>
+                        <th>Permanent Address</th>
+                        <td>{{ detail.permanent_address_line1 | capitalize  }}, {{ detail.permanent_address_line2 | capitalize }}, {{ detail.permanent_address_line3 | capitalize }}, {{ detail.permanent_pincode }}, {{ detail.permanent_district | capitalize }}, {{ detail.permanent_state | capitalize }}</td>
+
+                    </tr>
+                    <tr>
+                        <th>Present Address</th>
+                        <td>{{ detail.present_address_line1 | capitalize }}, {{ detail.present_address_line2 | capitalize }}, {{ detail.present_address_line3 | capitalize }}, {{ detail.present_pincode }}, {{ detail.present_district | capitalize }}, {{ detail.present_state | capitalize }}</td>
+
+                    </tr>
                     {% endfor %}
-                </tbody>
+                
             </table>
         {% elif detail_type == 'Education' %}
         <h3 class="centered-heading">Education Details</h3>
-            <table class="table table-striped">
+            <table class="table_details table-striped">
                 <thead>
+                    {% for detail in details %}
                     <tr>
                         <th>Degree</th>
-                        <th>Institution</th>
-                        <th>Board</th>
-                        <th>Starting Year</th>
-                        <th>Completion Year</th>
-                        <th>Grade/Marks</th>
+                        <td>{{ detail.qualification | capitalize }}</td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for detail in details %}
-                        <tr>
-                            <td>{{ detail.qualification | capitalize }}</td>
-                            <td>{{ detail.institution | capitalize }}</td>
-                            <td>{{ detail.board }}</td>
-                            <td>{{ detail.start }}</td>
-                            <td>{{ detail.end }}</td>
-                            <td>{{ detail.marks }}</td>
-                        </tr>
+                    <tr>
+                        <th>Institution</th>
+                        <td>{{ detail.institution | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Board</th>
+                        <td>{{ detail.board }}</td>
+                    </tr>
+                    <tr>
+                        <th>Starting Year</th>
+                        <td>{{ detail.start }}</td>
+                    </tr>
+                    <tr>
+                        <th>Completion Year</th>
+                        <td>{{ detail.end }}</td>
+                    </tr>
+                    <tr>
+                        <th>Grade/Marks</th>
+                        <td>{{ detail.marks }}</td>
+                    </tr>
                     {% endfor %}
-                </tbody>
+                </thead>
+                
             </table>
         {% elif detail_type == 'Attendance' %}
         <h3 class="centered-heading">Attendance</h3>
-            <table class="table table-striped">
+            <table class="table_details table-striped">
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -199,46 +278,50 @@
             </table>
         {% elif detail_type == 'Document' %}
         <h3 class="centered-heading">Documents</h3>
-            <table class="table table-striped">
+            <table class="table_details table-striped">
                 <thead>
+                    {% for detail in details %}
                     <tr>
                         <th>Document Name</th>
-                        <th>Document Number</th>
-                        <th>Issue Date</th>
-                        <th>Document File</th>
+                        <td>{{ detail.doc_name | capitalize }}</td>
                     </tr>
-                </thead>
-                <tbody>
-                    {% for detail in details %}
-                        <tr>
-                            <td>{{ detail.doc_name | capitalize }}</td>
-                            <td>{{ detail.doc_number }}</td>
-                            <td>{{ detail.issue_date }}</td>
-                            <td><a href="{{ url_for('static', filename='uploads/' ~ detail.doc_file) }}" target="_blank">View Document</a></td>
-                        </tr>
+                    <tr>
+                        <th>Document Number</th>
+                        <td>{{ detail.doc_number }}</td>
+                    </tr>
+                    <tr>
+                        <th>Issue Date</th>
+                        <td>{{ detail.issue_date }}</td>
+                    </tr>
+                    <tr>
+                        <th>Document File</th>
+                        <td><a href="{{ url_for('static', filename='uploads/' ~ detail.doc_file) }}" target="_blank">View Document</a></td>
+
+                    </tr>
                     {% endfor %}
-                </tbody>
+                </thead>
+                
             </table>
             {% elif detail_type == 'Leave Details' %}
             <h3 class="centered-heading">Leave Applied</h3>
-                <table class="table table-striped">
+                <table class="table_details table-striped">
                     <thead>
+                        {% for detail in details %}
                         <tr>
                             <th>Leave Type</th>
+                            <td>{{ detail.leave_type | capitalize }}</td>
+                        </tr>
+                        <tr>
                             <th>Status</th>
+                            <td>{{ detail.status }}</td>
+                        </tr>
+                        <tr>
                             <th>Created at</th>
+                            <td>{{ detail.created_at }}</td>
                             
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for detail in details %}
-                            <tr>
-                                <td>{{ detail.leave_type | capitalize }}</td>
-                                <td>{{ detail.status }}</td>
-                                <td>{{ detail.created_at }}</td>
-                                </tr>
                         {% endfor %}
-                    </tbody>
+                    </thead>
                 </table>
         {% endif %}
     {% endif %}

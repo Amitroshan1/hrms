@@ -1,8 +1,8 @@
 
 from wtforms import *
 from flask_wtf import FlaskForm
-
-from wtforms.validators import DataRequired
+from wtforms import ValidationError
+from wtforms.validators import DataRequired,Optional as opt
 from datetime import datetime
 
 
@@ -38,10 +38,26 @@ class LeaveForm(FlaskForm):
 
 
 
+
+
 class BalanceUpdateForm(FlaskForm):
-    personal_leave_balance = FloatField('Personal Leave Balance', validators=[DataRequired()])
-    casual_leave_balance = FloatField('Casual Leave Balance', validators=[DataRequired()])
+    personal_leave_balance = FloatField(
+        'Personal Leave Balance', 
+        validators=[opt()]
+    )
+    casual_leave_balance = FloatField(
+        'Casual Leave Balance', 
+        validators=[opt()]
+    )
     submit = SubmitField('Update')
-    
+
+    # Add custom validator for FloatField
+    def validate_personal_leave_balance(self, field):
+        if not isinstance(field.data, (int, float)):
+            raise ValidationError("Personal Leave Balance must be a number.")
+
+    def validate_casual_leave_balance(self, field):
+        if not isinstance(field.data, (int, float)):
+            raise ValidationError("Casual Leave Balance must be a number.")
 
 

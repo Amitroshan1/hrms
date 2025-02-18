@@ -411,3 +411,36 @@ button:hover {
   background-color: #d4edda;
   color: #155724;
 }
+
+/* Scope styles to container-fluid */
+.container-fluid .form-group label {
+  font-weight: bold; /* Make the label bold */
+  display: block; /* Ensure the label is on its own line */
+  margin-bottom: 5px; /* Add some space below the label */
+}
+
+.container-fluid .form-group .form-control {
+  border: 1px solid #ced4da; /* Add a light border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px; /* Add some padding for a comfortable input size */
+  font-size: 16px; /* Slightly larger font size */
+  width: 50%; /* Make the input field stretch to fill the form-group */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  transition: all 0.2s ease-in-out; /* Smooth transition for hover/focus */
+}
+
+.container-fluid .form-group .form-control:focus {
+  border-color: #007bff; /* Blue border on focus */
+  box-shadow: 0px 2px 5px rgba(0, 123, 255, 0.5); /* Blue shadow on focus */
+  outline: none; /* Remove the default outline */
+}
+
+.container-fluid .form-group .text-danger {
+  color: #dc3545; /* Bootstrap danger red */
+  font-size: 14px; /* Slightly smaller font size */
+  margin-top: 5px; /* Add space above the error messages */
+}
+
+.container-fluid .form-group {
+  margin-bottom: 20px; /* Space between form groups */
+}

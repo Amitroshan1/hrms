@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect,Blueprint, session,url_for, current_app,send_from_directory,request
+from flask import render_template, jsonify,flash, redirect,Blueprint, session,url_for, current_app,send_from_directory,request
 from flask_login import login_required
 from .forms.search_from import SearchForm,DetailForm,NewsFeedForm,SearchEmp_Id,AssetForm
 from .models.Admin_models import Admin
@@ -7,9 +7,10 @@ from .models.emp_detail_models import Employee,Asset
 from .models.family_models import FamilyDetails
 from .models.prev_com import PreviousCompany
 from .models.education import UploadDoc, Education
-from .models.attendance import Punch, LeaveApplication
+from .models.attendance import Punch, LeaveApplication,LeaveBalance
 from .models.news_feed import NewsFeed
-from .forms.attendance import MonthYearForm
+from .forms.attendance import MonthYearForm,BalanceUpdateForm
+from .models.signup import Signup
 from datetime import datetime
 import calendar
 from werkzeug.utils import secure_filename
@@ -27,9 +28,9 @@ def hr_dashbord():
     current_day = today.day
     current_month = today.month
 
-    employees_with_anniversaries = Admin.query.filter(
-        db.extract('month', Admin.Doj) == current_month,
-        db.extract('day', Admin.Doj) == current_day
+    employees_with_anniversaries = Signup.query.filter(
+        db.extract('month', Signup.doj) == current_month,
+        db.extract('day', Signup.doj) == current_day
     ).all()
     
 
@@ -52,7 +53,7 @@ def search():
         circle = form.circle.data
         emp_type = form.emp_type.data
 
-        admins = Admin.query.filter_by(circle=circle, Emp_type=emp_type).all()
+        admins = Signup.query.filter_by(circle=circle, emp_type=emp_type).all()
 
         if not admins:
             flash('No matching entries found', category='error')
@@ -79,7 +80,7 @@ def search_results():
     circle = session['circle']
     emp_type = session['emp_type']
 
-    admins = Admin.query.filter(Admin.id.in_(admin_ids)).all()
+    admins = Signup.query.filter(Admin.id.in_(admin_ids)).all()
     
     detail_form = DetailForm()
     detail_form.user.choices = [(admin.id, admin.first_name) for admin in admins]
@@ -163,7 +164,7 @@ def display_details():
     return render_template('HumanResource/details.html', admin=admin, details=details, detail_type=detail_type, selected_month=month, selected_year=year, form=form, datetime=datetime)
 
 
-
+# for update leave balance search
 @hr.route('/employee_list', methods=['GET', 'POST'])
 @login_required
 def employee_list():
@@ -179,7 +180,7 @@ def employee_list():
         session['circle'] = circle
 
         
-        employees = Admin.query.filter_by(Emp_type=emp_type, circle=circle).all()
+        employees = Signup.query.filter_by(emp_type=emp_type, circle=circle).all()
 
     else:
         
@@ -187,12 +188,60 @@ def employee_list():
         circle = session.get('circle')
 
         if emp_type and circle:
-            employees = Admin.query.filter_by(Emp_type=emp_type, circle=circle).all()
+            employees = Signup.query.filter_by(emp_type=emp_type, circle=circle).all()
 
     return render_template('HumanResource/emp_list.html', form=form, employees=employees)
 
 
+@hr.route('/leave_balance/<int:employee_id>', methods=['GET', 'POST'])
+def leave_balance(employee_id):
+    """
+    Display and update the leave balance for an employee by employee_id.
+    """
+    try:
+        
+        leave_balance = LeaveBalance.query.filter_by(signup_id=employee_id).first()
+        employee = Signup.query.get(employee_id)  # Fetch employee instead of admin
 
+        if leave_balance is None or employee is None:
+            flash('Leave balance or employee not found for the given employee ID.', 'error')
+            return redirect(url_for('hr.employee_list'))
+
+        form = BalanceUpdateForm()
+
+        if request.method == 'POST' and form.validate_on_submit():
+            
+            if form.personal_leave_balance.data is not None:
+                leave_balance.privilege_leave_balance = form.personal_leave_balance.data
+                print(form.personal_leave_balance.data)
+
+            if form.casual_leave_balance.data is not None:
+                leave_balance.casual_leave_balance = form.casual_leave_balance.data
+
+            try:
+                db.session.commit()
+                flash('Leave balance updated successfully!', 'success')
+            except Exception as e:
+                flash(f"Database commit failed: {e}", 'error')
+
+            return redirect(url_for('hr.leave_balance', employee_id=employee_id))
+        
+
+        # Pre-fill form values when loading the page
+        if request.method == 'GET':
+            form.personal_leave_balance.data = leave_balance.privilege_leave_balance
+            form.casual_leave_balance.data = leave_balance.casual_leave_balance
+
+        return render_template(
+            'HumanResource/update_leave_balance.html',
+            form=form,
+            leave_balance=leave_balance,
+            employee=employee  # Pass employee to the template
+        )
+
+    except Exception as e:
+        flash(f"An error occurred: {e}", 'error')
+        return redirect(url_for('hr.employee_list'))
 
 
 
@@ -248,7 +297,7 @@ def search_employee():
 
     if form.validate_on_submit():
         emp_id = form.emp_id.data
-        employee = Admin.query.filter_by(emp_id=emp_id).first()
+        employee = Signup.query.filter_by(emp_id=emp_id).first()
 
         if employee is None:
             flash('Employee not found!', 'danger')
@@ -256,6 +305,8 @@ def search_employee():
             return render_template('HumanResource/asset_search.html', form=form, employee=employee)
 
     return render_template('HumanResource/asset_search.html', form=form, employee=employee)
+
+
 
 
 @hr.route('/add_asset/<int:admin_id>', methods=['GET', 'POST'])
@@ -321,4 +372,7 @@ def update_asset(asset_id):
         return redirect(url_for('hr.add_asset', admin_id=asset.admin_id))
 
     return render_template('HumanResource/assets_update.html', asset_form=asset_form, asset=asset)
+
+
+
 
