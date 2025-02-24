@@ -56,16 +56,24 @@ class Employee(db.Model,UserMixin):
         return f'<Employee {self.name}>'
     
 
-
 class Asset(db.Model):
     __tablename__ = 'assets'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(255))
-    image_file = db.Column(db.String(255))  
-    issue_date = db.Column(db.Date, default=datetime.now())  
+    image_files = db.Column(db.Text)  # Store multiple image paths as a comma-separated string
+    issue_date = db.Column(db.Date, default=datetime.now)  
     return_date = db.Column(db.Date)
+    remark = db.Column(db.Text)  # ✅ Add this line to store remarks
     admin_id = db.Column(db.Integer, db.ForeignKey('admins.id'), nullable=False)
 
     admin = db.relationship('Admin', back_populates='assets')
+
+    def set_image_files(self, images):
+        """Store list of image filenames as a comma-separated string."""
+        self.image_files = ",".join(images)
+
+    def get_image_files(self):
+        """Retrieve image filenames as a list."""
+        return self.image_files.split(",") if self.image_files else []

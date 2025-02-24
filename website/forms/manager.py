@@ -16,7 +16,7 @@ class ManagerContactForm(FlaskForm):
     user_type = SelectField('Department', 
                             choices=[('', 'Select Department'),
                                       ('Human Resource', 'Human Resource'),
-                                        ('Accounts & Finance', 'Accounts & Finance'), 
+                                        ('Accounts', 'Accounts'), 
                                      ('IT Department','IT Department'),
                                      ('Testing', 'Testing'),
                                      ('Software Development', 'Software Development')],

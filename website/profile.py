@@ -17,9 +17,8 @@ from .models.attendance import Punch,LeaveApplication,LeaveBalance
 from .forms.attendance import PunchForm,LeaveForm
 from .models.manager_model import ManagerContact
 from .common import verify_oauth2_and_send_email
-from .forms.query_form import PasswordForm
+from .models.Admin_models import Admin
 from .models.signup import Signup
-
 
 
 profile=Blueprint('profile',__name__)
@@ -341,29 +340,20 @@ def punch():
 
 
 
-
-
-
-
-
-
 @profile.route('/apply-leave', methods=['GET', 'POST'])
+@login_required  # Ensure the user is logged in
 def apply_leave():
     """ Route to apply for leave with OAuth2 authentication and email notification """
-    
-    
 
-
-    # Ensure the user is authenticated via OAuth2
-    if "session_id" not in session:
+    # Ensure user is authenticated
+    if not current_user.is_authenticated:
         flash("Please log in using Microsoft OAuth.", "danger")
-        return redirect(url_for("auth.login"))
+        return redirect(url_for("auth.E_homepage"))
 
-    # Get user info from OAuth2 session
-    user_info = session["session_id"]
-    user_email = user_info.get("email")
+    user_email = current_user.email  # Fetch email directly from the authenticated user
 
     # Fetch employee record from the database
+    emp = Admin.query.filter_by(email=user_email).first()
     employee = Signup.query.filter_by(email=user_email).first()
     if not employee:
         flash("Employee record not found.", "danger")
@@ -379,20 +369,23 @@ def apply_leave():
         leave_days = (end_date - start_date).days + 1
         reason = form.reason.data
 
+        extra_leave = 0  # Variable to track extra leave days
+
         # Validate leave balances
         if leave_type == 'Casual Leave' and leave_days > leave_balance.casual_leave_balance:
             flash('You do not have enough Casual Leave balance.', 'danger')
             return redirect(url_for('profile.apply_leave'))
 
-        if leave_type == 'Privilege Leave' and leave_days > leave_balance.privilege_leave_balance:
-            flash('You do not have enough Privilege Leave balance.', 'danger')
-            return redirect(url_for('profile.apply_leave'))
+        if leave_type == 'Privilege Leave':
+            if leave_days > leave_balance.privilege_leave_balance:
+                extra_leave = leave_days - leave_balance.privilege_leave_balance
+                leave_balance.privilege_leave_balance = 0  # Set remaining balance to 0
+            else:
+                leave_balance.privilege_leave_balance -= leave_days  # Deduct normally
 
-        # Deduct leave balance
+        # Deduct Casual Leave balance if applicable
         if leave_type == 'Casual Leave':
             leave_balance.casual_leave_balance -= leave_days
-        elif leave_type == 'Privilege Leave':
-            leave_balance.privilege_leave_balance -= leave_days
 
         # Save leave application
         leave_application = LeaveApplication(
@@ -406,29 +399,43 @@ def apply_leave():
         db.session.add(leave_application)
         db.session.commit()
 
-        # Fetch manager contact details for notification
-        manager_contact = ManagerContact.query.filter_by(circle_name=employee.circle, user_type=employee.Emp_type).first()
-        department_email = 'hr@saffotech.com'
-        cc_emails = ['accounts@saffotech.com']
+        # Email notification
+        manager_contact = ManagerContact.query.filter_by(circle_name=employee.circle, user_type=employee.emp_type).first()
+        department_email = 'singhroshan968@gmail.com'
+        cc_emails = ['singhroshan9688@gmail.com']
         if manager_contact:
             cc_emails += [manager_contact.l2_email, manager_contact.l3_email]
 
-        # Email notification details
         subject = f"New Leave Application: {leave_type}"
-        body = (f"Leave application submitted by {employee.first_name} {employee.last_name}.\n"
-                f"Leave Type: {leave_type}\n"
-                f"Reason: {reason}\n"
+        body = (
+                "Hi\n\n"
+                "Greetings!\n"
+                "Dear Sir/Madam,\n\n"
+                "Please find the details of the leave application below:\n\n"
+                f"Leave application submitted by {employee.first_name}.\n"
+                f"Leave Type: {leave_type}\n\n"
+                f"Reason: {reason}\n\n"
                 f"Start Date: {start_date}\n"
                 f"End Date: {end_date}\n"
                 f"Total Days: {leave_days}\n"
-                f"Click here to approve: {url_for('profile.approve_leave', leave_id=leave_application.id, _external=True)}")
-        
-        verify_oauth2_and_send_email(subject, body, department_email, cc_emails)
+                f"Privilege Leave Balance After Deduction: {leave_balance.privilege_leave_balance}\n\n")
+
+        # If extra leave is required, include it in the email
+        if extra_leave > 0:
+            body += f"⚠️ Extra Leave Days Required: {extra_leave} (Not covered by Privilege Leave)\n"
+            
+
+        body += f"Click here to approve: {url_for('profile.approve_leave', leave_id=leave_application.id, _external=True)}\n\n"
+        body += "Thanks $ Regards\n"
+        body += f"{employee.first_name}\n"
+        verify_oauth2_and_send_email(emp,subject, body, department_email, cc_emails)
         flash('Your leave application has been submitted.', 'success')
         return redirect(url_for('profile.apply_leave'))
 
     user_leaves = LeaveApplication.query.filter_by(admin_id=employee.id).all()
     return render_template('profile/apply_leave.html', form=form, leave_balance=leave_balance, user_leaves=user_leaves)
+
+
 
 
 

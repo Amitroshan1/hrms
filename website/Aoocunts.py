@@ -10,8 +10,8 @@ from .models.signup import Signup
 from . import db
 from .models.query import Query, QueryReply
 from .forms.query_form import QueryForm, QueryReplyForm,PasswordForm
-
-from .common import verify_oauth2_and_send_email,send_email_from_company
+from .models.signup import Signup
+from .common import verify_oauth2_and_send_email,Company_verify_oauth2_and_send_email
 
 
 
@@ -36,7 +36,7 @@ def search():
         emp_type = form.emp_type.data
         
 
-        admins = Admin.query.filter_by(circle=circle, Emp_type=emp_type).all()
+        admins = Signup.query.filter_by(circle=circle, emp_type=emp_type).all()
         
 
         if not admins:
@@ -109,12 +109,13 @@ def add_payslip(admin_id):
             db.session.rollback()
             flash(f"Error saving PaySlip to the database: {e}", 'error')
             return redirect(url_for('Accounts.add_payslip', admin_id=admin_id))
-
+                
         try:
-            # Send email notification
+            # Send email notifica
             email = employee.email
-            account_email = 'demoaountsaffo4353@outlook.com'
-            password = 'Demo@1234'
+            
+            account_email = current_user.email
+            
             subject = f'Payslip of Month {form.month.data} Uploaded'
             body = (
                 f"Dear {employee.first_name},\n\n"
@@ -122,15 +123,21 @@ def add_payslip(admin_id):
                 f"Please find the Payslip in HRMS.\n\n"
                 f"Thanks,\nAccounts"
             )
-            send_email_from_company(account_email, password, subject, body, email, cc_emails=None)
+
+            # Use OAuth2 authentication to send email
+            Company_verify_oauth2_and_send_email(account_email, subject, body, email, cc_emails=None)
+            flash('PaySlip added successfully! Email has been sent.', 'success')
+            return redirect(url_for('Accounts.search_results'))
+
         except Exception as e:
             flash(f"Error sending email: {e}", 'error')
             return redirect(url_for('Accounts.add_payslip', admin_id=admin_id))
 
-        flash('PaySlip added successfully! Email has been sent.', 'success')
-        return redirect(url_for('Accounts.search_results'))
+        
+    
 
     return render_template('Accounts/add_payslip.html', form=form, employee=employee)
+
 
 
 
@@ -165,7 +172,7 @@ def download_payslip(payslip_id):
 
    
     
-    file_path = os.path.join('HR_app/website/static/uploads', payslip.file_path)
+    file_path = os.path.join('C:\\Users\\PC\\Desktop\\HR_app\\website\\static\\uploads', payslip.file_path)
 
 
 

@@ -1,4 +1,4 @@
-from flask import render_template, jsonify,flash, redirect,Blueprint, session,url_for, current_app,send_from_directory,request
+from flask import render_template,flash, redirect,Blueprint, session,url_for, current_app,send_from_directory,request
 from flask_login import login_required
 from .forms.search_from import SearchForm,DetailForm,NewsFeedForm,SearchEmp_Id,AssetForm
 from .models.Admin_models import Admin
@@ -291,6 +291,7 @@ def download_file(filename):
 
 
 @hr.route('/search_employee', methods=['GET', 'POST'])
+@login_required
 def search_employee():
     form = SearchEmp_Id()
     employee = None
@@ -307,72 +308,94 @@ def search_employee():
     return render_template('HumanResource/asset_search.html', form=form, employee=employee)
 
 
-
-
 @hr.route('/add_asset/<int:admin_id>', methods=['GET', 'POST'])
+@login_required
 def add_asset(admin_id):
     asset_form = AssetForm()
     employee = Admin.query.get(admin_id)
 
+    if not employee:
+        flash("Employee not found.", "danger")
+        return redirect(url_for('hr.search_employee'))  # Redirect if employee does not exist
+
     if asset_form.validate_on_submit():
-        photo_filename = None
-        if asset_form.image_file.data:
-            photo_filename = secure_filename(asset_form.image_file.data.filename)
-            asset_form.image_file.data.save(os.path.join(current_app.config['UPLOAD_FOLDER'], photo_filename))
-        
+        uploaded_filenames = []
+        if asset_form.images.data:
+            for file in asset_form.images.data:
+                if file.filename:  # Ensure the file is not empty
+                    filename = secure_filename(file.filename)
+                    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                    file.save(file_path)
+                    uploaded_filenames.append(filename)
+
         new_asset = Asset(
             name=asset_form.name.data,
             description=asset_form.description.data,
             admin_id=employee.id,
-            image_file=photo_filename,
             issue_date=asset_form.issue_date.data,
-            return_date=asset_form.return_date.data if asset_form.return_date.data else None
+            return_date=asset_form.return_date.data if asset_form.return_date.data else None,
+            remark=asset_form.remark.data  # ✅ Save the remark field
         )
+        new_asset.set_image_files(uploaded_filenames)  # ✅ Store images as a comma-separated string
+
         db.session.add(new_asset)
         db.session.commit()
         flash('Asset added successfully!', 'success')
 
         return redirect(url_for('hr.add_asset', admin_id=admin_id))
 
-    assets = employee.assets if employee else []
+    assets = employee.assets  # ✅ Get employee assets
 
-    return render_template('HumanResource/assets.html', asset_form=asset_form, employee=employee, assets=assets)
-
-
+    return render_template(
+        'HumanResource/assets.html',
+        asset_form=asset_form,
+        employee=employee,
+        assets=assets
+    )
 
 @hr.route('/update_asset/<int:asset_id>', methods=['GET', 'POST'])
+@login_required
 def update_asset(asset_id):
     asset = Asset.query.get(asset_id)
+    if not asset:
+        flash("Asset not found.", "danger")
+        return redirect(url_for('hr.add_asset', admin_id=1))  # Redirect to a safe page
+
     asset_form = AssetForm()
 
     if request.method == 'GET':
-       
         asset_form.name.data = asset.name
         asset_form.description.data = asset.description
-        asset_form.image_file.data = asset.image_file 
         asset_form.issue_date.data = asset.issue_date
         asset_form.return_date.data = asset.return_date
+        asset_form.remark.data = asset.remark  # ✅ Pre-fill the remark field
 
     if asset_form.validate_on_submit():
-        photo_filename = None
-        if asset_form.image_file.data:
-            photo_filename = secure_filename(asset_form.image_file.data.filename)
-            asset_form.image_file.data.save(os.path.join(current_app.config['UPLOAD_FOLDER'], photo_filename))
-        
-       
+        uploaded_filenames = asset.get_image_files()  # ✅ Keep existing images
+
+        if asset_form.images.data:
+            for file in asset_form.images.data:
+                if file.filename:  # ✅ Ensure file is not empty
+                    filename = secure_filename(file.filename)
+                    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                    file.save(file_path)
+                    uploaded_filenames.append(filename)
+
         asset.name = asset_form.name.data
         asset.description = asset_form.description.data
-        asset.image_file = photo_filename if photo_filename else asset.image_file
+        asset.set_image_files(uploaded_filenames)  # ✅ Store updated images
         asset.issue_date = asset_form.issue_date.data
         asset.return_date = asset_form.return_date.data if asset_form.return_date.data else None
+        asset.remark = asset_form.remark.data  # ✅ Update remark field
 
         db.session.commit()
         flash('Asset updated successfully!', 'success')
 
         return redirect(url_for('hr.add_asset', admin_id=asset.admin_id))
 
-    return render_template('HumanResource/assets_update.html', asset_form=asset_form, asset=asset)
-
-
-
+    return render_template(
+        'HumanResource/assets_update.html',
+        asset_form=asset_form,
+        asset=asset
+    )
 

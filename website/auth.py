@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app,session
 from .models.Admin_models import Admin
 from .models.emp_detail_models import Employee
-from werkzeug.security import check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 from .forms.signup_form import SelectRoleForm
 from datetime import datetime, timedelta,date
@@ -145,18 +144,6 @@ def callback():
     flash("Login successful!", "success")
     return redirect(url_for("auth.select_role"))  # Redirect to dashboard
 
-@auth.route('/test-session')
-def test_session():
-    session['test'] = 'Session is working'
-    session.modified = True  # Force session to be saved
-    return "Session set!"
-
-@auth.route('/get-session')
-def get_session():
-    return session.get('test', "No session found")
-
-
-
 
 def refresh_access_token(admin):
     if not admin.oauth_refresh_token:
@@ -184,20 +171,6 @@ def refresh_access_token(admin):
     admin.oauth_refresh_token = token_json.get("refresh_token", admin.oauth_refresh_token)
     admin.oauth_token_expiry = datetime.now() + timedelta(seconds=token_json.get("expires_in", 3600))
     db.session.commit()
-
-    # Store user details in session
-    session['user'] = {
-        'email': admin.email,
-        'first_name': admin.first_name,
-        'oauth_id': admin.oauth_id,
-        'oauth_provider': "microsoft",
-        'oauth_token': admin.oauth_token,
-        'oauth_refresh_token': admin.oauth_refresh_token,
-        'oauth_token_expiry': admin.oauth_token_expiry.isoformat(),
-    }
-
-    session.modified = True  # Force Flask to save session
-    logger.info(f"Session Data After Update: {session}")
 
     return admin.oauth_token
 

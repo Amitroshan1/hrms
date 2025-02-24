@@ -7,7 +7,7 @@ class QueryForm(FlaskForm):
     emp_type = SelectMultipleField('Department',  
                             choices=[
                                      ('Human Resource','Human Resource'),
-                                     ('Accounts & Finance','Accounts & Finance'),
+                                     ('Accounts','Accounts'),
                                        ('It_department', 'IT Department')],
 
                               validators=[DataRequired()])

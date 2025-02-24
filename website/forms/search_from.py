@@ -16,7 +16,7 @@ class SearchForm(FlaskForm):
     emp_type = SelectField('Employee Type', 
                             choices=[('','Select Employee Type'),
                                      ('Human Resource','Human Resource'),
-                                     ('Accounts & Finance','Accounts & Finance'), 
+                                     ('Accounts','Accounts'), 
                                      ('Testing', 'Testing'),
                                      ('Software Development', 'Software Development'),
                                      ('It Department', 'IT Department')],
@@ -57,7 +57,7 @@ class NewsFeedForm(FlaskForm):
     emp_type = SelectField('Employee Type', 
                             choices=[("",'Select Employee Type'),('All','All'),
                                      ('Human Resource','Human Resource'),
-                                     ('Accounts & Finanace','Accounts & Finanace'),
+                                     ('Accounts','Accounts'),
                                     ('Testing', 'Testing'),('Software Development', 'Software Development'),
                                     ('IT Department', 'IT Department')],
                               validators=[DataRequired()])
@@ -73,13 +73,22 @@ class SearchEmp_Id(FlaskForm):
     submit = SubmitField('Search')
 
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, SubmitField, MultipleFileField
+from wtforms.fields import DateField
+from wtforms.validators import DataRequired, Optional
+
+
+
 class AssetForm(FlaskForm):
     name = StringField('Asset Name', validators=[DataRequired()])
     description = TextAreaField('Description')
-    image_file = FileField('Asset Image') 
-    issue_date = DateField('Issue Date', format='%Y-%m-%d') 
-    return_date = DateField('Return Date', format='%Y-%m-%d', validators=[Optional()]) 
+    images = MultipleFileField('Upload Images', validators=[Optional()])  # ✅ Correctly define `images`
+    issue_date = DateField('Issue Date', format='%Y-%m-%d')
+    return_date = DateField('Return Date', format='%Y-%m-%d', validators=[Optional()])
+    remark = TextAreaField('Remarks', validators=[Optional()])
     submit = SubmitField('Add Asset')
+
 
 
 

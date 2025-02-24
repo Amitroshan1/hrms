@@ -31,7 +31,7 @@ mail = Mail()
 migrate = Migrate()
 csrf = CSRFProtect()
 scheduler = APScheduler()
-sess = Session()
+Session = Session()
 
 
 class Config:
@@ -59,7 +59,7 @@ def update_leave_balances():
                 doj = admin.Doj
                 six_months_after_doj = doj + timedelta(days=6*30) 
                 
-                if datetime.datetime.now().date() >= six_months_after_doj:
+                if datetime.now().date() >= six_months_after_doj:
                     balance.privilege_leave_balance += 1.08
                     balance.casual_leave_balance += 0.67
 
@@ -84,16 +84,15 @@ def create_app():
 
 # ✅ Flask-Session Configuration (MySQL)
     app.config['SESSION_TYPE'] = 'sqlalchemy'
+    app.config['SESSION_SQLALCHEMY_TABLE'] = 'session'
     app.config['SESSION_SQLALCHEMY'] = db
     app.config['SESSION_PERMANENT'] = False
     app.config['SESSION_USE_SIGNER'] = True  # Secure the session cookies
     app.config['SESSION_KEY_PREFIX'] = 'saffo_session_'
+    app.config['SESSION_SERIALIZATION_FORMAT'] = "json"
 
 
-# Set the session expiry time (using a timezone-aware datetime)
-    local_timezone = timezone('Asia/Kolkata')  # Example for India (adjust if needed)
-    session_expiry_time = datetime.now(local_timezone) + timedelta(minutes=50)  # Expiry time 50 minutes from now
-    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=50)
+
     
   
     # OAuth2 Configuration
@@ -129,7 +128,7 @@ def create_app():
     mail.init_app(app)
     csrf.init_app(app)
     scheduler.init_app(app)
-    sess.init_app(app)
+    Session.init_app(app)
 
 
     # Import models before initializing migrate

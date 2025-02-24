@@ -20,9 +20,10 @@
             <tr>
                 <th>Asset Name</th>
                 <th>Description</th>
-                <th>Image</th>
+                <th>Images</th>
                 <th>Issue Date</th>
                 <th>Return Date</th>
+                <th>Remarks</th>
             </tr>
         </thead>
         <tbody>
@@ -31,14 +32,20 @@
                 <td>{{ asset.name }}</td>
                 <td>{{ asset.description }}</td>
                 <td>
-                    {% if asset.image_file %}
-                        <img src="{{ url_for('static', filename='uploads/' + asset.image_file) }}" alt="{{ asset.name }}" class="img-thumbnail" width="100">
+                    {% if asset.image_files %}
+                        {% for img in asset.image_files.split(',') %}
+                            <a href="{{ url_for('static', filename='uploads/' + img) }}" target="_blank">
+                                <img src="{{ url_for('static', filename='uploads/' + img) }}" 
+                                     alt="{{ asset.name }}" class="img-thumbnail" width="100">
+                            </a>
+                        {% endfor %}
                     {% else %}
-                        No Image
+                        No Images
                     {% endif %}
                 </td>
                 <td>{{ asset.issue_date.strftime('%Y-%m-%d') if asset.issue_date else 'N/A' }}</td>
                 <td>{{ asset.return_date.strftime('%Y-%m-%d') if asset.return_date else 'N/A' }}</td>
+                <td>{{ asset.remark if asset.remark else 'N/A' }}</td>  <!-- ✅ Display Remarks -->
             </tr>
             {% endfor %}
         </tbody>
