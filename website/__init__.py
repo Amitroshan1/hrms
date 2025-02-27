@@ -104,7 +104,8 @@ def create_app():
     app.config['OAUTH2_REDIRECT_URI'] = os.getenv("OAUTH2_REDIRECT_URI")
     app.config['OAUTH2_SCOPE'] = [
         "openid", "email", "profile", "offline_access",
-        "https://graph.microsoft.com/mail.send"
+        "https://graph.microsoft.com/mail.send",
+        "https://graph.microsoft.com/User.Read"
     ]
     # Ensure required env variables are set
     if not all([app.config['OAUTH2_CLIENT_ID'], app.config['OAUTH2_CLIENT_SECRET'], app.config['OAUTH2_REDIRECT_URI']]):
