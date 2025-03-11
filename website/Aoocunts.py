@@ -27,49 +27,7 @@ def Acc_dashbord():
     return render_template('Accounts/Acc_dashboard.html', queries=queries)
     
 
-@Accounts.route('/Acc_search', methods=['GET', 'POST'])
-@login_required
-def search():
-    form = SearchForm()
-    if form.validate_on_submit():
-        circle = form.circle.data
-        emp_type = form.emp_type.data
-        
-
-        admins = Signup.query.filter_by(circle=circle, emp_type=emp_type).all()
-        
-
-        if not admins:
-            flash('No matching entries found', category='error')
-            return redirect(url_for('Accounts.search'))
-
-        
-        session['admins'] = [admin.id for admin in admins]
-        session['circle'] = circle
-        session['emp_type'] = emp_type
-
-        return redirect(url_for('Accounts.search_results'))
-
-    return render_template('Accounts/search_form.html', form=form)
-
-
-@Accounts.route('/Acc_search_results', methods=['GET'])
-@login_required
-def search_results():
-    if 'admins' not in session:
-        return redirect(url_for('Accounts.Acc_search'))
-
-    admin_ids = session['admins']
-    circle = session['circle']
-    emp_type = session['emp_type']
-
-    admins = Admin.query.filter(Admin.id.in_(admin_ids)).all()
-    
-    detail_form = DetailForm()
-    detail_form.user.choices = [(admin.id, admin.first_name) for admin in admins]
-        
-    return render_template('Accounts/search_result.html', admins=admins, circle=circle, emp_type=emp_type, form=detail_form)
-
+ 
 
 @Accounts.route('/add_payslip/<int:admin_id>', methods=['GET', 'POST'])
 @login_required

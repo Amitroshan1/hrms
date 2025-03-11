@@ -44,7 +44,10 @@ def hr_dashbord():
                            employees_with_birthdays=employees_with_birthdays)
    
 
-    
+ 
+
+
+
 @hr.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
@@ -53,14 +56,24 @@ def search():
         circle = form.circle.data
         emp_type = form.emp_type.data
 
-        admins = Signup.query.filter_by(circle=circle, emp_type=emp_type).all()
+        # Query Signup model based on circle and emp_type
+        signups = Signup.query.filter_by(circle=circle, emp_type=emp_type).all()
 
-        if not admins:
+        if not signups:
             flash('No matching entries found', category='error')
             return redirect(url_for('hr.search'))
 
+        # Get email addresses from Signup model
+        emails = [signup.email for signup in signups]
         
-        session['admins'] = [admin.id for admin in admins]
+        # Query Admin model based on email addresses
+        admins = Admin.query.filter(Admin.email.in_(emails)).all()
+
+        if not admins:
+            flash('No matching entries found in Admin records', category='error')
+            return redirect(url_for('hr.search'))
+
+        session['admin_emails'] = emails
         session['circle'] = circle
         session['emp_type'] = emp_type
 
@@ -69,25 +82,24 @@ def search():
     return render_template('HumanResource/search_form.html', form=form)
 
 
-
 @hr.route('/search_results', methods=['GET'])
 @login_required
 def search_results():
-    if 'admins' not in session:
+    if 'admin_emails' not in session:
         return redirect(url_for('hr.search'))
 
-    admin_ids = session['admins']
+    emails = session['admin_emails']
     circle = session['circle']
     emp_type = session['emp_type']
 
-    admins = Signup.query.filter(Admin.id.in_(admin_ids)).all()
-    
+    # Retrieve Admin details based on email
+    admins = Admin.query.filter(Admin.email.in_(emails)).all()
+
     detail_form = DetailForm()
     detail_form.user.choices = [(admin.id, admin.first_name) for admin in admins]
-        
+
     return render_template('HumanResource/search_result.html', admins=admins, circle=circle, emp_type=emp_type, form=detail_form)
 
- 
 
 @hr.route('/view_details', methods=['GET', 'POST'])
 @login_required

@@ -46,6 +46,7 @@ def update_leave_balances():
     """ Updates leave balances for employees every 6 months. """
     from .models.attendance import LeaveBalance
     from .models.Admin_models import Admin  
+    from .models.signup import Signup 
 
     with scheduler.app.app_context():
         leave_balances = LeaveBalance.query.all()
@@ -55,8 +56,9 @@ def update_leave_balances():
 
         for balance in leave_balances:
             admin = Admin.query.filter_by(id=balance.admin_id).first() 
-            if admin and admin.Doj:
-                doj = admin.Doj
+            signup = Signup.query.filter_by(email=admin.email).first()
+            if admin and signup.Doj:
+                doj = signup.Doj
                 six_months_after_doj = doj + timedelta(days=6*30) 
                 
                 if datetime.now().date() >= six_months_after_doj:
@@ -182,7 +184,15 @@ def create_app():
     app.register_blueprint(auth_helper, url_prefix='/')
 
     # Scheduler job
-    scheduler.add_job(id='update_leave_balances', func=update_leave_balances, trigger='cron', hour=17, minute=55)
+    scheduler.add_job(
+    id='update_leave_balances',
+    func=update_leave_balances,
+    trigger='cron',
+    day='25-31',      # Runs only between the 25th and 31st
+    hour=17,
+    minute=55,
+    day_of_week='mon' # Ensures it runs only on Mondays
+)
 
     # After request hook to set cache control
     @app.after_request
