@@ -25,7 +25,10 @@
     <textarea name="reply_text" rows="3" cols="60" placeholder="Enter your reply"></textarea><br>
     <input type="submit" value="Send">
     
-</form>
 
+<a href="{{ url_for('Accounts.create_query') }}">
+    <button type="button">Back</button>
+</a>
+</form>
 {% endblock %}
  

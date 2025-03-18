@@ -25,9 +25,62 @@ Accounts = Blueprint('Accounts', __name__)
 def Acc_dashbord():
     queries = Query.query.all()
     return render_template('Accounts/Acc_dashboard.html', queries=queries)
-    
-
  
+@Accounts.route('/Acc_search', methods=['GET', 'POST'])
+@login_required
+def search():
+    form = SearchForm()
+    if form.validate_on_submit():
+        circle = form.circle.data
+        emp_type = form.emp_type.data
+
+        # Query Signup model based on circle and emp_type
+        signups = Signup.query.filter_by(circle=circle, emp_type=emp_type).all()
+
+        if not signups:
+            flash('No matching entries found', category='error')
+            return redirect(url_for('Accounts.search'))
+
+        # Get email addresses from Signup model
+        emails = [signup.email for signup in signups]
+
+        # Query Admin model based on email addresses
+        admins = Admin.query.filter(Admin.email.in_(emails)).all()
+
+        if not admins:
+            flash('No matching entries found in Admin records', category='error')
+            return redirect(url_for('Accounts.search'))
+
+        session['admin_emails'] = emails
+        session['circle'] = circle
+        session['emp_type'] = emp_type
+
+        return redirect(url_for('Accounts.search_results'))
+
+    return render_template('Accounts/search_form.html', form=form)
+
+
+@Accounts.route('/Acc_search_results', methods=['GET'])
+@login_required
+def search_results():
+    if 'admin_emails' not in session:
+        flash('Session expired. Please search again.', category='error')
+        return redirect(url_for('Accounts.search'))
+
+    emails = session['admin_emails']
+    circle = session['circle']
+    emp_type = session['emp_type']
+
+    # Retrieve Admin details based on email
+    admins = Admin.query.filter(Admin.email.in_(emails)).all()
+
+    return render_template(
+        'Accounts/search_result.html', 
+        admins=admins, 
+        circle=circle, 
+        emp_type=emp_type
+    )
+
 
 @Accounts.route('/add_payslip/<int:admin_id>', methods=['GET', 'POST'])
 @login_required
@@ -228,64 +281,63 @@ def view_emp_type_queries():
 
 
 
-@Accounts.route('/delete_query/<int:query_id>', methods=['GET', 'POST'])
+@Accounts.route('/delete_query/<int:query_id>', methods=['GET'])
 @login_required
 def close_query(query_id):
-    form = PasswordForm()  
-    
-   
     query = Query.query.filter_by(id=query_id).first()
-    replies = QueryReply.query.filter_by(query_id=query_id).all()
-
-
-
-    body_chat = f"Query Title: {query.title}\n"
-    body_chat += f"Department: {query.emp_type}\n\n"
-    body_chat += "Chat History:\n"
     
-    for reply in replies:
-        admin = Admin.query.filter_by(id=reply.admin_id).first()
-        body_chat += f"{admin.first_name}: {reply.reply_text} (on {reply.created_at})\n"
-    
-    body_chat += "\nIssue resolved. Closing this query."
-
     if not query:
         flash('Query not found.', 'error')
         return redirect(url_for('Accounts.create_query'))
+    
+    replies = QueryReply.query.filter_by(query_id=query_id).all()
+    
+    # Construct email body
+    body_chat = f"Query Title: {query.title}\n"
+    body_chat += f"Department: {query.emp_type}\n\n"
+    body_chat += "Chat History:\n"
 
-    if form.validate_on_submit():
-       
-        subject = f"Satisfied with query: {query.title}"
-        body = body_chat
+    for reply in replies:
+        admin = Admin.query.filter_by(id=reply.admin_id).first()
+        body_chat += f"{admin.first_name}: {reply.reply_text} (on {reply.created_at})\n"
 
-        department = [query.emp_type]
-        if len(department)>1:
-            if department[0] == 'Human Resource' :
-                department_email= 'HumanResourcesaffo@outlook.com'
-                cc='demoaountsaffo4353@outlook.com'
-            else:
-                department_email= 'demoaountsaffo4353@outlook.com'
-                cc='HumanResourcesaffo@outlook.com'
+    body_chat += "\nIssue resolved. Closing this query."
+
+   # Split the emp_type string into a list
+    departments = query.emp_type.split(', ')
+
+    if len(departments) >1:
+    # Determine department email and CC
+        if 'Human Resource' in departments:
+            department_email = 'hr@saffotech.com'
+            cc =['accounts@saffotech.com']
         else:
-            if department[0] == 'Human Resource' :
-                department_email= 'HumanResourcesaffo@outlook.com'
-                cc=None
-            else:
-                department_email= 'demoaountsaffo4353@outlook.com'
-                cc=None
+            department_email = 'accounts@saffotech.com'
+            cc = ['hr@saffotech.com']
+    else:
+        if 'Human Resource' in departments:
+            department_email = 'hr@saffotech.com'
+            cc=None
+        else:
+            department_email = 'accounts@saffotech.com'
+
+
+    subject = f"Query Resolved: {query.title}"
+
+    # Send email using OAuth2
+    email_sent = verify_oauth2_and_send_email(current_user, subject, body_chat, department_email, cc)
+
+    if email_sent:
+        db.session.delete(query)
+        db.session.commit()
+        flash('Query resolved and deleted successfully. Notification sent to departments.', 'success')
+    else:
+        flash('Failed to send email. Query was not deleted.', 'error')
+
+    return redirect(url_for('Accounts.create_query'))
+
 
     
-        if verify_oauth2_and_send_email(current_user, form.password.data, subject, body, department_email,cc):
-            
-            db.session.delete(query)
-
-            db.session.commit()
-            flash('Query resolved and deleted successfully. Notification sent to departments.', 'success')
-            return redirect(url_for('Accounts.create_query'))
-        else:
-            flash('Failed to send email.', 'error')
-
-    return render_template('Accounts/close_query.html', form=form)
 
 
 
