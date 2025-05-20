@@ -1,3 +1,4 @@
+
 from flask import Blueprint, render_template, request, flash, redirect, url_for, current_app,session
 from .models.Admin_models import Admin
 from .models.emp_detail_models import Employee
@@ -214,19 +215,26 @@ def select_role():
         selected_role = form.emp_type.data  # Get the selected Emp_type
         entered_password = form.password.data  # Get the entered password
         user = current_user  # Get the current user
+        
 
         # Debugging logs
         current_app.logger.debug(f'User ID: {user.id}, Selected Role: {selected_role}')
+        
 
         # Get the current user's email ID
         user_email = user.email  # Assuming the user model has an email attribute
+        
 
         # Query the admin/signup record based on the user's email
         admin = Signup.query.filter_by(email=user_email).first()
+        # logger.debug(f"{admin.email} check debug 6")
+
 
         if admin:
             # Check if the Emp_type matches the selected role
             if admin.emp_type == selected_role:
+                
+                
                 # If the role matches, check if the password is correct
                 if admin.check_password(entered_password):  # Assuming check_password is defined in the Signup model
                     # If password matches, redirect to the homepage for that role

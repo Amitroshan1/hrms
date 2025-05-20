@@ -15,7 +15,20 @@ from datetime import datetime
 import calendar
 from werkzeug.utils import secure_filename
 import os
+import logging
+from  website.common  import asset_email
 
+
+
+
+# Set up logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 
 hr=Blueprint('hr',__name__)
@@ -32,6 +45,7 @@ def hr_dashbord():
         db.extract('month', Signup.doj) == current_month,
         db.extract('day', Signup.doj) == current_day
     ).all()
+    # logger.debug(f"{Signup.email} Wowwww debug 6")
     
 
     employees_with_birthdays = Employee.query.filter(
@@ -42,9 +56,8 @@ def hr_dashbord():
     return render_template('HumanResource/hr_dashboard.html',
                            employees_with_anniversaries=employees_with_anniversaries,
                            employees_with_birthdays=employees_with_birthdays)
-   
 
- 
+
 
 
 
@@ -319,7 +332,6 @@ def search_employee():
 
     return render_template('HumanResource/asset_search.html', form=form, employee=employee)
 
-
 @hr.route('/add_asset/<int:admin_id>', methods=['GET', 'POST'])
 @login_required
 def add_asset(admin_id):
@@ -353,6 +365,9 @@ def add_asset(admin_id):
         db.session.add(new_asset)
         db.session.commit()
         flash('Asset added successfully!', 'success')
+        print(f"asset email proccess started {employee.email}, {employee.first_name}")
+        asset_email(employee.email, employee.first_name)
+
 
         return redirect(url_for('hr.add_asset', admin_id=admin_id))
 
@@ -395,10 +410,10 @@ def update_asset(asset_id):
 
         asset.name = asset_form.name.data
         asset.description = asset_form.description.data
-        asset.set_image_files(uploaded_filenames)  # ✅ Store updated images
+        asset.set_image_files(uploaded_filenames)  #  Store updated images
         asset.issue_date = asset_form.issue_date.data
         asset.return_date = asset_form.return_date.data if asset_form.return_date.data else None
-        asset.remark = asset_form.remark.data  # ✅ Update remark field
+        asset.remark = asset_form.remark.data  #  Update remark field
 
         db.session.commit()
         flash('Asset updated successfully!', 'success')

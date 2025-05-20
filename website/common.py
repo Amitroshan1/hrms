@@ -3,8 +3,8 @@ from flask_mail import Message,Mail
 import requests
 from .auth import refresh_access_token
 from .models.Admin_models import Admin
-
-
+from flask_login import login_required,current_user
+from .forms.search_from import AssetForm
 
 
 def verify_oauth2_and_send_email(user, subject, body, recipient_email, cc_emails=None):
@@ -110,3 +110,16 @@ def Company_verify_oauth2_and_send_email(user_email, subject, body, recipient_em
     except Exception as e:
         flash(f"Error: {str(e)}", 'error')
         return False
+
+
+def asset_email(recipient_email,first_name):
+    form = AssetForm()
+    subject = f'New Asset Assigned to You'
+    body = (
+                f"Dear {first_name},\n\n"
+                f"This mail is to inform you that your new asset has been added.\n"
+                f"Thanks,\nAccounts"
+            )
+    print(recipient_email, subject, body, current_user.email)
+    Company_verify_oauth2_and_send_email(recipient_email, subject, body, current_user.email)
+    return True

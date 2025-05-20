@@ -9,7 +9,7 @@ class Punch(db.Model,UserMixin):
     punch_date = db.Column(db.Date, nullable=False)
     punch_in = db.Column(db.Time, nullable=True)
     punch_out = db.Column(db.Time, nullable=True)
-    is_holiday = db.Column(db.Boolean, default=False)  
+    is_holiday = db.Column(db.Boolean, default=False)
     
     admin = db.relationship('Admin', back_populates='punch_records')
 
@@ -53,4 +53,3 @@ class LeaveApplication(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.now)
 
     admin = db.relationship('Admin', back_populates='leave_applications')
-

@@ -28,7 +28,7 @@ class Education(db.Model, UserMixin):
 class UploadDoc(db.Model, UserMixin):
     __tablename__ = 'upload_docs'
     
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True) #not null and unique
     admin_id = db.Column(db.Integer, db.ForeignKey('admins.id'), nullable=False)
     doc_name = db.Column(db.String(100), nullable=False)
     doc_number = db.Column(db.String(100), nullable=False)

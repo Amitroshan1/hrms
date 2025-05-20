@@ -98,8 +98,6 @@ class SignUpForm(FlaskForm):
         if password.data != self.confirm_password.data:
             raise ValidationError("Passwords do not match.")
 
-    
-
 
 
 

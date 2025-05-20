@@ -447,11 +447,16 @@ h3 {
 }
 
 /* Ensuring the container width and margin is appropriate */
+
 .container {
     width: 90%;
     padding: 20px;
     margin: auto;
-    overflow: hidden;
+    overflow: visible; /* Allow content to grow */
+    border: 3px solid #ccc; /* Border added */
+    border-radius: 30px; /* Optional rounded corners */
+    background-color: #f9f9f9; /* Optional subtle background */
+    min-height: 150px; /* Optional: prevents collapse when content is small */
 }
 
 .row {
@@ -529,7 +534,7 @@ h3 {
 }
 
 .img-thumbnail {
-    border: 1px solid #ddd;
+    border: 1px solid #0971c6;
     border-radius: 0.25rem;
     padding: 0.25rem;
     background-color: #fff;
@@ -662,24 +667,29 @@ h3 {
 }
 
 
+/* Content wrapper with padding */
 .punch-container {
     position: relative;
+    padding: 10px;
 }
+
+/* Punch times positioned at top-right and responsive */
 .punch-times {
     position: absolute;
-    top: 50px; 
-    right: 10px; 
-    text-align: right;
+    top: 85px; /* As you requested */
+    right: 10px;
     background-color: white;
-    padding: 5px;
+    padding: 10px;
     border-radius: 5px;
-    margin: 2px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    white-space: nowrap;
 }
 
+/* Make paragraphs tighter */
 .punch-times p {
-    margin: 3px 0; /* Reduces the gap between paragraphs */
+    margin: 4px 0;
 }
-
 
 
 
