@@ -8,6 +8,8 @@ from website import db
 from flask_jwt_extended import decode_token
 
 from website.models.Admin_models import Admin
+from datetime import datetime
+import math
 
 
 auth_helper = Blueprint('auth_helper', __name__)
@@ -89,3 +91,41 @@ def get_current_user():
 
     return jsonify({"email": user.email, "first_name": user.first_name}), 200
 
+
+# Set your office location (update these)
+OFFICE_LATITUDE = 19.114361
+OFFICE_LONGITUDE = 73.013986
+
+def calculate_distance(lat1, lon1, lat2, lon2):
+    R = 6371000  # Earth radius in meters
+    phi1 = math.radians(lat1)
+    phi2 = math.radians(lat2)
+    delta_phi = math.radians(lat2 - lat1)
+    delta_lambda = math.radians(lon2 - lon1)
+
+    a = math.sin(delta_phi / 2)**2 + \
+        math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2)**2
+
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return R * c  # Distance in meters
+
+
+def check_geo_punch(action, latitude, longitude):
+    if not all([action, latitude, longitude]):
+        return False, "Invalid data"
+
+    try:
+        latitude = float(latitude)
+        longitude = float(longitude)
+    except ValueError:
+        return False, "Invalid latitude or longitude values"
+
+    distance = calculate_distance(
+        latitude, longitude,
+        OFFICE_LATITUDE, OFFICE_LONGITUDE
+    )
+
+    if distance > 100:  # more than 100 meters from office
+        return False, "You are too far from the office to punch in/out."
+
+    return True, f"{action.replace('_', ' ').title()} recorded successfully!"

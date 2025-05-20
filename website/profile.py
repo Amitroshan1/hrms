@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect,Blueprint, request, url_for, current_app as app,session
+from flask import render_template, flash, redirect,Blueprint, request, url_for, current_app as app,session,jsonify
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 import os
@@ -19,7 +19,7 @@ from .models.manager_model import ManagerContact
 from .common import verify_oauth2_and_send_email
 from .models.Admin_models import Admin
 from .models.signup import Signup
-
+from website.auth_helper import check_geo_punch
 
 profile=Blueprint('profile',__name__)
 
@@ -291,8 +291,6 @@ def delete_document(doc_id):
     return redirect(url_for('profile.upload_docs'))
 
 
-
-
 @profile.route('/punch', methods=['GET', 'POST'])
 @login_required
 def punch():
@@ -303,7 +301,6 @@ def punch():
     selected_month = request.args.get('month', today.month, type=int)
     selected_year = request.args.get('year', today.year, type=int)
 
-   
     calendar.setfirstweekday(calendar.MONDAY)
 
     first_day = date(selected_year, selected_month, 1)
@@ -316,6 +313,14 @@ def punch():
 
     punch_data = {p.punch_date: p for p in punches}
 
+    data = request.get_json()
+    action = data.get('action')
+    latitude = data.get('latitude')
+    longitude = data.get('longitude')
+
+    success, message = check_geo_punch(action, latitude, longitude)
+    if not success:
+        return jsonify({"message": message}), 400
     if form.validate_on_submit():
         if form.punch_in.data:
             if punch and punch.punch_in:
@@ -336,7 +341,9 @@ def punch():
                 db.session.commit()
                 flash('Punch out time updated successfully!', 'success')
 
-    return render_template('profile/punch.html', form=form, punch=punch, punch_data=punch_data, today=today, selected_month=selected_month, selected_year=selected_year, calendar=calendar)
+    return render_template('profile/punch.html', form=form, punch=punch, punch_data=punch_data,
+                           today=today, selected_month=selected_month, selected_year=selected_year, calendar=calendar)
+
 
 
 
