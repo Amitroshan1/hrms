@@ -1,10 +1,10 @@
-from flask import Flask, request
+from flask import Flask, request,app
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_migrate import Migrate
-from datetime import timedelta
+from datetime import datetime,timedelta
 from flask_wtf.csrf import CSRFProtect
 from flask_apscheduler import APScheduler
 from urllib.parse import urlparse, urljoin
@@ -16,6 +16,7 @@ import logging
 import os
 from flask_session import Session 
 from dotenv import load_dotenv
+
 
 
 
@@ -58,6 +59,7 @@ def update_leave_balances():
             admin = Admin.query.filter_by(id=balance.admin_id).first() 
             signup = Signup.query.filter_by(email=admin.email).first()
             if admin and signup.Doj:
+                print("Successful debugging..")
                 doj = signup.Doj
                 six_months_after_doj = doj + timedelta(days=6*30) 
                 
@@ -71,6 +73,56 @@ def update_leave_balances():
         except Exception as e:
             print(f"Database commit failed: {str(e)}")
 
+def send_reminder_emails():
+    from .models.query import Query, QueryReply
+    from .common import verify_oauth2_and_send_email
+
+    print("reminder email sent")
+    with app.AppContext():
+        now = datetime.utcnow()
+        threshold_date = now - timedelta(minutes=31)
+
+        # Fetch queries older than 3 days and still open
+        queries = Query.query.filter(
+            Query.created_at <= threshold_date,
+            Query.status == 'open'
+        ).all()
+        # logger.info(f"Total length of queries {queries}")
+
+        for query in queries:
+            # Check if any reply exists from department admins within 3 days of query creation
+            replies = QueryReply.query.filter(
+                QueryReply.query_id == query.id,
+                QueryReply.created_at <= query.created_at + timedelta(minutes=31)
+            ).all()
+
+            # If no replies at all within 3 days
+            if not replies:
+                # Prepare email recipient based on department
+                departments = query.emp_type.split(', ')
+                if 'Human Resource' in departments:
+                    department_email = 'skchaugule@saffotech.com'
+                    cc = ['chauguleshubham390@gmail.com']
+                elif 'Accounts' in departments:
+                    department_email = 'skchaugule@saffotech.com'  # your accounts email
+                    cc =['chauguleshubham390@gmail.com']
+                elif 'IT Department' in departments:
+                    department_email = 'skchaugule@saffotech.com'  # your IT email
+                    cc =['chauguleshubham390@gmail.com']
+                else:
+                    department_email = 'skchaugule@saffotech.com'
+                    cc =['chauguleshubham390@gmail.com']
+
+                subject = f"Reminder: No response to query '{query.title}' in 3 days"
+                body = f"""
+                Query Title: {query.title}
+                Department(s): {query.emp_type}
+                Created At: {query.created_at.strftime('%Y-%m-%d %H:%M:%S')}
+                
+                This query has not received any reply within 3 days. Please respond ASAP.
+                """
+
+                verify_oauth2_and_send_email(None, subject, body, department_email, cc)
 
 
 def create_app():
@@ -193,6 +245,16 @@ def create_app():
     minute=55,
     day_of_week='mon' # Ensures it runs only on Mondays
 )
+    scheduler.add_job(
+    id='send_reminder_emails_job',
+    func=send_reminder_emails,  # your function name here
+    trigger='interval',
+    minutes=31 # runs every day; adjust as needed
+)
+
+
+
+
 
     # After request hook to set cache control
     @app.after_request

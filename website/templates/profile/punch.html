@@ -2,6 +2,8 @@
 {% block title %}Punch In/Out{% endblock %}
 {% block content %}
 
+
+
 <div class="container">
     <h2 class="centered-heading">Punch In/Out</h2>
     {% with messages = get_flashed_messages(with_categories=True) %}
@@ -22,10 +24,6 @@
             <span>{{ punch.punch_out if punch else 'Not Punched Out' }}</span>
         </div>
     </form>
-</div>
-
-<!-- ✅ Link your JavaScript here -->
-<script src="{{ url_for('static', filename='css/geo.js') }}"></script>
 
     <br>
 

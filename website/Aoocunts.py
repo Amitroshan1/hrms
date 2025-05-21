@@ -273,7 +273,7 @@ def view_emp_type_queries():
     
     for query in queries_for_emp_type:
         admin_details = Admin.query.filter_by(id=query.admin_id).first()
-        query.admin_details = admin_details  
+        query.admin_details = admin_details
 
     return render_template('Accounts/view_emp_type_queries.html', queries=queries_for_emp_type,emp=emp)
 
@@ -305,27 +305,28 @@ def close_query(query_id):
 
    # Split the emp_type string into a list
     departments = query.emp_type.split(', ')
+    print(departments)
 
     if len(departments) >1:
     # Determine department email and CC
         if 'Human Resource' in departments:
-            department_email = 'hr@saffotech.com'
-            cc =['accounts@saffotech.com']
+            department_email = 'skchaugule@saffotech.com'
+            cc =['chauguleshubham390@gmail.com']
         else:
-            department_email = 'accounts@saffotech.com'
-            cc = ['hr@saffotech.com']
+            department_email = 'skchaugule@saffotech.com'
+            cc = ['chauguleshubham390@gmail.com']
     else:
         if 'Human Resource' in departments:
-            department_email = 'hr@saffotech.com'
+            department_email = 'skchaugule@saffotech.com'
             cc=None
         else:
-            department_email = 'accounts@saffotech.com'
+            department_email = 'skchaugule@saffotech.com'
 
 
     subject = f"Query Resolved: {query.title}"
 
     # Send email using OAuth2
-    email_sent = verify_oauth2_and_send_email(current_user, subject, body_chat, department_email, cc)
+    email_sent = verify_oauth2_and_send_email(current_user, subject, body_chat, department_email)
 
     if email_sent:
         db.session.delete(query)

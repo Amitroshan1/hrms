@@ -301,6 +301,7 @@ def punch():
     selected_month = request.args.get('month', today.month, type=int)
     selected_year = request.args.get('year', today.year, type=int)
 
+   
     calendar.setfirstweekday(calendar.MONDAY)
 
     first_day = date(selected_year, selected_month, 1)
@@ -313,14 +314,6 @@ def punch():
 
     punch_data = {p.punch_date: p for p in punches}
 
-    data = request.get_json()
-    action = data.get('action')
-    latitude = data.get('latitude')
-    longitude = data.get('longitude')
-
-    success, message = check_geo_punch(action, latitude, longitude)
-    if not success:
-        return jsonify({"message": message}), 400
     if form.validate_on_submit():
         if form.punch_in.data:
             if punch and punch.punch_in:
@@ -341,8 +334,7 @@ def punch():
                 db.session.commit()
                 flash('Punch out time updated successfully!', 'success')
 
-    return render_template('profile/punch.html', form=form, punch=punch, punch_data=punch_data,
-                           today=today, selected_month=selected_month, selected_year=selected_year, calendar=calendar)
+    return render_template('profile/punch.html', form=form, punch=punch, punch_data=punch_data, today=today, selected_month=selected_month, selected_year=selected_year, calendar=calendar)
 
 
 
@@ -464,9 +456,3 @@ def approve_leave(leave_id):
 
   
     
-
-
-
-
-
-

@@ -8,7 +8,6 @@ function sendPunch(action) {
     (position) => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
-
       fetch("/punch", {
         method: "POST",
         headers: {
@@ -20,25 +19,35 @@ function sendPunch(action) {
           longitude: longitude
         })
       })
-      .then(response => response.json())
-      .then(data => {
-        alert(data.message);
-      })
-      .catch(error => {
-        console.error("Error:", error);
-        alert("Something went wrong.");
-      });
+        .then(response => {
+          if (!response.ok) {
+            return response.json().then(err =>
+              Promise.reject(new Error(err.message || "Server error"))
+            );
+          }
+          return response.json();
+        })
+        .then(data => {
+          alert(data.message);
+        })
+        .catch(error => {
+          console.error("🔴 Fetch Error:", error);
+          alert("❌ Something went wrong: " + error.message);
+        });
     },
     (error) => {
-      alert("Error getting location: " + error.message);
+      console.error("🛑 Geolocation Error:", error.message);
+      alert("📍 Location access denied. Please allow location access to punch in/out.");
     }
   );
 }
 
-document.getElementById("punchInBtn").addEventListener("click", () => {
+document.getElementById("punchInBtn").addEventListener("click", (event) => {
+  event.preventDefault(); // 🛑 Prevent form submission or reload
   sendPunch("punch_in");
 });
 
-document.getElementById("punchOutBtn").addEventListener("click", () => {
+document.getElementById("punchOutBtn").addEventListener("click", (event) => {
+  event.preventDefault(); // 🛑 Prevent form submission or reload
   sendPunch("punch_out");
 });

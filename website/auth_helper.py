@@ -113,7 +113,6 @@ def calculate_distance(lat1, lon1, lat2, lon2):
 def check_geo_punch(action, latitude, longitude):
     if not all([action, latitude, longitude]):
         return False, "Invalid data"
-
     try:
         latitude = float(latitude)
         longitude = float(longitude)
