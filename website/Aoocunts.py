@@ -12,6 +12,8 @@ from .models.query import Query, QueryReply
 from .forms.query_form import QueryForm, QueryReplyForm,PasswordForm
 from .models.signup import Signup
 from .common import verify_oauth2_and_send_email,Company_verify_oauth2_and_send_email
+import pytz
+from datetime import datetime
 
 
 
@@ -248,6 +250,12 @@ def chat_query(query_id):
                 reply_text=reply_text
             )
             db.session.add(new_reply)
+
+             # ✅ Set IST time using pytz
+            ist = pytz.timezone('Asia/Kolkata')
+            ist_time = datetime.now(ist)
+            selected_query.created_at = ist_time
+
             db.session.commit()
             
             return redirect(url_for('Accounts.chat_query', query_id=query_id))

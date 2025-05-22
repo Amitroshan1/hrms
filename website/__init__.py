@@ -1,4 +1,4 @@
-from flask import Flask, request,app
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
@@ -50,16 +50,15 @@ def update_leave_balances():
     from .models.signup import Signup 
 
     with scheduler.app.app_context():
-        leave_balances = LeaveBalance.query.all()
+        leave_balances = LeaveBalance.query.all() # relationship with Signup
         if not leave_balances:
             print("No leave balances found in the database.")
             return
 
         for balance in leave_balances:
-            admin = Admin.query.filter_by(id=balance.admin_id).first() 
+            admin = Admin.query.filter_by(id=balance.admin_id).first()
             signup = Signup.query.filter_by(email=admin.email).first()
             if admin and signup.Doj:
-                print("Successful debugging..")
                 doj = signup.Doj
                 six_months_after_doj = doj + timedelta(days=6*30) 
                 
@@ -73,56 +72,72 @@ def update_leave_balances():
         except Exception as e:
             print(f"Database commit failed: {str(e)}")
 
+
+
+from datetime import datetime, timedelta
+import pytz
+
 def send_reminder_emails():
-    from .models.query import Query, QueryReply
+    from .models.query import Query
     from .common import verify_oauth2_and_send_email
+    
+    print("Reminder email function started")
 
-    print("reminder email sent")
-    with app.AppContext():
-        now = datetime.utcnow()
-        threshold_date = now - timedelta(minutes=31)
+    # IST timezone
+    ist = pytz.timezone('Asia/Kolkata')
+    now = datetime.now(ist)
 
-        # Fetch queries older than 3 days and still open
-        queries = Query.query.filter(
-            Query.created_at <= threshold_date,
-            Query.status == 'open'
-        ).all()
-        # logger.info(f"Total length of queries {queries}")
+    with scheduler.app.app_context():
+        # Get all open queries
+        queries = Query.query.filter_by(status='open').all()
+        print(f"Found {len(queries)} open queries")
 
         for query in queries:
-            # Check if any reply exists from department admins within 3 days of query creation
-            replies = QueryReply.query.filter(
-                QueryReply.query_id == query.id,
-                QueryReply.created_at <= query.created_at + timedelta(minutes=31)
-            ).all()
+            # Make sure query.created_at is timezone-aware in IST
+            if query.created_at.tzinfo is None:
+                last_activity_time = ist.localize(query.created_at)
+            else:
+                last_activity_time = query.created_at.astimezone(ist)
 
-            # If no replies at all within 3 days
-            if not replies:
-                # Prepare email recipient based on department
+            # Calculate time since last activity (query creation or reply)
+            time_since_last_activity = now - last_activity_time
+            print(f"Query ID {query.id} age since last activity: {time_since_last_activity}")
+
+            # If 4 minutes or more have passed since last activity, send reminder
+            if time_since_last_activity >= timedelta(minutes=4):
                 departments = query.emp_type.split(', ')
+                print(f"Reminder needed for query: {query.title}, Departments: {departments}")
+
+                # Assign department email (example)
                 if 'Human Resource' in departments:
                     department_email = 'skchaugule@saffotech.com'
-                    cc = ['chauguleshubham390@gmail.com']
                 elif 'Accounts' in departments:
-                    department_email = 'skchaugule@saffotech.com'  # your accounts email
-                    cc =['chauguleshubham390@gmail.com']
+                    department_email = 'skchaugule@saffotech.com'
                 elif 'IT Department' in departments:
-                    department_email = 'skchaugule@saffotech.com'  # your IT email
-                    cc =['chauguleshubham390@gmail.com']
+                    department_email = 'skchaugule@saffotech.com'
                 else:
                     department_email = 'skchaugule@saffotech.com'
-                    cc =['chauguleshubham390@gmail.com']
 
-                subject = f"Reminder: No response to query '{query.title}' in 3 days"
+                cc = ['chauguleshubham390@gmail.com']
+
+                admin_email = query.admin.email
+                print(f"Sending reminder from admin email: {admin_email}")
+
+                subject = f"Reminder: No response to query '{query.title}' in 4 minutes"
                 body = f"""
                 Query Title: {query.title}
                 Department(s): {query.emp_type}
-                Created At: {query.created_at.strftime('%Y-%m-%d %H:%M:%S')}
+                Last Activity At: {last_activity_time.strftime('%Y-%m-%d %H:%M:%S')}
                 
-                This query has not received any reply within 3 days. Please respond ASAP.
+                This query has not received any reply or update within 4 minutes. Please respond ASAP.
                 """
 
-                verify_oauth2_and_send_email(None, subject, body, department_email, cc)
+                verify_oauth2_and_send_email(admin_email, subject, body, department_email, cc)
+
+
+
+
+
 
 
 def create_app():
@@ -249,7 +264,7 @@ def create_app():
     id='send_reminder_emails_job',
     func=send_reminder_emails,  # your function name here
     trigger='interval',
-    minutes=31 # runs every day; adjust as needed
+    minutes=5 # runs every day; adjust as needed
 )
 
 
@@ -271,3 +286,84 @@ def create_app():
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 logger.info("Flask application initialized successfully")
+
+
+
+
+
+            
+# from datetime import datetime, timedelta
+# import pytz
+
+# def send_reminder_emails():
+#     from .models.query import Query, QueryReply
+#     from .common import verify_oauth2_and_send_email
+#     from .models.Admin_models import Admin
+
+#     print("Reminder email function started")
+
+#     # Set IST timezone
+#     ist = pytz.timezone('Asia/Kolkata')
+
+#     # Get current IST time
+#     now = datetime.now(ist)
+
+#     with scheduler.app.app_context():
+#         # Get all open queries
+#         queries = Query.query.filter_by(status='open').all()
+#         print(f"Found {len(queries)} open queries")
+
+#         for query in queries:
+#             # print(f"Successful get email {query.email}")
+#             # Make query.created_at timezone-aware (IST)
+#             if query.created_at.tzinfo is None:
+#                 created_at_ist = ist.localize(query.created_at)
+#             else:
+#                 created_at_ist = query.created_at.astimezone(ist)
+
+#             # Calculate how long since query was created
+#             time_since_created = now - created_at_ist
+#             print(f"Query age: {time_since_created}")
+
+#             # Check if at least 5 minutes have passed
+#             if time_since_created >= timedelta(minutes=5):
+#                 reply_deadline = created_at_ist + timedelta(minutes=5)
+#                 print(f"Reply deadline: {reply_deadline}")
+
+#                 # Check if any reply was added within 5 minutes of query creation
+#                 replies = QueryReply.query.filter(
+#                     # QueryReply.query_id == query.id,
+#                     QueryReply.created_at <= reply_deadline
+#                 ).all()
+
+#                 if not replies:
+#                     departments = query.emp_type.split(', ')
+#                     print(f"Reminder needed for query: {query.title}, Departments: {departments}")
+
+#                     # Assign department email
+#                     if 'Human Resource' in departments:
+#                         department_email = 'skchaugule@saffotech.com'
+#                     elif 'Accounts' in departments:
+#                         department_email = 'skchaugule@saffotech.com'
+#                     elif 'IT Department' in departments:
+#                         department_email = 'skchaugule@saffotech.com'
+#                     else:
+#                         department_email = 'skchaugule@saffotech.com'
+
+#                     cc = ['chauguleshubham390@gmail.com']
+
+#                      # Get the email of the admin who created the query
+#                     admin_email = query.admin.email
+#                     print(f"Sending reminder from admin email: {admin_email}")
+
+#                     # Prepare and send email
+#                     subject = f"Reminder: No response to query '{query.title}' in 5 minutes"
+#                     body = f"""
+#                     Query Title: {query.title}
+#                     Department(s): {query.emp_type}
+#                     Created At: {created_at_ist.strftime('%Y-%m-%d %H:%M:%S')}
+                    
+#                     This query has not received any reply within 5 minutes. Please respond ASAP.
+#                     """
+
+#                     verify_oauth2_and_send_email(admin_email, subject, body, department_email, cc)

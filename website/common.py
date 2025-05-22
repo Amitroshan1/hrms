@@ -5,6 +5,7 @@ from .auth import refresh_access_token
 from .models.Admin_models import Admin
 from flask_login import login_required,current_user
 from .forms.search_from import AssetForm
+import logging
 
 
 def verify_oauth2_and_send_email(user, subject, body, recipient_email, cc_emails=None):
@@ -13,13 +14,15 @@ def verify_oauth2_and_send_email(user, subject, body, recipient_email, cc_emails
         if isinstance(user, str):  
             user = Admin.query.filter_by(email=user).first()
         if not user or not user.oauth_refresh_token:
-            flash("Failed to authenticate with Microsoft. Please re-login.", 'error')
+            logging.error("Failed to authenticate with Microsoft. Please re-login.")
+            print("Failed to authenticate with Microsoft. Please re-login.")
             return False
 
         access_token = refresh_access_token(user)  # Pass user object
 
         if not access_token:
-            flash("Failed to authenticate with Microsoft. Please re-login.", 'error')
+            logging.error("Failed to authenticate with Microsoft. Please re-login.")
+            print("Failed to authenticate with Microsoft. Please re-login.")
             return False
 
         headers = {
@@ -49,11 +52,13 @@ def verify_oauth2_and_send_email(user, subject, body, recipient_email, cc_emails
         if response.status_code == 202:
             return True
         else:
-            flash(f"Error sending email: {response.json()}", 'error')
+            logging.error(f"Error sending email: {response.json()}")
+            print(f"Error sending email: {response.json()}")
             return False
 
     except Exception as e:
-        flash(f"Error: {str(e)}", 'error')
+        logging.error(f"Exception in sending email: {str(e)}")
+        print(f"Exception in sending email: {str(e)}")
         return False
 
 
