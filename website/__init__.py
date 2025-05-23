@@ -103,8 +103,8 @@ def send_reminder_emails():
             time_since_last_activity = now - last_activity_time
             print(f"Query ID {query.id} age since last activity: {time_since_last_activity}")
 
-            # If 4 minutes or more have passed since last activity, send reminder
-            if time_since_last_activity >= timedelta(minutes=4):
+            # If 3 days or more have passed since last activity, send reminder
+            if time_since_last_activity >= timedelta(days=3):
                 departments = query.emp_type.split(', ')
                 print(f"Reminder needed for query: {query.title}, Departments: {departments}")
 
@@ -123,16 +123,92 @@ def send_reminder_emails():
                 admin_email = query.admin.email
                 print(f"Sending reminder from admin email: {admin_email}")
 
-                subject = f"Reminder: No response to query '{query.title}' in 4 minutes"
+                subject = f"Reminder: No response to query '{query.title}' in 3 days"
                 body = f"""
                 Query Title: {query.title}
                 Department(s): {query.emp_type}
                 Last Activity At: {last_activity_time.strftime('%Y-%m-%d %H:%M:%S')}
                 
-                This query has not received any reply or update within 4 minutes. Please respond ASAP.
+                This query has not received any reply or update within 3 days. Please respond ASAP.
                 """
 
                 verify_oauth2_and_send_email(admin_email, subject, body, department_email, cc)
+
+
+
+def leave_reminder_email():
+    from .models.attendance import LeaveApplication
+    from .models.Admin_models import Admin
+    from .models.signup import Signup
+    from .models.manager_model import ManagerContact
+    from .common import verify_oauth2_and_send_email
+
+    print("Reminder function started...")
+
+    ist = pytz.timezone('Asia/Kolkata')
+    now = datetime.now(ist)
+
+    with scheduler.app.app_context():
+        leaves = LeaveApplication.query.filter_by(status="Pending").all()
+        print(f"Found {len(leaves)} leaves..")
+        for leave in leaves:
+
+            if leave.created_at.tzinfo is None:
+                last_activity_query_time = ist.localize(leave.created_at)
+            else:
+                last_activity_query_time = leave.created_at.astimezone(ist)
+
+            time_since_last_query_activity = now - last_activity_query_time
+            print(f"The leave_app id is {leave.id} and age since last activity: {time_since_last_query_activity}")
+            if time_since_last_query_activity >= timedelta(days=3):
+                user_email = leave.admin.email
+                print(f"successful get the user email {user_email}")
+                signup_data = Signup.query.filter_by(email=user_email).first()
+                # print(f"Successful got the signup data {signup_data}")
+                if signup_data:
+                    emp_type = signup_data.emp_type
+                    circle = signup_data.circle
+                    print(f"Employee Type: {emp_type}")
+                    print(f"Circle: {circle}")
+                else:
+                    print("No signup data found.")
+                    emp_type = None
+                    circle = None
+                manager_data = ManagerContact.query.filter_by(circle_name = circle,user_type=emp_type,).first()
+                if manager_data:
+                    l2_leader = manager_data.l2_email
+                    l3_leader = manager_data.l3_email
+                    print(f"Get the data of l2 {l2_leader}")
+                    print(f"Get the data of l3 {l3_leader}")
+
+                cc = l2_leader
+                subject = f"Reminder: No response to leave application ' in 3 days"
+                body = f"""
+                Hello,
+
+                This is a reminder that a leave application has been pending without any response or update for the past 3 days.
+
+                Timely action on such requests ensures smooth workflow and employesatisfaction. Please review and take the necessary action as soon as possible.
+
+                If you have already addressed this, kindly ignore this message.
+
+                Thank you,
+                HR & Admin Team
+                """
+                verify_oauth2_and_send_email(user_email, subject, body, l3_leader, [cc])
+                print("TO:", user_email)
+                print("CC:", cc)
+                print("BCC:", l3_leader)
+                print("Subject:", subject)
+                print("Body:", body)
+
+
+                
+                
+
+
+
+
 
 
 
@@ -264,7 +340,14 @@ def create_app():
     id='send_reminder_emails_job',
     func=send_reminder_emails,  # your function name here
     trigger='interval',
-    minutes=5 # runs every day; adjust as needed
+    days = 3 # runs every day; adjust as needed
+)
+    
+    scheduler.add_job(
+    id='leave_reminder_email()',
+    func=leave_reminder_email,  # your function name here
+    trigger='interval',
+    days = 3 # runs every day; adjust as needed
 )
 
 
@@ -286,84 +369,3 @@ def create_app():
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 logger.info("Flask application initialized successfully")
-
-
-
-
-
-            
-# from datetime import datetime, timedelta
-# import pytz
-
-# def send_reminder_emails():
-#     from .models.query import Query, QueryReply
-#     from .common import verify_oauth2_and_send_email
-#     from .models.Admin_models import Admin
-
-#     print("Reminder email function started")
-
-#     # Set IST timezone
-#     ist = pytz.timezone('Asia/Kolkata')
-
-#     # Get current IST time
-#     now = datetime.now(ist)
-
-#     with scheduler.app.app_context():
-#         # Get all open queries
-#         queries = Query.query.filter_by(status='open').all()
-#         print(f"Found {len(queries)} open queries")
-
-#         for query in queries:
-#             # print(f"Successful get email {query.email}")
-#             # Make query.created_at timezone-aware (IST)
-#             if query.created_at.tzinfo is None:
-#                 created_at_ist = ist.localize(query.created_at)
-#             else:
-#                 created_at_ist = query.created_at.astimezone(ist)
-
-#             # Calculate how long since query was created
-#             time_since_created = now - created_at_ist
-#             print(f"Query age: {time_since_created}")
-
-#             # Check if at least 5 minutes have passed
-#             if time_since_created >= timedelta(minutes=5):
-#                 reply_deadline = created_at_ist + timedelta(minutes=5)
-#                 print(f"Reply deadline: {reply_deadline}")
-
-#                 # Check if any reply was added within 5 minutes of query creation
-#                 replies = QueryReply.query.filter(
-#                     # QueryReply.query_id == query.id,
-#                     QueryReply.created_at <= reply_deadline
-#                 ).all()
-
-#                 if not replies:
-#                     departments = query.emp_type.split(', ')
-#                     print(f"Reminder needed for query: {query.title}, Departments: {departments}")
-
-#                     # Assign department email
-#                     if 'Human Resource' in departments:
-#                         department_email = 'skchaugule@saffotech.com'
-#                     elif 'Accounts' in departments:
-#                         department_email = 'skchaugule@saffotech.com'
-#                     elif 'IT Department' in departments:
-#                         department_email = 'skchaugule@saffotech.com'
-#                     else:
-#                         department_email = 'skchaugule@saffotech.com'
-
-#                     cc = ['chauguleshubham390@gmail.com']
-
-#                      # Get the email of the admin who created the query
-#                     admin_email = query.admin.email
-#                     print(f"Sending reminder from admin email: {admin_email}")
-
-#                     # Prepare and send email
-#                     subject = f"Reminder: No response to query '{query.title}' in 5 minutes"
-#                     body = f"""
-#                     Query Title: {query.title}
-#                     Department(s): {query.emp_type}
-#                     Created At: {created_at_ist.strftime('%Y-%m-%d %H:%M:%S')}
-                    
-#                     This query has not received any reply within 5 minutes. Please respond ASAP.
-#                     """
-
-#                     verify_oauth2_and_send_email(admin_email, subject, body, department_email, cc)
