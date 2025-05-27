@@ -1,4 +1,4 @@
-{% extends "HumanResource/hr_base.html" %}
+ {% extends "HumanResource/hr_base.html" %}
 {% block title %}View Details{% endblock %}
 {% block content %}
 
@@ -6,29 +6,6 @@
 <div class="container_details">
 
     {% if detail_type == 'Attendance' %}
-
-    <!-- percentage-bar start -->
-    <div
-        style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 1rem; margin-right: 200px;">
-        <div>
-            <!-- Progress Bar Label -->
-            <label for="formProgressBar"
-                style="font-weight: bold; display: block; text-align: center; margin-bottom: 5px;">
-                Form Completion
-            </label>
-
-            <!-- Progress Bar Outer Box -->
-            <div style="width: 250px; background-color: #eee; border-radius: 5px; height: 25px;">
-                <!-- Progress Bar Inner Filled -->
-                <div id="formProgressBar" role="progressbar" style="width: {{ detail.percentage }}%; background-color: #4caf50; height: 100%;
-                        border-radius: 5px; color: white; text-align: center; line-height: 25px; font-weight: bold;">
-                    {{ detail.percentage }}%
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- percentage-bar end -->
-
 
     <form method="POST" action="{{ url_for('hr.display_details') }}">
         {{ form.hidden_tag() }}
@@ -52,6 +29,7 @@
     </form>
     {% endif %}
 
+   
     {% if details %}
     {% if detail_type == 'Family Details' %}
     <h3 class="centered-heading">Family Details</h3>
@@ -384,6 +362,7 @@
         </thead>
 
     </table>
+
     {% elif detail_type == 'Attendance' %}
 
     <h3 class="centered-heading">Attendance</h3>
@@ -405,6 +384,7 @@
             {% endfor %}
         </tbody>
     </table>
+
     {% elif detail_type == 'Document' %}
     <h3 class="centered-heading">Documents</h3>
     <table class="table_details table-striped">

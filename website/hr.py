@@ -178,6 +178,7 @@ def display_details():
         fields_to_check = ['id','admin_id','qualification','institution','board','start','end','marks','doc_file']
         for detail in details:
             detail.percentage = calculate_completion_percentage(detail,fields_to_check)
+
     elif detail_type == 'Attendance': # issue not fetching the data
         num_days = calendar.monthrange(year, month)[1]
         details = [{'punch_date': f'{year}-{month:02d}-{day:02d}', 'punch_in': 'Leave', 'punch_out':'Leave'} for day in range(1, num_days + 1)]
@@ -189,6 +190,7 @@ def display_details():
                 if detail['punch_date'] == punch.punch_date.strftime('%Y-%m-%d'):
                     detail['punch_in'] = punch.punch_in
                     detail['punch_out'] = punch.punch_out
+
     elif detail_type == 'Document':
         details = UploadDoc.query.filter_by(admin_id=user_id).all()
         fields_to_check = ['id','admin_id','doc_name','doc_number','issue_date','doc_file']
