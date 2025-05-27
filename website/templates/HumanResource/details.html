@@ -1,4 +1,4 @@
- {% extends "HumanResource/hr_base.html" %}
+{% extends "HumanResource/hr_base.html" %}
 {% block title %}View Details{% endblock %}
 {% block content %}
 
@@ -6,7 +6,6 @@
 <div class="container_details">
 
     {% if detail_type == 'Attendance' %}
-
     <form method="POST" action="{{ url_for('hr.display_details') }}">
         {{ form.hidden_tag() }}
         <div class="form-group_details">
@@ -29,477 +28,405 @@
     </form>
     {% endif %}
 
-   
     {% if details %}
     {% if detail_type == 'Family Details' %}
     <h3 class="centered-heading">Family Details</h3>
-    <table class="table_details table-striped" border="1">
-        <thead>
-            {% for detail in details %}
 
-            <!-- percentage-bar start -->
+    {% for detail in details %}
+
+    <div class="detail-block" style="margin-bottom: 30px;">
+        <!-- Right-aligned percentage and green progress bar -->
+        <div style="text-align: right;">
+            <p style="margin: 0 0 4px 0;">Completion: {{ detail.percentage }}%</p>
             <div
-                style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 1rem; margin-right: 200px;">
-                <div>
-                    <!-- Progress Bar Label -->
-                    <label for="formProgressBar"
-                        style="font-weight: bold; display: block; text-align: center; margin-bottom: 5px;">
-                        Form Completion
-                    </label>
-
-                    <!-- Progress Bar Outer Box -->
-                    <div style="width: 250px; background-color: #eee; border-radius: 5px; height: 25px;">
-                        <!-- Progress Bar Inner Filled -->
-                        <div id="formProgressBar" role="progressbar" style="width: {{ detail.percentage }}%; background-color: #4caf50; height: 100%;
-                        border-radius: 5px; color: white; text-align: center; line-height: 25px; font-weight: bold;">
-                            {{ detail.percentage }}%
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- percentage-bar end -->
-
-
-            <tr>
-                <th>Name</th>
-                <td>{{ detail.name | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ detail.email }}</td>
-            </tr>
-            <tr>
-                <th>Date of Birth</th>
-                <td>{{ detail.dob }}</td>
-            </tr>
-            <tr>
-                <th>Age</th>
-                <td>{{ detail.age }}</td>
-            </tr>
-            <tr>
-                <th>Relation</th>
-                <td>{{ detail.relation | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Occupation</th>
-                <td>{{ detail.occupation | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Income</th>
-                <td>{{ detail.income }}</td>
-            </tr>
-            <tr>
-                <th>Address</th>
-                <td>{{ detail.address | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Remarks</th>
-                <td>{{ detail.remarks | capitalize }}</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <hr>
-                </td>
-            </tr>
-            {% endfor %}
-        </thead>
-    </table>
-
-    {% elif detail_type == 'Previous_company' %}
-    <h3 class="centered-heading">Previous Company Details</h3>
-    <table class="table_details table-striped">
-
-        <thead>
-            {% for detail in details %}
-
-            <!-- percentage-bar start -->
-            <div
-                style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 1rem; margin-right: 200px;">
-                <div>
-                    <!-- Progress Bar Label -->
-                    <label for="formProgressBar"
-                        style="font-weight: bold; display: block; text-align: center; margin-bottom: 5px;">
-                        Form Completion
-                    </label>
-
-                    <!-- Progress Bar Outer Box -->
-
-                    <div style="width: 250px; background-color: #eee; border-radius: 5px; height: 25px;">
-                        <!-- Progress Bar Inner Filled -->
-                        <div id="formProgressBar" role="progressbar" style="width: {{ detail.percentage }}%; background-color: #4caf50; height: 100%;
-                        border-radius: 5px; color: white; text-align: center; line-height: 25px; font-weight: bold;">
-                            {{ detail.percentage }}%
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- percentage-bar end -->
-
-            <tr>
-                <th>Company Name</th>
-                <td>{{ detail.com_name | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Position</th>
-                <td>{{ detail.designation | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>D.O.J</th>
-                <td>{{ detail.doj }}</td>
-            </tr>
-            <tr>
-                <th>D.O.L</th>
-                <td>{{ detail.dol }}</td>
-            </tr>
-            <tr>
-                <th>Reason for Leaving</th>
-                <td>{{ detail.reason | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>UAN</th>
-                <td>{{ detail.uan }}</td>
-            </tr>
-            <tr>
-                <th>PAN</th>
-                <td>{{ detail.pan }}</td>
-            </tr>
-            <tr>
-                <th>Contact of Company</th>
-                <td>{{ detail.contact }}</td>
-            </tr>
-            <tr>
-                <th>Name of Contact</th>
-                <td>{{ detail.name_contact }}</td>
-            </tr>
-            <tr>
-                <th>PF Number</th>
-                <td>{{ detail.pf_num }}</td>
-            </tr>
-            <tr>
-                <th>Address of Company</th>
-                <td>{{ detail.address | capitalize }}</td>
-            </tr>
-
-            {% endfor %}
-        </thead>
-    </table>
-
-
-    {% elif detail_type == 'Employee Details' %}
-    <h3 class="centered-heading">Employee Details</h3>
-
-    <table class="table_details table-striped">
-        <thead>
-            {% for detail in details %}
-
-            <!-- percentage-bar start -->
-            <div
-                style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 1rem; margin-right: 200px;">
-                <div>
-                    <!-- Progress Bar Label -->
-                    <label for="formProgressBar"
-                        style="font-weight: bold; display: block; text-align: center; margin-bottom: 5px;">
-                        Form Completion
-                    </label>
-
-                    <!-- Progress Bar Outer Box -->
-                    <div style="width: 250px; background-color: #eee; border-radius: 5px; height: 25px;">
-                        <!-- Progress Bar Inner Filled -->
-                        <div id="formProgressBar" role="progressbar" style="width: {{ detail.percentage }}%; background-color: #4caf50; height: 100%;
-                        border-radius: 5px; color: white; text-align: center; line-height: 25px; font-weight: bold;">
-                            {{ detail.percentage }}%
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- percentage-bar end -->
-
-            <tr>
-                <th>Photo</th>
-                <td><img src="{{ url_for('static', filename='uploads/' ~ detail.photo_filename) }}" alt="Employee Photo"
-                        width="50"></td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ detail.name | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ detail.email }}</td>
-            </tr>
-            <tr></tr>
-            <th>Father's Name</th>
-            <td>{{ detail.father_name | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Mother's Name</th>
-                <td>{{ detail.mother_name | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Marital Status</th>
-                <td>{{ detail.marital_status }}</td>
-            </tr>
-            <tr>
-                <th>Spouse's Name</th>
-                <td>{{ detail.spouse_name | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Date of Birth</th>
-                <td>{{ detail.dob }}</td>
-            </tr>
-            <tr>
-                <th>Employee ID</th>
-                <td>{{ detail.emp_id }}</td>
-            </tr>
-            <tr>
-                <th>Mobile</th>
-                <td>{{ detail.mobile }}</td>
-            </tr>
-            <tr>
-                <th>Gender</th>
-                <td>{{ detail.gender| capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Emergency Mobile</th>
-                <td>{{ detail.emergency_mobile }}</td>
-            </tr>
-            <tr>
-                <th>Caste</th>
-                <td>{{ detail.caste | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Nationality</th>
-                <td>{{ detail.nationality | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Language</th>
-                <td>{{ detail.language | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Religion</th>
-                <td>{{ detail.religion | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Blood Group</th>
-                <td>{{ detail.blood_group }}</td>
-            </tr>
-            <tr>
-                <th>Designation</th>
-                <td>{{ detail.designation }}</td>
-            </tr>
-            <tr>
-                <th>Permanent Address</th>
-                <td>{{ detail.permanent_address_line1 | capitalize }}, {{ detail.permanent_address_line2 | capitalize
-                    }}, {{ detail.permanent_address_line3 | capitalize }}, {{ detail.permanent_pincode }}, {{
-                    detail.permanent_district | capitalize }}, {{ detail.permanent_state | capitalize }}</td>
-
-            </tr>
-            <tr>
-                <th>Present Address</th>
-                <td>{{ detail.present_address_line1 | capitalize }}, {{ detail.present_address_line2 | capitalize }}, {{
-                    detail.present_address_line3 | capitalize }}, {{ detail.present_pincode }}, {{
-                    detail.present_district | capitalize }}, {{ detail.present_state | capitalize }}</td>
-
-            </tr>
-            {% endfor %}
-
-    </table>
-    {% elif detail_type == 'Education' %}
-    <h3 class="centered-heading">Education Details</h3>
-    <table class="table_details table-striped">
-        <thead>
-            {% for detail in details %}
-
-            <!-- percentage-bar start -->
-            <div
-                style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 1rem; margin-right: 200px;">
-                <div>
-                    <!-- Progress Bar Label -->
-                    <label for="formProgressBar"
-                        style="font-weight: bold; display: block; text-align: center; margin-bottom: 5px;">
-                        Form Completion
-                    </label>
-
-                    <!-- Progress Bar Outer Box -->
-                    <div style="width: 250px; background-color: #eee; border-radius: 5px; height: 25px;">
-                        <!-- Progress Bar Inner Filled -->
-                        <div id="formProgressBar" role="progressbar" style="width: {{ detail.percentage }}%; background-color: #4caf50; height: 100%;
-                        border-radius: 5px; color: white; text-align: center; line-height: 25px; font-weight: bold;">
-                            {{ detail.percentage }}%
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- percentage-bar end -->
-
-
-
-            <tr>
-                <th>Degree</th>
-                <td>{{ detail.qualification | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Institution</th>
-                <td>{{ detail.institution | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Board</th>
-                <td>{{ detail.board }}</td>
-            </tr>
-            <tr>
-                <th>Starting Year</th>
-                <td>{{ detail.start }}</td>
-            </tr>
-            <tr>
-                <th>Completion Year</th>
-                <td>{{ detail.end }}</td>
-            </tr>
-            <tr>
-                <th>Grade/Marks</th>
-                <td>{{ detail.marks }}</td>
-            </tr>
-            {% endfor %}
-        </thead>
-
-    </table>
-
-    {% elif detail_type == 'Attendance' %}
-
-    <h3 class="centered-heading">Attendance</h3>
-    <table class="table_details table-striped">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Punch In</th>
-                <th>Punch Out</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for detail in details %}
-            <tr>
-                <td>{{ detail.punch_date }}</td>
-                <td class="{% if not detail.punch_in %}missing{% endif %}">{{ detail.punch_in }}</td>
-                <td class="{% if not detail.punch_out %}missing{% endif %}">{{ detail.punch_out }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    {% elif detail_type == 'Document' %}
-    <h3 class="centered-heading">Documents</h3>
-    <table class="table_details table-striped">
-        <thead>
-            {% for detail in details %}
-
-            <!-- percentage-bar start -->
-            <div
-                style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 1rem; margin-right: 200px;">
-                <div>
-                    <!-- Progress Bar Label -->
-                    <label for="formProgressBar"
-                        style="font-weight: bold; display: block; text-align: center; margin-bottom: 5px;">
-                        Form Completion
-                    </label>
-
-                    <!-- Progress Bar Outer Box -->
-                    <div style="width: 250px; background-color: #eee; border-radius: 5px; height: 25px;">
-                        <!-- Progress Bar Inner Filled -->
-                        <div id="formProgressBar" role="progressbar" style="width: {{ detail.percentage }}%; background-color: #4caf50; height: 100%;
-                        border-radius: 5px; color: white; text-align: center; line-height: 25px; font-weight: bold;">
-                            {{ detail.percentage }}%
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- percentage-bar end -->
-
-
-
-
-            <tr>
-                <th>Document Name</th>
-                <td>{{ detail.doc_name | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Document Number</th>
-                <td>{{ detail.doc_number }}</td>
-            </tr>
-            <tr>
-                <th>Issue Date</th>
-                <td>{{ detail.issue_date }}</td>
-            </tr>
-            <tr>
-                <th>Document File</th>
-                <td><a href="{{ url_for('static', filename='uploads/' ~ detail.doc_file) }}" target="_blank">View
-                        Document</a></td>
-
-            </tr>
-            {% endfor %}
-        </thead>
-
-    </table>
-
-    {% elif detail_type == 'Leave Details' %}
-    <h3 class="centered-heading">Leave Details</h3>
-
-    <!-- percentage-bar start (moved outside loop) -->
-    {% if details %}
-    <div
-        style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 1rem; margin-right: 200px;">
-        <div>
-            <label for="formProgressBar"
-                style="font-weight: bold; display: block; text-align: center; margin-bottom: 5px;">
-                Form Completion
-            </label>
-            <div style="width: 250px; background-color: #eee; border-radius: 5px; height: 25px;">
-                <div id="formProgressBar" role="progressbar" style="width: {{ details[0].percentage }}%; background-color: #4caf50; height: 100%;
-                border-radius: 5px; color: white; text-align: center; line-height: 25px; font-weight: bold;">
-                    {{ details[0].percentage }}%
+                style="width: 200px; background-color: #e0e0e0; border-radius: 4px; height: 20px; display: inline-block;">
+                <div
+                    style="width: {{ detail.percentage }}%; background-color: #28a745; height: 100%; border-radius: 4px;">
                 </div>
             </div>
         </div>
-    </div>
-    {% endif %}
-    <!-- percentage-bar end -->
 
-    <table class="table_details table-striped" border="1">
-        <thead>
-            {% for detail in details %}
-            <tr>
-                <th>Leave Type</th>
-                <td>{{ detail.leave_type | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>From Date</th>
-                <td>{{ detail.strt_date }}</td>
-            </tr>
-            <tr>
-                <th>To Date</th>
-                <td>{{ detail.to_date }}</td>
-            </tr>
-            <tr>
-                <th>Number of Days</th>
-                <td>{{ detail.num_days }}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td>{{ detail.status | capitalize }}</td>
-            </tr>
-            <tr>
-                <th>Remarks</th>
-                <td>{{ detail.remarks }}</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <hr>
-                </td>
-            </tr>
-            {% endfor %}
-        </thead>
+        <table class="table_details table-striped" border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <td>{{ detail.name | capitalize }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ detail.email }}</td>
+                </tr>
+                <tr>
+                    <th>Date of Birth</th>
+                    <td>{{ detail.dob }}</td>
+                </tr>
+                <tr>
+                    <th>Age</th>
+                    <td>{{ detail.age }}</td>
+                </tr>
+                <tr>
+                    <th>Relation</th>
+                    <td>{{ detail.relation | capitalize }}</td>
+                </tr>
+                <tr>
+                    <th>Occupation</th>
+                    <td>{{ detail.occupation | capitalize }}</td>
+                </tr>
+                <tr>
+                    <th>Income</th>
+                    <td>{{ detail.income }}</td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td>{{ detail.address | capitalize }}</td>
+                </tr>
+                <tr>
+                    <th>Remarks</th>
+                    <td>{{ detail.remarks | capitalize }}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <hr>
+                    </td>
+                </tr>
+
+            </thead>
+    </div>
     </table>
 
-    {% endif %}
-    {% endif %}
-</div>
+    {% endfor %}
 
-{% endblock %}
+
+    {% elif detail_type == 'Previous_company' %}
+    <h3 class="centered-heading">Previous Company Details</h3>
+
+    {% for detail in details %}
+
+    <div class="detail-block" style="margin-bottom: 30px;">
+        <!-- Right-aligned percentage and green progress bar -->
+        <div style="text-align: right;">
+            <p style="margin: 0 0 4px 0;">Completion: {{ detail.percentage }}%</p>
+            <div
+                style="width: 200px; background-color: #e0e0e0; border-radius: 4px; height: 20px; display: inline-block;">
+                <div
+                    style="width: {{ detail.percentage }}%; background-color: #28a745; height: 100%; border-radius: 4px;">
+                </div>
+            </div>
+        </div>
+
+        <table class="table_details table-striped">
+            <thead>
+                <tr>
+                    <th>Company Name</th>
+                    <td>{{ detail.com_name | capitalize }}</td>
+                </tr>
+                <tr>
+                    <th>Position</th>
+                    <td>{{ detail.designation | capitalize }}</td>
+                </tr>
+                <tr>
+                    <th>D.O.J</th>
+                    <td>{{ detail.doj }}</td>
+                </tr>
+                <tr>
+                    <th>D.O.L</th>
+                    <td>{{ detail.dol }}</td>
+                </tr>
+                <tr>
+                    <th>Reason for Leaving</th>
+                    <td>{{ detail.reason | capitalize }}</td>
+                </tr>
+                <tr>
+                    <th>UAN</th>
+                    <td>{{ detail.uan }}</td>
+                </tr>
+                <tr>
+                    <th>PAN</th>
+                    <td>{{ detail.pan }}</td>
+                </tr>
+                <tr>
+                    <th>Contact of Company</th>
+                    <td>{{ detail.contact }}</td>
+                </tr>
+                <tr>
+                    <th>Name of Contact</th>
+                    <td>{{ detail.name_contact }}</td>
+                </tr>
+                <tr>
+                    <th>PF Number</th>
+                    <td>{{ detail.pf_num }}</td>
+                </tr>
+                <tr>
+                    <th>Address of Company</th>
+                    <td>{{ detail.address | capitalize }}</td>
+                </tr>
+            </thead>
+        </table>
+        {% endfor %}
+
+
+
+        {% elif detail_type == 'Employee Details' %}
+        <h3 class="centered-heading">Employee Details</h3>
+
+        {% for detail in details %}
+
+        <div class="detail-block" style="margin-bottom: 30px;">
+            <!-- Right-aligned percentage and green progress bar -->
+            <div style="text-align: right;">
+                <p style="margin: 0 0 4px 0;">Completion: {{ detail.percentage }}%</p>
+                <div
+                    style="width: 200px; background-color: #e0e0e0; border-radius: 4px; height: 20px; display: inline-block;">
+                    <div
+                        style="width: {{ detail.percentage }}%; background-color: #28a745; height: 100%; border-radius: 4px;">
+                    </div>
+                </div>
+            </div>
+
+            <table class="table_details table-striped">
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <td><img src="{{ url_for('static', filename='uploads/' ~ detail.photo_filename) }}"
+                                alt="Employee Photo" width="50"></td>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <td>{{ detail.name | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ detail.email }}</td>
+                    </tr>
+                    <tr></tr>
+                    <th>Father's Name</th>
+                    <td>{{ detail.father_name | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mother's Name</th>
+                        <td>{{ detail.mother_name | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Marital Status</th>
+                        <td>{{ detail.marital_status }}</td>
+                    </tr>
+                    <tr>
+                        <th>Spouse's Name</th>
+                        <td>{{ detail.spouse_name | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date of Birth</th>
+                        <td>{{ detail.dob }}</td>
+                    </tr>
+                    <tr>
+                        <th>Employee ID</th>
+                        <td>{{ detail.emp_id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mobile</th>
+                        <td>{{ detail.mobile }}</td>
+                    </tr>
+                    <tr>
+                        <th>Gender</th>
+                        <td>{{ detail.gender| capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Emergency Mobile</th>
+                        <td>{{ detail.emergency_mobile }}</td>
+                    </tr>
+                    <tr>
+                        <th>Caste</th>
+                        <td>{{ detail.caste | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nationality</th>
+                        <td>{{ detail.nationality | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Language</th>
+                        <td>{{ detail.language | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Religion</th>
+                        <td>{{ detail.religion | capitalize }}</td>
+                    </tr>
+                    <tr>
+                        <th>Blood Group</th>
+                        <td>{{ detail.blood_group }}</td>
+                    </tr>
+                    <tr>
+                        <th>Designation</th>
+                        <td>{{ detail.designation }}</td>
+                    </tr>
+                    <tr>
+                        <th>Permanent Address</th>
+                        <td>{{ detail.permanent_address_line1 | capitalize }}, {{ detail.permanent_address_line2 |
+                            capitalize
+                            }}, {{ detail.permanent_address_line3 | capitalize }}, {{ detail.permanent_pincode }}, {{
+                            detail.permanent_district | capitalize }}, {{ detail.permanent_state | capitalize }}</td>
+
+                    </tr>
+                    <tr>
+                        <th>Present Address</th>
+                        <td>{{ detail.present_address_line1 | capitalize }}, {{ detail.present_address_line2 |
+                            capitalize
+                            }}, {{
+                            detail.present_address_line3 | capitalize }}, {{ detail.present_pincode }}, {{
+                            detail.present_district | capitalize }}, {{ detail.present_state | capitalize }}</td>
+
+                    </tr>
+            </table>
+            {% endfor %}
+
+            <!-- Education -->
+            {% elif detail_type == 'Education' %}
+            <h3 class="centered-heading">Education Details</h3>
+
+            {% for detail in details %}
+
+            <div class="detail-block" style="margin-bottom: 30px;">
+                <!-- Right-aligned percentage and green progress bar -->
+                <div style="text-align: right;">
+                    <p style="margin: 0 0 4px 0;">Completion: {{ detail.percentage }}%</p>
+                    <div
+                        style="width: 200px; background-color: #e0e0e0; border-radius: 4px; height: 20px; display: inline-block;">
+                        <div
+                            style="width: {{ detail.percentage }}%; background-color: #28a745; height: 100%; border-radius: 4px;">
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table_details table-striped">
+                    <thead>
+                        <tr>
+                            <th>Degree</th>
+                            <td>{{ detail.qualification | capitalize }}</td>
+                        </tr>
+                        <tr>
+                            <th>Institution</th>
+                            <td>{{ detail.institution | capitalize }}</td>
+                        </tr>
+                        <tr>
+                            <th>Board</th>
+                            <td>{{ detail.board }}</td>
+                        </tr>
+                        <tr>
+                            <th>Starting Year</th>
+                            <td>{{ detail.start }}</td>
+                        </tr>
+                        <tr>
+                            <th>Completion Year</th>
+                            <td>{{ detail.end }}</td>
+                        </tr>
+                        <tr>
+                            <th>Grade/Marks</th>
+                            <td>{{ detail.marks }}</td>
+                        </tr>
+                    </thead>
+                </table>
+                {% endfor %}
+
+                {% elif detail_type == 'Attendance' %}
+                <h3 class="centered-heading">Attendance</h3>
+                <table class="table_details table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Punch In</th>
+                            <th>Punch Out</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for detail in details %}
+                        <tr>
+                            <td>{{ detail.punch_date }}</td>
+                            <td class="{% if not detail.punch_in %}missing{% endif %}">{{ detail.punch_in }}</td>
+                            <td class="{% if not detail.punch_out %}missing{% endif %}">{{ detail.punch_out }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Document -->
+                {% elif detail_type == 'Document' %}
+                <h3 class="centered-heading">Documents</h3>
+                {% for detail in details %}
+
+                <div class="detail-block" style="margin-bottom: 30px;">
+                    <!-- Right-aligned percentage and green progress bar -->
+                    <div style="text-align: right;">
+                        <p style="margin: 0 0 4px 0;">Completion: {{ detail.percentage }}%</p>
+                        <div
+                            style="width: 200px; background-color: #e0e0e0; border-radius: 4px; height: 20px; display: inline-block;">
+                            <div
+                                style="width: {{ detail.percentage }}%; background-color: #28a745; height: 100%; border-radius: 4px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="table_details table-striped">
+                        <thead>
+                            <tr>
+                                <th>Document Name</th>
+                                <td>{{ detail.doc_name | capitalize }}</td>
+                            </tr>
+                            <tr>
+                                <th>Document Number</th>
+                                <td>{{ detail.doc_number }}</td>
+                            </tr>
+                            <tr>
+                                <th>Issue Date</th>
+                                <td>{{ detail.issue_date }}</td>
+                            </tr>
+                            <tr>
+                                <th>Document File</th>
+                                <td><a href="{{ url_for('static', filename='uploads/' ~ detail.doc_file) }}"
+                                        target="_blank">View
+                                        Document</a></td>
+
+                            </tr>
+                        </thead>
+                    </table>
+                    {% endfor %}
+
+                    <!-- Leave Details -->
+                    {% elif detail_type == 'Leave Details' %}
+                    <h3 class="centered-heading">Leave Applied</h3>
+
+                    {% for detail in details %}
+
+                    <div class="detail-block" style="margin-bottom: 30px;">
+                        <!-- Right-aligned percentage and green progress bar -->
+                        <div style="text-align: right;">
+                            <p style="margin: 0 0 4px 0;">Completion: {{ detail.percentage }}%</p>
+                            <div
+                                style="width: 200px; background-color: #e0e0e0; border-radius: 4px; height: 20px; display: inline-block;">
+                                <div
+                                    style="width: {{ detail.percentage }}%; background-color: #28a745; height: 100%; border-radius: 4px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <table class="table_details table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Leave Type</th>
+                                    <td>{{ detail.leave_type | capitalize }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>{{ detail.status }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Created at</th>
+                                    <td>{{ detail.created_at }}</td>
+
+                                </tr>
+                            </thead>
+                        </table>
+                        {% endfor %}
+                        {% endif %}
+                        {% endif %}
+                    </div>
+
+                    {% endblock %}
