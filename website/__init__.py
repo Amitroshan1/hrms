@@ -156,7 +156,7 @@ def leave_reminder_email():
             if leave.created_at.tzinfo is None:
                 last_activity_query_time = ist.localize(leave.created_at)
             else:
-                last_activity_query_time = leave.created_at.astimezone(ist)
+                last_activity_query_time = leave.created_at.astimezone(ist) #when qyery is create that time will store
 
             time_since_last_query_activity = now - last_activity_query_time
             print(f"The leave_app id is {leave.id} and age since last activity: {time_since_last_query_activity}")
@@ -199,8 +199,8 @@ def leave_reminder_email():
                 print("TO:", user_email)
                 print("CC:", cc)
                 print("BCC:", l3_leader)
-                print("Subject:", subject)
-                print("Body:", body)
+                print("Subject :", subject)
+                print("Successful get the body structure Body: ", body)
 
 
                 

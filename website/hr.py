@@ -17,7 +17,7 @@ from werkzeug.utils import secure_filename
 import os
 import logging
 from  website.common  import asset_email
-
+from .auth_helper import calculate_completion_percentage
 
 
 
@@ -158,15 +158,27 @@ def display_details():
 
     if detail_type == 'Family Details':
         details = FamilyDetails.query.filter_by(admin_id=user_id).all()
+        fields_to_check = ['id','admin_id','photo_filename','name','email','dob','age','relation','occupation','income','address','remarks']
+        for detail in details:
+            detail.percentage = calculate_completion_percentage(detail,fields_to_check)
     elif detail_type == 'Previous_company':
         details = PreviousCompany.query.filter_by(admin_id=user_id).all()
+        fields_to_check = ['id','com_name','designation','doj','reason','salary','uan','pan','contact','name_contact','pf_num','address','admin_id']
+        for detail in details:
+            detail.percentage = calculate_completion_percentage(detail,fields_to_check)
+
     elif detail_type == 'Employee Details':
-        
         details = Employee.query.filter_by(admin_id=user_id).all()
+        fields_to_check = ['id','admin_id','photo_filename','name','email','father_name','mother_name','marital_status','spouse_name','dob','emp_id','mobile','gender','emergency_mobile','caste','nationality','language','religion','blood_group','designation','permanent_address_line1','permanent_address_line2','permanent_address_line3','permanent_pincode','permanent_district','permanent_state','present_address_line1','present_address_line2','present_address_line3','present_pincode','present_district','present_state']
+        for detail in details:
+            detail.percentage = calculate_completion_percentage(detail,fields_to_check)
         
     elif detail_type == 'Education':
         details = Education.query.filter_by(admin_id=user_id).all()
-    elif detail_type == 'Attendance':
+        fields_to_check = ['id','admin_id','qualification','institution','board','start','end','marks','doc_file']
+        for detail in details:
+            detail.percentage = calculate_completion_percentage(detail,fields_to_check)
+    elif detail_type == 'Attendance': # issue not fetching the data
         num_days = calendar.monthrange(year, month)[1]
         details = [{'punch_date': f'{year}-{month:02d}-{day:02d}', 'punch_in': 'Leave', 'punch_out':'Leave'} for day in range(1, num_days + 1)]
         punches = Punch.query.filter(
@@ -179,8 +191,16 @@ def display_details():
                     detail['punch_out'] = punch.punch_out
     elif detail_type == 'Document':
         details = UploadDoc.query.filter_by(admin_id=user_id).all()
+        fields_to_check = ['id','admin_id','doc_name','doc_number','issue_date','doc_file']
+        for detail in details:
+            detail.percentage = calculate_completion_percentage(detail,fields_to_check)
+
+
     elif detail_type == 'Leave Details':
-        details = LeaveApplication.query.filter_by(admin_id=user_id).all()   
+        details = LeaveApplication.query.filter_by(admin_id=user_id).all()
+        fields_to_check = ['id','admin_id','leave_type','reason','start_date','end_date','status','created_at']
+        for detail in details:
+            detail.percentage = calculate_completion_percentage(detail,fields_to_check)   
     
 
     if admin is None:

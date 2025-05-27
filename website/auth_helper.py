@@ -128,3 +128,9 @@ def check_geo_punch(action, latitude, longitude):
         return False, "You are too far from the office to punch in/out."
 
     return True, f"{action.replace('_', ' ').title()} recorded successfully!"
+
+
+def calculate_completion_percentage(obj,fields):
+    total_fields = len(fields)
+    filled_fields = sum(1 for field in fields if getattr(obj, field))
+    return int((filled_fields / total_fields) * 100) if total_fields > 0 else 0
