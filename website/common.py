@@ -126,5 +126,7 @@ def asset_email(recipient_email,first_name):
                 f"Thanks,\nAccounts"
             )
     print(recipient_email, subject, body, current_user.email)
-    Company_verify_oauth2_and_send_email(recipient_email, subject, body, current_user.email)
+    Company_verify_oauth2_and_send_email(current_user.email, subject, body, recipient_email)
     return True
+
+# (user_email, subject, body, recipient_email, cc_emails=None):
