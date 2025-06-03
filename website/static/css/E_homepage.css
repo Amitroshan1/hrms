@@ -748,7 +748,7 @@ h3 {
 .news-feed-container-fixed {
     position: absolute;
     top: 41px;
-    right: 100px;
+    right: 70px;
     width: 180px;  /* Reduced width */
     height: 665px;
     background-color: #f9f9f9;
