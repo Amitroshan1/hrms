@@ -750,11 +750,11 @@ h3 {
     top: 41px;
     right: 70px;
     width: 180px;  /* Reduced width */
-    height: 665px;
+    height: 721px;
     background-color: #f9f9f9;
     border: 3px solid #ccc;
     padding: 20px;
-    border-radius: 20px;
+    border-radius: 25px;
     overflow: hidden;
     z-index: 999;
     font-size: 14px; /* Make text smaller to avoid overflow */
