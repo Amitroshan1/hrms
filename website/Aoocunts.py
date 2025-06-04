@@ -234,7 +234,9 @@ def create_query():
 def chat_query(query_id):
     
     selected_query = Query.query.get_or_404(query_id)
-    
+    if selected_query.status == 'New':
+        selected_query.status = 'Open'
+        db.session.commit()
     
     form = QueryReplyForm()  
     replies = QueryReply.query.filter(QueryReply.query_id == query_id).order_by(QueryReply.created_at.asc()).all()
@@ -272,11 +274,11 @@ def view_emp_type_queries():
     email=current_user.email
     emp = Signup.query.filter_by(email=email).first()
     emp_type = emp.emp_type
-    
-    
+
     queries_for_emp_type = Query.query.filter(
-        Query.emp_type.ilike(f'%{emp_type}%') 
+        Query.emp_type.ilike(f'%{emp_type}%')
     ).all()
+
 
     
     for query in queries_for_emp_type:

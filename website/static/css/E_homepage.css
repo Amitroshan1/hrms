@@ -44,23 +44,37 @@ ul {
     list-style: none;
 }
 
-
 .notification .btn {
     display: inline-block;
     padding: 10px 15px;
-
     background-color: #238af1;
-    /* Primary color */
     color: white;
     text-align: center;
     border-radius: 5px;
     text-decoration: none;
+    position: relative;
+    /* Required for badge positioning */
 }
 
 .notification .btn:hover {
     background-color: #0056b3;
-    /* Darker shade on hover */
 }
+
+.notification .badge {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    padding: 4px 7px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1;
+    min-width: 18px;
+    text-align: center;
+}
+
 
 
 table.queries {
@@ -749,7 +763,8 @@ h3 {
     position: absolute;
     top: 41px;
     right: 70px;
-    width: 180px;  /* Reduced width */
+    width: 180px;
+    /* Reduced width */
     height: 721px;
     background-color: #f9f9f9;
     border: 3px solid #ccc;
@@ -757,7 +772,8 @@ h3 {
     border-radius: 25px;
     overflow: hidden;
     z-index: 999;
-    font-size: 14px; /* Make text smaller to avoid overflow */
+    font-size: 14px;
+    /* Make text smaller to avoid overflow */
 }
 
 .news-feed-item {
@@ -800,7 +816,7 @@ h3 {
 }
 
 
-.asset-table { 
+.asset-table {
     width: 20%;
     margin: 20px auto;
     /* Center the table */

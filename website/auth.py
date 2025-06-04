@@ -271,6 +271,9 @@ def E_homepage():
 
     # Get Signup record from email to get emp_type
     emp = Signup.query.filter_by(email=employee.email).first()
+
+    count_new_queries = Query.query.filter_by(emp_type = emp.emp_type,status = 'New').count()
+    print(f"Successful Got the {count_new_queries}queries")
     
     # Get DOJ from Signup model
     DOJ = emp.doj if emp else None
@@ -314,7 +317,7 @@ def E_homepage():
                            DOJ=DOJ,
                            show_notification=show_notification,
                            queries_for_emp_type=queries_for_emp_type,
-                           emp_type=emp_type)  # Pass emp_type to the template
+                           emp_type=emp_type,count_new_queries=count_new_queries)  # Pass emp_type to the template
 
 
 

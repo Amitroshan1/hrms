@@ -24,12 +24,18 @@
 
 
     </div>
+
     {% if show_notification %}
     <div class="notification">
-
-        <a href="{{ url_for('Accounts.view_emp_type_queries') }}" class="btn btn-primary">View Queries</a>
+        <a href="{{ url_for('Accounts.view_emp_type_queries') }}" class="btn">
+            View Queries
+            {% if count_new_queries > 0 %}
+            <span class="badge">{{ count_new_queries }}</span>
+            {% endif %}
+        </a>
     </div>
     {% endif %}
+
 
     {% if employee %}
     <div class="container-image text-center">
