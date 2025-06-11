@@ -72,7 +72,7 @@ class SignUpForm(FlaskForm):
                  ('Testing', 'Testing'),
                  ('Software Development', 'Software Development'),
                  ('IT Department', 'IT Department')],
-        validators=[DataRequired()]
+        validators=[DataRequired()] 
     )
 
     submit = SubmitField('Sign Up')

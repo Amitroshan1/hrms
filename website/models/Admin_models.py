@@ -51,20 +51,3 @@ class Admin(db.Model, UserMixin):
 def load_admin(admin_id):
     return Admin.query.get(int(admin_id))
 
-
-
-
-
-
-# class Session(db.Model):
-#     __tablename__ = 'session'
-
-#     session_id = db.Column(db.String(255), primary_key=True)
-#     admin_id = db.Column(db.Integer, db.ForeignKey('admins.id'), nullable=False)  # Link to Admins
-#     data = db.Column(db.Text, nullable=False)
-#     expiry = db.Column(db.DateTime, nullable=False)
-
-#     admin = db.relationship('Admin', back_populates='sessions')
-
-#     def __repr__(self):
-#         return f"<Session(session_id={self.session_id}, admin_id={self.admin_id}, expiry={self.expiry})>"

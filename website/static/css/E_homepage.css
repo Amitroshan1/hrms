@@ -764,8 +764,8 @@ h3 {
     top: 41px;
     right: 70px;
     width: 180px;
-    /* Reduced width */
-    height: 721px;
+    height: 720px!important;
+    /* your fixed height */
     background-color: #f9f9f9;
     border: 3px solid #ccc;
     padding: 20px;
@@ -773,7 +773,6 @@ h3 {
     overflow: hidden;
     z-index: 999;
     font-size: 14px;
-    /* Make text smaller to avoid overflow */
 }
 
 .news-feed-item {
@@ -800,6 +799,12 @@ h3 {
     font-size: 10px;
     font-weight: bold;
     display: inline-block;
+}
+
+.marquee-scroll {
+    height: 100%;
+    display: block;
+    overflow: hidden;
 }
 
 .centered-heading {

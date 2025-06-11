@@ -103,7 +103,7 @@ def send_reminder_emails():
             time_since_last_activity = now - last_activity_time
             print(f"Query ID {query.id} age since last activity: {time_since_last_activity}")
 
-            # If 3 days or more have passed since last activity, send reminder
+            # If 3 days or more have passed since last activity, send reminder to that particular employee's
             if time_since_last_activity >= timedelta(days=3):
                 departments = query.emp_type.split(', ')
                 print(f"Reminder needed for query: {query.title}, Departments: {departments}")

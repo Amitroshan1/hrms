@@ -215,10 +215,10 @@ def create_query():
         db.session.commit()
 
         # Notify the user that the query has been created
-        flash('Your query has been created successfully.', 'success')
+        flash('Your query has been created successfully.', 'success') 
 
         return redirect(url_for('Accounts.create_query'))
-
+ 
     # Display the user's previous queries
     user_queries = Query.query.filter_by(admin_id=current_user.id).order_by(Query.created_at.desc()).all()
     
