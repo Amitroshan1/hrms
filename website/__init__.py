@@ -235,10 +235,6 @@ def create_app():
     app.config['SESSION_USE_SIGNER'] = True  # Secure the session cookies
     app.config['SESSION_KEY_PREFIX'] = 'saffo_session_'
     app.config['SESSION_SERIALIZATION_FORMAT'] = "json"
-
-
-
-    
   
     # OAuth2 Configuration
     app.config['SESSION_COOKIE_SECURE'] = True  
@@ -288,6 +284,9 @@ def create_app():
     from .models.query import Query, QueryReply
     from .models.signup import Signup
     from .models.news_feed import NewsFeed, PaySlip
+    from .models.otp import OTP
+
+
 
     migrate.init_app(app, db)  # Now models are loaded, safe to initialize
 
@@ -316,6 +315,7 @@ def create_app():
     from .Updatemanager import manager_bp
     from .Aoocunts import Accounts
     from .auth_helper import auth_helper
+    from .otp import forgot_password
 
     app.register_blueprint(profile, url_prefix='/')
     app.register_blueprint(views, url_prefix='/')
@@ -325,6 +325,7 @@ def create_app():
     app.register_blueprint(manager_bp, url_prefix='/')
     app.register_blueprint(Accounts, url_prefix='/')
     app.register_blueprint(auth_helper, url_prefix='/')
+    app.register_blueprint(forgot_password, url_prefix='/')
 
     # Scheduler job
     scheduler.add_job(

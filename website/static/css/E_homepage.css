@@ -474,7 +474,7 @@ h3 {
 .container-image img {
     display: inline-block;
     max-width: 100%;
-    height: auto;
+    height: 100%;
     border-radius: 50%;
 }
 
@@ -849,3 +849,4 @@ h3 {
 .asset-table tr:hover {
     background-color: #eaeaea;
 }
+

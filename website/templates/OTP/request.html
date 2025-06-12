@@ -1,0 +1,10 @@
+{% extends "employee/base.html" %}
+{% block title %} Forgot Password {% endblock %}
+
+{% block content %}
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {{ form.email.label }} {{ form.email() }}
+    {{ form.submit() }}
+</form>
+{% endblock %}
