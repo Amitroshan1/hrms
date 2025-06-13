@@ -26,7 +26,7 @@ def send_otp_email(recipient_email, otp):
     print(f"Successfull got otp {otp}")
 
     # Get an Admin user with valid refresh token
-    admin_sender = "akumar4@saffotech.com"
+    admin_sender = "nphatak@saffotech.com"
     print(f"Successfull got email {admin_sender}")
 
     return verify_oauth2_and_send_email(admin_sender, subject, body, recipient_email)
